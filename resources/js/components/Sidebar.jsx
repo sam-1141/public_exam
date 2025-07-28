@@ -1,0 +1,97 @@
+import { Link } from "@inertiajs/react";
+import React from "react";
+import { route } from "ziggy-js";
+
+function Sidebar() {
+    return (
+        <nav className="pc-sidebar">
+            <div className="navbar-wrapper">
+                <div className="m-header">
+                    <a href="/" className="b-brand text-primary">
+                        {/* ========   Change your logo from here   ============ */}
+                        <img
+                            src="/assets/images/logo/ftlogo.png"
+                            className="img-fluid logo-lg"
+                            alt="logo"
+                        />
+                    </a>
+                </div>
+                <div className="navbar-content">
+                    <ul className="pc-navbar">
+                        <li className="pc-item pc-caption">
+                            <label data-i18n="Navigation">Pages</label>
+                        </li>
+                        <li className="pc-item">
+                            <a href={route("dashboard")} className="pc-link">
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">
+                                        dashboard
+                                    </i>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Dashboard"
+                                >
+                                    Dashboard
+                                </span>
+                            </a>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("add.questions")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">
+                                        create_new_folder
+                                    </i>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Add Question"
+                                >
+                                    Add Question
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link href={route("mcq.bank")} className="pc-link">
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    Question Bank
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("manage.material")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    Manage Material
+                                </span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    );
+}
+
+export default Sidebar;

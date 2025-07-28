@@ -1,0 +1,21 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Tag;
+
+class TagFactory extends Factory
+{
+    protected $model = Tag::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->unique()->word(), // Generate unique tag names
+            'created_by' => $this->faker->randomDigitNotNull(), // Random user ID
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+}
