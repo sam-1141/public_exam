@@ -105,7 +105,25 @@ function Sidebar() {
                                     className="pc-mtext"
                                     data-i18n="Question Bank"
                                 >
-                                    Student Dashboard
+                                    স্টুডেন্ট ড্যাশবোর্ড
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("student.trial.exam")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    ট্রায়াল পরীক্ষা
                                 </span>
                             </Link>
                         </li>
@@ -123,7 +141,7 @@ function Sidebar() {
                                     className="pc-mtext"
                                     data-i18n="Question Bank"
                                 >
-                                    Leaderboard
+                                    লিডারবোর্ড
                                 </span>
                             </Link>
                         </li>

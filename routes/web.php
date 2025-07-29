@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
+use App\Http\Controllers\TrialExamController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
@@ -62,6 +63,10 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     Route::controller(LeaderboardController::class)->group(function () {
         Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
+    });
+
+    Route::controller(TrialExamController::class)->group(function () {
+        Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
     });
 
 });

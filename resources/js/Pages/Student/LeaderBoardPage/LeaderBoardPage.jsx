@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Menu, Bell } from "lucide-react"
 import Layout from "../../../layouts/Layout"
+import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 
 const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) => {
   const [selectedLeague, setSelectedLeague] = useState("bronze")
@@ -134,24 +135,10 @@ const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) 
   return (
     <div className="flex-grow-1 d-flex flex-column">
       {/* Header */}
-      <header className="bg-white border-bottom p-3">
-        <div className="d-flex align-items-center justify-content-between">
-          <div className="d-flex align-items-center">
-            {isMobile && (
-              <button className="btn btn-light me-3" onClick={() => setShowMobileSidebar(true)}>
-                <Menu size={20} />
-              </button>
-            )}
-            <h4 className="mb-0 fw-bold">লিডারবোর্ড</h4>
-          </div>
-          <div className="d-flex align-items-center">
-            <button className="btn btn-light position-relative me-2">
-              <Bell size={20} />
-              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="লিডারবোর্ড"
+        streak={5}
+      />
 
       {/* Main Content */}
       <main className="flex-grow-1 p-3 bg-light">
