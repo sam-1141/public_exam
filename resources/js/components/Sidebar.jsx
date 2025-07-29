@@ -69,6 +69,7 @@ function Sidebar() {
                                 </span>
                             </Link>
                         </li>
+                        
                         <li className="pc-item">
                             <Link
                                 href={route("manage.material")}
@@ -84,6 +85,45 @@ function Sidebar() {
                                     data-i18n="Question Bank"
                                 >
                                     Manage Material
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item pc-caption">
+                            <label data-i18n="Navigation">Student</label>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("student.dashboard")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    Student Dashboard
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("student.leaderboard")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    Leaderboard
                                 </span>
                             </Link>
                         </li>

@@ -15,4 +15,9 @@ class DashboardController extends Controller
     {
         return Inertia::render('About');
     }
+
+    public function studentDashboard()
+    {
+        return Inertia::render('Student/Dashboard/Dashboard');
+    }
 }
