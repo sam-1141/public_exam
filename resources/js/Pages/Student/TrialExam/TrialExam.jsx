@@ -5,7 +5,7 @@ import ExamModal from "./ExamModal"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 
-const TrialExam = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
+const TrialExam = () => {
   const [showModal, setShowModal] = useState(false)
   const [selectedExam, setSelectedExam] = useState(null)
 

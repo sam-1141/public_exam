@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\LiveExamController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\TrialExamController;
 use Inertia\Inertia;
@@ -9,6 +11,7 @@ use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\authController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HardnessController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TagController;
@@ -67,6 +70,18 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     Route::controller(TrialExamController::class)->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
+    });
+
+    Route::controller(LiveExamController::class)->group(function () {
+        Route::get('/student/live-exam', 'loadLiveExamPage')->name('student.live.exam');
+    });
+
+    Route::controller(ArchiveController::class)->group(function () {
+        Route::get('/student/archive', 'loadArchivePage')->name('student.archive.exam');
+    });
+
+    Route::controller(HistoryController::class)->group(function () {
+        Route::get('/student/history', 'loadHistoryPage')->name('student.history');
     });
 
 });

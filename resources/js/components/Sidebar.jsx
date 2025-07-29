@@ -111,6 +111,24 @@ function Sidebar() {
                         </li>
                         <li className="pc-item">
                             <Link
+                                href={route("student.live.exam")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    লাইভ পরীক্ষা
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
                                 href={route("student.trial.exam")}
                                 className="pc-link"
                             >
@@ -129,6 +147,24 @@ function Sidebar() {
                         </li>
                         <li className="pc-item">
                             <Link
+                                href={route("student.archive.exam")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    আর্কাইভ
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
                                 href={route("student.leaderboard")}
                                 className="pc-link"
                             >
@@ -142,6 +178,24 @@ function Sidebar() {
                                     data-i18n="Question Bank"
                                 >
                                     লিডারবোর্ড
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("student.history")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <svg className="pc-icon">
+                                        <use xlinkHref="#custom-folder-open" />
+                                    </svg>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    হিস্ট্রি
                                 </span>
                             </Link>
                         </li>
