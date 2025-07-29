@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\ProgressReportController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
@@ -11,10 +13,13 @@ use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
+use function PHPUnit\Framework\callback;
+
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('dashboard');
         Route::get('/about', 'about')->name('about');
+        Route::get('/student/dashboard', 'studentDashboard')->name('student.dashboard');
     });
 
     Route::controller(MaterialsController::class)->group(function () {
@@ -50,6 +55,15 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::put('/update-topic/{id}', [TopicController::class, 'update'])->name('update.topic');
         Route::delete('/delete-topic/{id}', [TopicController::class, 'destroy'])->name('delete.topic');
     });
+
+    Route::controller(ProgressReportController::class)->group(function () {
+        Route::get('/student/progress-report', 'loadProgressReport')->name('student.progress.report');
+    });
+
+    Route::controller(LeaderboardController::class)->group(function () {
+        Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
+    });
+
 });
 
 Route::controller(authController::class)->group(function () {
