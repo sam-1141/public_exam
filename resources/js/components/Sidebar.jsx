@@ -69,7 +69,7 @@ function Sidebar() {
                                 </span>
                             </Link>
                         </li>
-                        
+
                         <li className="pc-item">
                             <Link
                                 href={route("manage.material")}
@@ -92,38 +92,62 @@ function Sidebar() {
                             <label data-i18n="Navigation">Student</label>
                         </li>
                         <li className="pc-item">
-                            <Link
-                                href={route("student.dashboard")}
-                                className="pc-link"
-                            >
+                            <Link href={route("student.dashboard")} className="pc-link">
                                 <span className="pc-micon">
-                                    <svg className="pc-icon">
-                                        <use xlinkHref="#custom-folder-open" />
-                                    </svg>
+                                    <i className="material-icons-two-tone">dashboard</i>
                                 </span>
-                                <span
-                                    className="pc-mtext"
-                                    data-i18n="Question Bank"
-                                >
-                                    Student Dashboard
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    স্টুডেন্ট ড্যাশবোর্ড
                                 </span>
                             </Link>
                         </li>
                         <li className="pc-item">
-                            <Link
-                                href={route("student.leaderboard")}
-                                className="pc-link"
-                            >
+                            <Link href={route("student.live.exam")} className="pc-link">
                                 <span className="pc-micon">
-                                    <svg className="pc-icon">
-                                        <use xlinkHref="#custom-folder-open" />
-                                    </svg>
+                                    <i className="material-icons-two-tone">schedule</i>
                                 </span>
-                                <span
-                                    className="pc-mtext"
-                                    data-i18n="Question Bank"
-                                >
-                                    Leaderboard
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    লাইভ পরীক্ষা
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link href={route("student.trial.exam")} className="pc-link">
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">assignment</i>
+                                </span>
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    ট্রায়াল পরীক্ষা
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link href={route("student.archive.exam")} className="pc-link">
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">archive</i>
+                                </span>
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    আর্কাইভ
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link href={route("student.leaderboard")} className="pc-link">
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">leaderboard</i>
+                                </span>
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    লিডারবোর্ড
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link href={route("student.history")} className="pc-link">
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">history</i>
+                                </span>
+                                <span className="pc-mtext" data-i18n="Question Bank">
+                                    হিস্ট্রি
                                 </span>
                             </Link>
                         </li>
