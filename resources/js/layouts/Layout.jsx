@@ -4,13 +4,13 @@ import Sidebar from "../components/Sidebar";
 
 function Layout({ children }) {
     return (
-        <>
+        <main className="pc-layout ">
             <Header />
             <Sidebar />
-            <div className="pc-container">
+            <div className="pc-container ">
                 <div className="pc-content">{children}</div>
             </div>
-        </>
+        </main>
     );
 }
 
