@@ -26,7 +26,7 @@ class MaterialsController extends Controller
         $subjects = Subject::all();
         $chapters = Chapter::all();
 
-        return Inertia::render('ManageMaterials', [
+        return Inertia::render('Materials/ManageMaterials', [
             'tags' => $tags,
             'topics' => $topics,
             'hardness' => $hardness,

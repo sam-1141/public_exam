@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import QuestionCard from "../../components/QuestionCard";
+import QuestionCard from "../../components/Questions/QuestionCard";
 import { toast, ToastContainer } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import Layout from "../../layouts/Layout";

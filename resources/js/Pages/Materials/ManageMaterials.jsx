@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Layout from "../layouts/Layout";
-import TagSection from "../components/ManageMaterial/TagSection";
-import HardnessSection from "../components/ManageMaterial/HardnessSection";
-import TopicSection from "../components/ManageMaterial/TopicSection";
+import Layout from "../../layouts/Layout";
+import TagSection from "../../components/ManageMaterial/TagSection";
+import HardnessSection from "../../components/ManageMaterial/HardnessSection";
+import TopicSection from "../../components/ManageMaterial/TopicSection";
 import { toast, ToastContainer } from "react-toastify";
 
 function ManageMaterials({
