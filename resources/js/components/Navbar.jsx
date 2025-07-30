@@ -194,7 +194,7 @@ function Navbar() {
                                 </a>
                                 <div className="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown font-baloo">
                                     <div className="dropdown-header d-flex align-items-center justify-content-between">
-                                        <h3 className="m-0">প্রোফাইল</h3>
+                                        <h3 className="m-0">Profile</h3>
                                     </div>
                                     <div className="dropdown-body">
                                         <div
@@ -234,7 +234,7 @@ function Navbar() {
                                                 <svg className="pc-icon text-muted">
                                                     <use xlinkHref="#custom-user" />
                                                 </svg>
-                                                <span>প্রোফাইল আপডেট</span>
+                                                <span>Profile Update</span>
                                             </Link>
 
                                             <hr className="border-secondary border-opacity-50" />
@@ -253,7 +253,7 @@ function Navbar() {
                                                     <svg className="pc-icon me-2">
                                                         <use xlinkHref="#custom-logout-1-outline" />
                                                     </svg>
-                                                    লগ আউট
+                                                    Logout
                                                 </button>
                                             </div>
                                         </div>
