@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../layouts/Layout";
-import QuestionCard from "../components/QuestionCard";
+
+import QuestionCard from "../../components/QuestionCard";
 import { toast, ToastContainer } from "react-toastify";
-import LoadingSpinner from "../components/LoadingSpinner";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import Layout from "../../layouts/Layout";
 
 function McqBank({
     questions,
@@ -36,7 +37,6 @@ function McqBank({
     const applyFilters = () => {
         setIsLoading(true);
         setTimeout(() => {
-
             setIsLoading(false);
         }, 1000);
     };

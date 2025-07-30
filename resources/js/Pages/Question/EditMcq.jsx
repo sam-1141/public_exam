@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
-import Layout from "../layouts/Layout";
+
 import { toast, ToastContainer } from "react-toastify";
 import Select from "react-select";
+import Layout from "../../layouts/Layout";
 
 function EditMcq({
     classes,

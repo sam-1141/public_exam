@@ -108,7 +108,7 @@ class QuestionController extends Controller
         $hardness = Hardness::all();
         $tags = Tag::all();
         // return $questions;
-        return Inertia::render('McqBank', [
+        return Inertia::render('Question/McqBank', [
             'questions' => $questions,
             'classes' => $classes,
             'subjects' => $subjects,
@@ -195,7 +195,7 @@ class QuestionController extends Controller
         // Get all the tags
         $tags = Tag::all();
 
-        return Inertia::render('EditMcq', [
+        return Inertia::render('Question/EditMcq', [
             'question' => $question,
             'classes' => $classes,
             'subjects' => $subjects,
