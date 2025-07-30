@@ -1,0 +1,117 @@
+/* Method 1: Override with !important (Most forceful) */
+.pc-navbar {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Force the sidebar container to be scrollable */
+.pc-sidebar,
+.sidebar-wrapper,
+.pc-sidebar-container {
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    /* max-height: 100vh !important; */
+}
+
+/* Reset any fixed positioning that might cause issues */
+/* .pc-sidebar * {
+    position: relative !important;
+} */
+
+/* Method 2: More specific selectors to override template styles */
+body .pc-sidebar .pc-navbar {
+    height: auto !important;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 100px) !important;
+}
+
+/* Method 3: Target common template classes that might interfere */
+.pc-sidebar .simplebar-wrapper,
+.pc-sidebar .simplebar-mask,
+.pc-sidebar .simplebar-offset,
+.pc-sidebar .simplebar-content-wrapper,
+.pc-sidebar .simplebar-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Method 4: If template uses custom scrollbar library, disable it */
+.pc-sidebar .ps,
+.pc-sidebar .ps__rail-y,
+.pc-sidebar .ps__thumb-y {
+    display: none !important;
+}
+
+/* Method 5: Override template's JavaScript-generated styles */
+.pc-sidebar[style*="height"],
+.pc-navbar[style*="height"],
+.pc-sidebar[style*="overflow"] {
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* Method 6: Create a new wrapper with higher specificity */
+.admin-nav-override {
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+}
+
+.admin-nav-override .pc-navbar {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: 20px !important;
+}
+
+.admin-nav-override .pc-item {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Method 7: Reset all template animations/transitions that might interfere */
+/* .pc-sidebar * {
+    transition: none !important;
+    animation: none !important;
+} */
+
+/* Method 8: Override template's responsive behavior */
+@media (max-width: 768px) {
+    .pc-sidebar {
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* Method 9: If template uses Bootstrap classes, override them */
+.pc-sidebar.d-flex {
+    flex-direction: column !important;
+}
+
+.pc-sidebar .flex-column {
+    overflow-y: auto !important;
+    flex: 1 !important;
+}
+
+/* Method 10: Nuclear option - completely reset the sidebar */
+/* .sidebar-reset {
+    all: unset !important;
+    display: block !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: #fff !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 250px !important;
+    z-index: 1000 !important;
+} */

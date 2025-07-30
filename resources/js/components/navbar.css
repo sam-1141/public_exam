@@ -1,0 +1,162 @@
+/* Sidebar Complete Collapse CSS */
+
+/* Default sidebar width */
+.pc-sidebar .m-header {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background: rgba(255, 255, 255, 0.301); /* Semi-transparent white */
+    backdrop-filter: blur(10px); /* Backdrop blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Optional: adds a subtle border */
+}
+
+/* Completely hide sidebar when collapsed */
+.pc-sidebar.pc-sidebar-hide {
+    transform: translateX(-100%);
+    transition: all 0.3s ease;
+}
+
+/* Body class for main content adjustment when sidebar is hidden */
+body.pc-sidebar-hide .pc-container,
+body.pc-sidebar-hide .pc-header {
+    margin-left: 0 !important;
+    transition: all 0.3s ease;
+}
+
+/* Default main content margin */
+.pc-container,
+.pc-header {
+    /* margin-left: 280px; */
+    transition: all 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .pc-sidebar {
+        width: 280px;
+        position: fixed;
+        left: -280px;
+        z-index: 1050;
+    }
+
+    .pc-sidebar.mob-sidebar-active {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    .pc-container,
+    .pc-header {
+        margin-left: 0;
+    }
+
+    body.pc-sidebar-hide .pc-container,
+    body.pc-sidebar-hide .pc-header {
+        margin-left: 0;
+    }
+
+    /* Hide desktop collapse button on mobile */
+    .pc-sidebar-collapse {
+        display: none;
+    }
+
+    /* Show mobile collapse button */
+    .pc-sidebar-popup {
+        display: block;
+    }
+}
+
+@media (min-width: 992px) {
+    /* Show desktop collapse button */
+    .pc-sidebar-collapse {
+        display: block;
+    }
+
+    /* Hide mobile collapse button on desktop */
+    .pc-sidebar-popup {
+        display: none;
+    }
+
+    /* Ensure sidebar is positioned correctly on desktop */
+    .pc-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 1040;
+    }
+}
+
+/* Smooth transitions for sidebar */
+.pc-sidebar {
+    transition: transform 0.3s ease;
+}
+
+/* Overlay for mobile when sidebar is open */
+@media (max-width: 991.98px) {
+    .pc-sidebar.mob-sidebar-active::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+}
+
+/* Fix alignment for dropdown items */
+.pc-user-card {
+    margin: 0;
+    padding: 0;
+    background: rgb(243, 243, 242);
+}
+
+.card-body h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+}
+.card-body small {
+    font-size: 0.8rem;
+    padding: 0;
+    margin: 0;
+}
+.card-body .user-avtar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+.dropdown-header {
+    font-size: 1rem;
+    font-weight: 600;
+}
+/* Fix dropdown item alignment */
+.dropdown-item {
+    display: flex;
+    align-items: center; /* Vertically center icon & text */
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    gap: 0.5rem; /* Consistent spacing between icon & text */
+    text-decoration: none; /* Remove underline from Link */
+}
+
+/* Ensure SVG icon is properly sized and aligned */
+.dropdown-item .pc-icon {
+    width: 1.25rem; /* Fixed width */
+    height: 1.25rem; /* Fixed height */
+    flex-shrink: 0; /* Prevent shrinking */
+    margin-right: 0.5rem; /* Fallback if gap not supported */
+}
+
+/* Fix text wrapping */
+.dropdown-item span {
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+/* Ensure the logout button content is aligned */
+.btn-light .pc-icon {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
