@@ -1,3 +1,5 @@
+import { router } from "@inertiajs/react"
+
 const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100
@@ -14,6 +16,14 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
     })
   }
 
+  const handleLeaderboardClick = () => {
+    router.get(route('student.leaderboard', { examId: exam.id }));
+  };
+
+  const handleAnswerSheetClick = () => {
+    router.get(route('student.answer.sheet', { examId: exam.id }));
+  };
+
   return (
     <div className="card mb-3 border-0 shadow-sm">
       <div className="card-body p-3">
@@ -23,7 +33,7 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
             <div className="d-flex align-items-center text-muted small">
               <span className="me-3">⏰ {formatTime(exam.time)}</span>
               <span className="me-3">⏱️ {exam.duration} মিনিট</span>
-              <span>👥 {exam.participants} জন</span>
+              {/* <span>👥 {exam.participants} জন</span> */}
             </div>
           </div>
           <div className="col-12 col-md-3 mb-2 mb-md-0">
@@ -31,22 +41,22 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
               <div className={`fw-bold fs-5 ${getScoreColor(exam.score, exam.totalMarks)}`}>
                 {exam.score}/{exam.totalMarks}
               </div>
-              <small className="text-muted">
+              {/* <small className="text-muted">
                 {Math.round((exam.score / exam.totalMarks) * 100)}% | র‍্যাঙ্ক #{exam.rank}
-              </small>
+              </small> */}
             </div>
           </div>
           <div className="col-12 col-md-3">
             <div className="d-flex gap-2 justify-content-md-end">
               <button
                 className="btn btn-outline-primary btn-sm flex-fill flex-md-grow-0"
-                onClick={() => onAnswerSheet(exam)}
+                onClick={handleAnswerSheetClick}
               >
                 উত্তরপত্র
               </button>
               <button
                 className="btn btn-outline-success btn-sm flex-fill flex-md-grow-0"
-                onClick={() => onLeaderboard(exam)}
+                onClick={handleLeaderboardClick}
               >
                 লিডারবোর্ড
               </button>
