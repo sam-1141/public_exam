@@ -10,4 +10,8 @@ class HistoryController extends Controller
     {
         return Inertia::render('Student/History/HistoryPage');
     }
+    public function loadAnswerSheetPage()
+    {
+        return Inertia::render('Student/AnswerSheet/AnswerSheetPage');
+    }
 }

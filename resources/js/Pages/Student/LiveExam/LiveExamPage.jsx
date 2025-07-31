@@ -13,56 +13,6 @@ const LiveExamPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCol
   const [examState, setExamState] = useState("list") // list, exam, submitted
   const [currentExam, setCurrentExam] = useState(null)
 
-  // const liveExams = [
-  //   {
-  //     id: 1,
-  //     name: "পদার্থবিজ্ঞান মডেল টেস্ট",
-  //     totalMarks: 100,
-  //     duration: 60,
-  //     totalQuestions: 25,
-  //     participants: 1247,
-  //     status: "live",
-  //     questions: [
-  //       {
-  //         id: 1,
-  //         text: "নিউটনের প্রথম সূত্র কী?",
-  //         options: ["বস্তু স্থির থাকলে স্থির থাকবে", "ক্রিয়া ও প্রতিক্রিয়া সমান", "বল = ভর × ত্বরণ", "উপরের সবগুলো"],
-  //       },
-  //       {
-  //         id: 2,
-  //         text: "আলোর বেগ কত?",
-  //         options: ["৩×১০⁸ মিটার/সেকেন্ড", "৩×১০⁶ মিটার/সেকেন্ড", "৩×১০¹⁰ মিটার/সেকেন্ড", "৩×১০⁴ মিটার/সেকেন্ড"],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "রসায়ন লাইভ এক্সাম",
-  //     totalMarks: 80,
-  //     duration: 45,
-  //     totalQuestions: 20,
-  //     participants: 892,
-  //     status: "live",
-  //     questions: [
-  //       {
-  //         id: 1,
-  //         text: "পানির রাসায়নিক সংকেত কী?",
-  //         options: ["H2O", "H2O2", "HO2", "H3O"],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "গণিত প্র্যাকটিস টেস্ট",
-  //     totalMarks: 120,
-  //     duration: 90,
-  //     totalQuestions: 30,
-  //     participants: 654,
-  //     status: "starting-soon",
-  //     questions: [],
-  //   },
-  // ]
-
   const handleExamClick = (exam) => {
     setSelectedExam(exam)
     setShowModal(true)

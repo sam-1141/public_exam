@@ -20,6 +20,10 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
     router.get(route('student.leaderboard', { examId: exam.id }));
   };
 
+  const handleAnswerSheetClick = () => {
+    router.get(route('student.answer.sheet', { examId: exam.id }));
+  };
+
   return (
     <div className="card mb-3 border-0 shadow-sm">
       <div className="card-body p-3">
@@ -46,7 +50,7 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
             <div className="d-flex gap-2 justify-content-md-end">
               <button
                 className="btn btn-outline-primary btn-sm flex-fill flex-md-grow-0"
-                onClick={() => onAnswerSheet(exam)}
+                onClick={handleAnswerSheetClick}
               >
                 উত্তরপত্র
               </button>
