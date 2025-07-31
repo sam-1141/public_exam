@@ -130,7 +130,7 @@ function AdminNavLinks() {
                                 </span>
                             </Link>
                         </li>
-                        <li className="pc-item">
+                        {/* <li className="pc-item">
                             <Link
                                 href={route("student.trial.exam")}
                                 className="pc-link"
@@ -147,8 +147,8 @@ function AdminNavLinks() {
                                     ট্রায়াল পরীক্ষা
                                 </span>
                             </Link>
-                        </li>
-                        <li className="pc-item">
+                        </li> */}
+                        {/* <li className="pc-item">
                             <Link
                                 href={route("student.archive.exam")}
                                 className="pc-link"
@@ -165,7 +165,7 @@ function AdminNavLinks() {
                                     আর্কাইভ
                                 </span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="pc-item">
                             <Link
                                 href={route("student.leaderboard")}
