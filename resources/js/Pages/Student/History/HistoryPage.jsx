@@ -74,13 +74,13 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
   const totalExams = currentExamData.reduce((total, dateGroup) => total + dateGroup.exams.length, 0)
 
   return (
-    <div className="flex-grow-1 d-flex flex-column">
+    <div className=" d-flex flex-column">
       <PageHeader
         title="ইতিহাস"
         streak={12}
       />
 
-      <main className="flex-grow-1 p-3 bg-light">
+      <main className="flex-grow-1 p-1 bg-light">
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-lg-10">
@@ -136,9 +136,9 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
                   </p>
                 </div>
                 <div className="text-end">
-                  <div className="badge bg-success fs-6 px-3 py-2">
+                  {/* <div className="badge bg-success fs-6 px-3 py-2">
                     📊 {Math.round((totalExams / (groupedExams.length || 1)) * 10) / 10} গড় পরীক্ষা/দিন
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
