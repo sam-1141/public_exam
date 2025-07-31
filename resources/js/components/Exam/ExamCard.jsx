@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import React, { useState } from "react";
 import EditExamModal from "../../Pages/Admin/Exam/LiveExam/EditLiveExam";
+import { route } from "ziggy-js";
 
 const ExamCard = ({ exam }) => {
     const [showEditModal, setShowEditModal] = useState(false);
@@ -67,7 +68,9 @@ const ExamCard = ({ exam }) => {
                             <i className="fas fa-edit me-1"></i> Edit
                         </button>
                         <Link
-                            href={`/exams/live/${exam.id}`}
+                            href={route("admin.exam.details", {
+                                exam: exam.id,
+                            })}
                             className="btn btn-primary"
                         >
                             <i className="fas fa-eye me-1"></i> View Details

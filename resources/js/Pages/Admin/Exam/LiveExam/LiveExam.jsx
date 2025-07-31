@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import Layout from "../../../../layouts/Layout";
 import { route } from "ziggy-js";
-import { exams } from "./exam";
+import { exams } from "../exam";
 import AddLiveExamModal from "./AddLiveExam";
 import ExamCard from "../../../../components/Exam/ExamCard";
 

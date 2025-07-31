@@ -76,9 +76,13 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/live-exam', 'loadLiveExamPage')->name('student.live.exam');
 
         /* Admin */
+        // exam management
         Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
         Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
         Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
+
+        Route::get('/exams/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+
     });
 
     Route::controller(ArchiveController::class)->group(function () {

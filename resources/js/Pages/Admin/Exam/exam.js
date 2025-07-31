@@ -15,7 +15,7 @@ export const exams = [
         id: 2,
         title: "Model Test 02 | Chemistry | Fahad's Tutorial",
         description:
-            "0.25 will be deducted for each wrong answer. Don't worry if there are any mistakes in the question paper—we will correct the marks during the exam verification.Try to complete the exam on time. Be honest and don't resort to dishonesty, as this will help you in your future",
+            "0.25 will be deducted for each wrong answer. Don't worry if there are any mistakes in the question paper - we will correct the marks during the exam verification.Try to complete the exam on time. Be honest and don't resort to dishonesty, as this will help you in your future",
         questions: 30,
         totalMarks: 50,
         negativeMarks: "yes (0.25 per wrong answer)",
