@@ -1,4 +1,4 @@
-const liveExams = [
+export const liveExams = [
     {
         id: 1,
         name: "পদার্থবিজ্ঞান মডেল টেস্ট",
