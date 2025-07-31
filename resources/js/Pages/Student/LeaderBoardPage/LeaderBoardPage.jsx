@@ -13,14 +13,16 @@ const LeaderboardPage = ({ isMobile }) => {
   const examNames = [...new Set(leaderboardData.map(item => item.examName))]
 
   // Filter data based on selected exam
-  const filteredData = selectedExam 
+  const filteredData = selectedExam
     ? leaderboardData.filter(item => item.examName === selectedExam)
     : []
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+  // Sort by rank and add medal emojis
+  const sortedData = [...filteredData].sort((a, b) => a.rank - b.rank)
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = filteredData.slice(startIndex, endIndex)
+  const currentData = sortedData.slice(startIndex, endIndex)
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -36,6 +38,26 @@ const LeaderboardPage = ({ isMobile }) => {
     setCurrentPage(1)
   }
 
+  // Function to get medal emoji based on rank
+  const getMedal = (rank) => {
+    switch (rank) {
+      case 1: return "🥇"
+      case 2: return "🥈"
+      case 3: return "🥉"
+      default: return null
+    }
+  }
+
+  // Function to get background color based on rank
+  const getBackgroundColor = (rank) => {
+    switch (rank) {
+      case 1: return "bg-gold"
+      case 2: return "bg-silver"
+      case 3: return "bg-bronze"
+      default: return ""
+    }
+  }
+
   return (
     <div className="flex-grow-1 d-flex flex-column">
       {/* Header */}
@@ -45,7 +67,7 @@ const LeaderboardPage = ({ isMobile }) => {
       />
 
       {/* Main Content */}
-      <main className="flex-grow-1 p-3 bg-light">
+      <main className="flex-grow-1 p-1 bg-light">
         <div className="container-fluid">
           {/* Leaderboard Controls */}
           <div className="row mb-3">
@@ -91,32 +113,57 @@ const LeaderboardPage = ({ isMobile }) => {
                 <div className="card border-0 shadow-sm">
                   <div className="card-body p-0">
                     {currentData.length > 0 ? (
-                      currentData.map((user, index) => (
-                        <div
-                          key={user.id}
-                          className={`d-flex align-items-center p-3 ${index !== currentData.length - 1 ? "border-bottom" : ""}`}
-                        >
-                          <div className="me-3">
-                            <img
-                              src={user.image || "/placeholder.svg"}
-                              alt={user.name}
-                              className="rounded-circle"
-                              width={isMobile ? "40" : "50"}
-                              height={isMobile ? "40" : "50"}
-                            />
-                          </div>
-                          <div className="flex-grow-1">
-                            <div className="fw-semibold text-dark mb-1">{user.name}</div>
-                            <div className="small text-muted">{user.institution}</div>
-                          </div>
-                          <div className="text-end">
-                            <div className="d-flex align-items-center justify-content-end mb-1">
-                              <span className="fw-bold fs-5">{user.rank}</span>
+                      currentData.map((user, index) => {
+                        const isTopThree = user.rank <= 3
+                        return (
+                          <div
+                            key={user.id}
+                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(user.rank) : ''} ${index !== currentData.length - 1 ? "border-bottom" : ""
+                              }`}
+                          >
+                            <div className="me-3 position-relative">
+                              <img
+                                src={user.image || "/placeholder.svg"}
+                                alt={user.name}
+                                className="rounded-circle"
+                                style={{
+                                  width: '50px',
+                                  height: '50px',
+                                  objectFit: 'cover',
+                                  border: isTopThree ? '2px solid white' : 'none',
+                                  boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
+                                }}
+                              />
+                              {/* {isTopThree && (
+                                <span className={`position-absolute top-0 start-100 translate-middle badge top-three-badge ${user.rank === 1 ? 'gold-badge' :
+                                    user.rank === 2 ? 'silver-badge' : 'bronze-badge'
+                                  }`}>
+                                  {getMedal(user.rank)}
+                                </span>
+                              )} */}
                             </div>
-                            <div className="small text-muted">স্কোর: {user.score}</div>
+                            <div className="flex-grow-1">
+                              <div className="fw-semibold text-dark mb-1">
+                                {user.name}
+                                {isTopThree && (
+                                  <span className="ms-2">{getMedal(user.rank)}</span>
+                                )}
+                              </div>
+                              <div className="small text-muted">{user.institution}</div>
+                            </div>
+                            <div className="text-end">
+                              <div className="d-flex align-items-center justify-content-end mb-1">
+                                <span className={`fw-bold fs-5 `}>
+                                  #{user.rank}
+                                </span>
+                              </div>
+                              <div className={`small `}>
+                                স্কোর: {user.score}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        )
+                      })
                     ) : (
                       <div className="p-3 text-center text-muted">
                         এই পরীক্ষার জন্য কোনো ডাটা পাওয়া যায়নি
@@ -194,6 +241,55 @@ const LeaderboardPage = ({ isMobile }) => {
           )}
         </div>
       </main>
+
+      {/* Add custom CSS for top three colors */}
+      <style jsx>{`
+        .bg-gold {
+          background-color: rgba(255, 215, 0, 0.2);  /* 20% opacity gold */
+          color: #8B7500;  /* Dark gold text */
+          border-left: 4px solid #FFD700;  /* Gold accent border */
+        }
+        .bg-silver {
+          background-color: rgba(192, 192, 192, 0.2);  /* 20% opacity silver */
+          color: #696969;  /* Dark gray text */
+          border-left: 4px solid #C0C0C0;  /* Silver accent border */
+        }
+        .bg-bronze {
+          background-color: rgba(205, 127, 50, 0.2);  /* 20% opacity bronze */
+          color: #8B4513;  /* Dark bronze text */
+          border-left: 4px solid #CD7F32;  /* Bronze accent border */
+        }
+        .bg-gold, .bg-silver, .bg-bronze {
+          transition: all 0.3s ease;
+        }
+        .bg-gold:hover {
+          background-color: rgba(255, 215, 0, 0.3);  /* Slightly darker on hover */
+        }
+        .bg-silver:hover {
+          background-color: rgba(192, 192, 192, 0.3);
+        }
+        .bg-bronze:hover {
+          background-color: rgba(205, 127, 50, 0.3);
+        }
+        .top-three-badge {
+          font-size: 0.8rem;
+          padding: 2px 6px;
+          border-radius: 12px;
+          font-weight: bold;
+        }
+        .gold-badge {
+          background-color: #FFD700;
+          color: #5E4B00;
+        }
+        .silver-badge {
+          background-color: #C0C0C0;
+          color: #4A4A4A;
+        }
+        .bronze-badge {
+          background-color: #CD7F32;
+          color: #5E3000;
+        }
+      `}</style>
     </div>
   )
 }
