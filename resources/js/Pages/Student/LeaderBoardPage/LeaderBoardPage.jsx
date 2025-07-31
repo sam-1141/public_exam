@@ -2,124 +2,27 @@ import { useState } from "react"
 import { Menu, Bell } from "lucide-react"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
+import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
 
-const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) => {
-  const [selectedLeague, setSelectedLeague] = useState("bronze")
+const LeaderboardPage = ({ isMobile }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [selectedExam, setSelectedExam] = useState("")
 
-  const leagues = [
-    { id: "iron", name: "আয়রন লীগ", icon: "⚫", color: "secondary", starsRequired: 0 },
-    { id: "bronze", name: "ব্রোঞ্জ লীগ", icon: "🥉", color: "warning", starsRequired: 100 },
-    { id: "silver", name: "সিলভার লীগ", icon: "🥈", color: "light", starsRequired: 200 },
-    { id: "gold", name: "গোল্ড লীগ", icon: "🥇", color: "warning", starsRequired: 300 },
-    { id: "platinum", name: "প্ল্যাটিনাম লীগ", icon: "💎", color: "info", starsRequired: 400 },
-    { id: "diamond", name: "ডায়মন্ড লীগ", icon: "💠", color: "primary", starsRequired: 500 },
-    { id: "sapphire", name: "স্যাফায়ার লীগ", icon: "🔷", color: "primary", starsRequired: 600 },
-  ]
+  // Get unique exam names
+  const examNames = [...new Set(leaderboardData.map(item => item.examName))]
 
-  const leaderboardData = [
-    {
-      id: 1,
-      name: "Imami",
-      institution: "Gaibandha Govt College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 1,
-      xp: 395.6,
-      medal: "🥇",
-    },
-    {
-      id: 2,
-      name: "Md তুJMধর",
-      institution: "Charfasson gov college, Bhola",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 2,
-      xp: 392.4,
-      medal: "🥈",
-    },
-    {
-      id: 3,
-      name: "Hameem reza",
-      institution: "bakolia government College Chittagong",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 3,
-      xp: 377.7,
-      medal: "🥉",
-    },
-    {
-      id: 4,
-      name: "Saif Iftakhar",
-      institution: "Dhaka College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 4,
-      xp: 375.0,
-      medal: "",
-    },
-    {
-      id: 5,
-      name: "Mst. Arowa Uddin",
-      institution: "Rajshahi College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 5,
-      xp: 354.7,
-      medal: "",
-    },
-    {
-      id: 6,
-      name: "আব্দুল আলীম",
-      institution: "Gazipur Government Technical College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 6,
-      xp: 341.9,
-      medal: "",
-    },
-    {
-      id: 7,
-      name: "রহিম উদ্দিন",
-      institution: "Comilla Victoria College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 7,
-      xp: 335.2,
-      medal: "",
-    },
-    {
-      id: 8,
-      name: "ফাতেমা খাতুন",
-      institution: "Sylhet Government College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 8,
-      xp: 328.5,
-      medal: "",
-    },
-    {
-      id: 9,
-      name: "করিম মিয়া",
-      institution: "Barisal Government College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 9,
-      xp: 321.8,
-      medal: "",
-    },
-    {
-      id: 10,
-      name: "সালমা বেগম",
-      institution: "Rangpur Government College",
-      avatar: "/placeholder.svg?height=50&width=50",
-      rank: 10,
-      xp: 315.1,
-      medal: "",
-    },
-  ]
+  // Filter data based on selected exam
+  const filteredData = selectedExam
+    ? leaderboardData.filter(item => item.examName === selectedExam)
+    : []
 
-  const totalPages = Math.ceil(leaderboardData.length / itemsPerPage)
+  // Sort by rank and add medal emojis
+  const sortedData = [...filteredData].sort((a, b) => a.rank - b.rank)
+  const totalPages = Math.ceil(sortedData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = leaderboardData.slice(startIndex, endIndex)
-
-  const handleLeagueChange = (leagueId) => {
-    setSelectedLeague(leagueId)
-    setCurrentPage(1)
-  }
+  const currentData = sortedData.slice(startIndex, endIndex)
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -130,7 +33,30 @@ const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) 
     setCurrentPage(1)
   }
 
-  const selectedLeagueData = leagues.find((league) => league.id === selectedLeague)
+  const handleExamChange = (exam) => {
+    setSelectedExam(exam)
+    setCurrentPage(1)
+  }
+
+  // Function to get medal emoji based on rank
+  const getMedal = (rank) => {
+    switch (rank) {
+      case 1: return "🥇"
+      case 2: return "🥈"
+      case 3: return "🥉"
+      default: return null
+    }
+  }
+
+  // Function to get background color based on rank
+  const getBackgroundColor = (rank) => {
+    switch (rank) {
+      case 1: return "bg-gold"
+      case 2: return "bg-silver"
+      case 3: return "bg-bronze"
+      default: return ""
+    }
+  }
 
   return (
     <div className="flex-grow-1 d-flex flex-column">
@@ -141,60 +67,26 @@ const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) 
       />
 
       {/* Main Content */}
-      <main className="flex-grow-1 p-3 bg-light">
+      <main className="flex-grow-1 p-1 bg-light">
         <div className="container-fluid">
-          {/* League Selection */}
-          <div className="row justify-content-center mb-4">
-            <div className="col-12">
-              <div className="text-center mb-4">
-                <div className="d-flex justify-content-center align-items-center flex-wrap gap-3 mb-3">
-                  {leagues.map((league) => (
-                    <button
-                      key={league.id}
-                      className={`btn border-0 p-0 bg-transparent ${selectedLeague === league.id ? "opacity-100" : "opacity-75"}`}
-                      onClick={() => handleLeagueChange(league.id)}
-                    >
-                      <div
-                        className={`d-flex align-items-center justify-content-center rounded-3 ${
-                          selectedLeague === league.id ? "shadow-lg" : "shadow-sm"
-                        }`}
-                        style={{
-                          width: isMobile ? "50px" : "70px",
-                          height: isMobile ? "50px" : "70px",
-                          background:
-                            league.id === "iron"
-                              ? "#6c757d"
-                              : league.id === "bronze"
-                                ? "#8B4513"
-                                : league.id === "silver"
-                                  ? "#C0C0C0"
-                                  : league.id === "gold"
-                                    ? "#FFD700"
-                                    : league.id === "platinum"
-                                      ? "#E5E4E2"
-                                      : league.id === "diamond"
-                                        ? "#B9F2FF"
-                                        : "#4169E1",
-                        }}
-                      >
-                        <span className="fs-4">{league.icon}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                <h5 className="fw-bold text-dark">{selectedLeagueData?.name}</h5>
-                <small className="text-muted">
-                  {selectedLeagueData?.starsRequired > 0 && `${selectedLeagueData.starsRequired} তারকা প্রয়োজন`}
-                </small>
-              </div>
-            </div>
-          </div>
-
           {/* Leaderboard Controls */}
           <div className="row mb-3">
             <div className="col-12">
               <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h5 className="mb-0 fw-semibold">লিডারবোর্ড</h5>
+                <div className="d-flex align-items-center gap-2">
+                  <span className="small text-muted">পরীক্ষা:</span>
+                  <select
+                    className="form-select form-select-sm"
+                    value={selectedExam}
+                    onChange={(e) => handleExamChange(e.target.value)}
+                    style={{ width: "auto" }}
+                  >
+                    <option value="">পরীক্ষা নির্বাচন করুন</option>
+                    {examNames.map((exam, index) => (
+                      <option key={index} value={exam}>{exam}</option>
+                    ))}
+                  </select>
+                </div>
                 <div className="d-flex align-items-center gap-2">
                   <span className="small text-muted">প্রতি পৃষ্ঠায়:</span>
                   <select
@@ -202,6 +94,7 @@ const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) 
                     value={itemsPerPage}
                     onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
                     style={{ width: "auto" }}
+                    disabled={!selectedExam}
                   >
                     <option value={10}>10</option>
                     <option value={25}>25</option>
@@ -216,97 +109,187 @@ const LeaderboardPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar }) 
           {/* Leaderboard List */}
           <div className="row">
             <div className="col-12">
-              <div className="card border-0 shadow-sm">
-                <div className="card-body p-0">
-                  {currentData.map((user, index) => (
-                    <div
-                      key={user.id}
-                      className={`d-flex align-items-center p-3 ${index !== currentData.length - 1 ? "border-bottom" : ""}`}
-                    >
-                      <div className="me-3">
-                        <img
-                          src={user.avatar || "/placeholder.svg"}
-                          alt={user.name}
-                          className="rounded-circle"
-                          width={isMobile ? "40" : "50"}
-                          height={isMobile ? "40" : "50"}
-                        />
+              {selectedExam ? (
+                <div className="card border-0 shadow-sm">
+                  <div className="card-body p-0">
+                    {currentData.length > 0 ? (
+                      currentData.map((user, index) => {
+                        const isTopThree = user.rank <= 3
+                        return (
+                          <div
+                            key={user.id}
+                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(user.rank) : ''} ${index !== currentData.length - 1 ? "border-bottom" : ""
+                              }`}
+                          >
+                            <div className="me-3 position-relative">
+                              <img
+                                src={user.image || "/placeholder.svg"}
+                                alt={user.name}
+                                className="rounded-circle"
+                                style={{
+                                  width: '50px',
+                                  height: '50px',
+                                  objectFit: 'cover',
+                                  border: isTopThree ? '2px solid white' : 'none',
+                                  boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
+                                }}
+                              />
+                              {/* {isTopThree && (
+                                <span className={`position-absolute top-0 start-100 translate-middle badge top-three-badge ${user.rank === 1 ? 'gold-badge' :
+                                    user.rank === 2 ? 'silver-badge' : 'bronze-badge'
+                                  }`}>
+                                  {getMedal(user.rank)}
+                                </span>
+                              )} */}
+                            </div>
+                            <div className="flex-grow-1">
+                              <div className="fw-semibold text-dark mb-1">
+                                {user.name}
+                                {isTopThree && (
+                                  <span className="ms-2">{getMedal(user.rank)}</span>
+                                )}
+                              </div>
+                              <div className="small text-muted">{user.institution}</div>
+                            </div>
+                            <div className="text-end">
+                              <div className="d-flex align-items-center justify-content-end mb-1">
+                                <span className={`fw-bold fs-5 `}>
+                                  #{user.rank}
+                                </span>
+                              </div>
+                              <div className={`small `}>
+                                স্কোর: {user.score}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <div className="p-3 text-center text-muted">
+                        এই পরীক্ষার জন্য কোনো ডাটা পাওয়া যায়নি
                       </div>
-                      <div className="flex-grow-1">
-                        <div className="fw-semibold text-dark mb-1">{user.name}</div>
-                        <div className="small text-muted">{user.institution}</div>
-                      </div>
-                      <div className="text-end">
-                        <div className="d-flex align-items-center justify-content-end mb-1">
-                          {user.medal && <span className="me-2">{user.medal}</span>}
-                          <span className="fw-bold fs-5">{user.rank}</span>
-                        </div>
-                        <div className="small text-muted">{user.xp} xp</div>
-                      </div>
-                    </div>
-                  ))}
+                    )}
+                  </div>
                 </div>
+              ) : (
+                <div className="card border-0 shadow-sm">
+                  <div className="card-body text-center py-5">
+                    <div className="text-muted mb-3">একটি পরীক্ষা নির্বাচন করুন</div>
+                    <div className="small text-muted">লিডারবোর্ড দেখতে উপরের ড্রপডাউন থেকে পরীক্ষা নির্বাচন করুন</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Pagination - Only show if exam is selected */}
+          {selectedExam && (
+            <div className="row mt-4">
+              <div className="col-12">
+                <nav aria-label="Leaderboard pagination">
+                  <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div className="small text-muted">
+                      দেখানো হচ্ছে {startIndex + 1}-{Math.min(endIndex, filteredData.length)} এর মধ্যে{" "}
+                      {filteredData.length} টি
+                    </div>
+
+                    <ul className="pagination pagination-sm mb-0">
+                      <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        >
+                          পূর্ববর্তী
+                        </button>
+                      </li>
+
+                      {[...Array(totalPages)].map((_, index) => {
+                        const page = index + 1
+                        if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
+                          return (
+                            <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
+                              <button className="page-link" onClick={() => handlePageChange(page)}>
+                                {page}
+                              </button>
+                            </li>
+                          )
+                        } else if (page === currentPage - 2 || page === currentPage + 2) {
+                          return (
+                            <li key={page} className="page-item disabled">
+                              <span className="page-link">...</span>
+                            </li>
+                          )
+                        }
+                        return null
+                      })}
+
+                      <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          পরবর্তী
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
               </div>
             </div>
-          </div>
-
-          {/* Pagination */}
-          <div className="row mt-4">
-            <div className="col-12">
-              <nav aria-label="Leaderboard pagination">
-                <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                  <div className="small text-muted">
-                    দেখানো হচ্ছে {startIndex + 1}-{Math.min(endIndex, leaderboardData.length)} এর মধ্যে{" "}
-                    {leaderboardData.length} টি
-                  </div>
-
-                  <ul className="pagination pagination-sm mb-0">
-                    <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      >
-                        পূর্ববর্তী
-                      </button>
-                    </li>
-
-                    {[...Array(totalPages)].map((_, index) => {
-                      const page = index + 1
-                      if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
-                        return (
-                          <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
-                            <button className="page-link" onClick={() => handlePageChange(page)}>
-                              {page}
-                            </button>
-                          </li>
-                        )
-                      } else if (page === currentPage - 2 || page === currentPage + 2) {
-                        return (
-                          <li key={page} className="page-item disabled">
-                            <span className="page-link">...</span>
-                          </li>
-                        )
-                      }
-                      return null
-                    })}
-
-                    <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      >
-                        পরবর্তী
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </nav>
-            </div>
-          </div>
+          )}
         </div>
       </main>
+
+      {/* Add custom CSS for top three colors */}
+      <style jsx>{`
+        .bg-gold {
+          background-color: rgba(255, 215, 0, 0.2);  /* 20% opacity gold */
+          color: #8B7500;  /* Dark gold text */
+          border-left: 4px solid #FFD700;  /* Gold accent border */
+        }
+        .bg-silver {
+          background-color: rgba(192, 192, 192, 0.2);  /* 20% opacity silver */
+          color: #696969;  /* Dark gray text */
+          border-left: 4px solid #C0C0C0;  /* Silver accent border */
+        }
+        .bg-bronze {
+          background-color: rgba(205, 127, 50, 0.2);  /* 20% opacity bronze */
+          color: #8B4513;  /* Dark bronze text */
+          border-left: 4px solid #CD7F32;  /* Bronze accent border */
+        }
+        .bg-gold, .bg-silver, .bg-bronze {
+          transition: all 0.3s ease;
+        }
+        .bg-gold:hover {
+          background-color: rgba(255, 215, 0, 0.3);  /* Slightly darker on hover */
+        }
+        .bg-silver:hover {
+          background-color: rgba(192, 192, 192, 0.3);
+        }
+        .bg-bronze:hover {
+          background-color: rgba(205, 127, 50, 0.3);
+        }
+        .top-three-badge {
+          font-size: 0.8rem;
+          padding: 2px 6px;
+          border-radius: 12px;
+          font-weight: bold;
+        }
+        .gold-badge {
+          background-color: #FFD700;
+          color: #5E4B00;
+        }
+        .silver-badge {
+          background-color: #C0C0C0;
+          color: #4A4A4A;
+        }
+        .bronze-badge {
+          background-color: #CD7F32;
+          color: #5E3000;
+        }
+      `}</style>
     </div>
   )
 }

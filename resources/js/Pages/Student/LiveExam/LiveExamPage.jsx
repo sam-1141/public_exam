@@ -50,7 +50,7 @@ const LiveExamPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCol
         streak={7}
       />
 
-      <main className="flex-grow-1 p-3 bg-light">
+      <main className="flex-grow-1 p-1 bg-light">
         <div className="container-fluid">
           <div className="row justify-content-center mb-4">
             <div className="col-12 col-lg-10">
