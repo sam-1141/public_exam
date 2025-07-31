@@ -1,176 +1,157 @@
-"use client";
+import { useState } from 'react';
+import Layout from "../../../layouts/Layout"
+import { 
+  ClipboardList, 
+  Clock, 
+  CalendarCheck, 
+  CalendarX, 
+  PlayCircle,
+  Award,
+  AlertTriangle
+} from 'lucide-react';
 
-import { useState, useEffect } from "react";
-import { Menu, Bell } from "lucide-react";
-// import Sidebar from "./Sidebar"
-import FeatureCard from "./FeatureCard";
-import Leaderboard from "./Leaderboard";
-import ProgressReport from "./ProgressReport";
-import Layout from "../../../layouts/Layout";
+const StatCard = ({ icon: Icon, title, value, color, progress, children }) => (
+  <div className="card h-100 border-0 shadow-sm">
+    <div className="card-body text-center">
+      <div className="d-flex align-items-center mb-3">
+        <div className={`bg-${color}-subtle p-3 rounded-circle me-3`}>
+          <Icon size={24} className={`text-${color}`} />
+        </div>
+        <div className="text-start">
+          <h5 className="card-title mb-0">{title}</h5>
+          <h2 className="fw-bold">{value}</h2>
+        </div>
+      </div>
+      {progress && (
+        <div className="progress rounded-pill" style={{ height: '8px' }}>
+          <div 
+            className={`progress-bar bg-${color}`} 
+            role="progressbar" 
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      )}
+      {children}
+    </div>
+  </div>
+);
+
+const ActivityItem = ({ icon: Icon, title, status, score, color }) => (
+  <div className="d-flex align-items-center mb-3">
+    <span className={`badge bg-${color}-subtle text-${color} me-3`}>
+      <Icon size={16} />
+    </span>
+    <div>
+      <span className="fw-semibold">{title}</span>
+      <small className="text-muted ms-2">{status} {score && `| ${score}%`}</small>
+    </div>
+  </div>
+);
 
 const Dashboard = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
-    const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+  const [stats] = useState({
+    totalHeld: 24,
+    totalAttended: 18,
+    totalMissed: 6,
+    runningExams: 3,
+    upcomingExams: 5
+  });
 
-    useEffect(() => {
-        const handleResize = () => {
-            const mobile = window.innerWidth < 768;
-            setIsMobile(mobile);
-            if (!mobile) {
-                setShowMobileSidebar(false);
-            }
-        };
+  const attendanceRate = Math.round((stats.totalAttended / stats.totalHeld) * 100);
 
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
-
-    const features = [
-        {
-            icon: (
-                <div className="bg-warning text-white rounded-2 p-2 fs-4">
-                    📁
-                </div>
-            ),
-            title: "আর্কাইভ",
-            bgColor: "warning",
-        },
-        {
-            icon: (
-                <div className="bg-warning text-white rounded-2 p-2 fs-4">
-                    ⚡
-                </div>
-            ),
-            title: "ক্রুশ প্র্যাকটিস",
-            bgColor: "warning",
-        },
-        {
-            icon: (
-                <div className="bg-danger text-white rounded-2 p-2 fs-4">
-                    📝
-                </div>
-            ),
-            title: "মূল পরীক্ষা",
-            bgColor: "danger",
-        },
-        {
-            icon: (
-                <div className="bg-warning text-white rounded-2 p-2 fs-4">
-                    📅
-                </div>
-            ),
-            title: "রুটিন",
-            bgColor: "warning",
-        },
-        {
-            icon: (
-                <div className="bg-primary text-white rounded-2 p-2 fs-4">
-                    🤖
-                </div>
-            ),
-            title: "চ্যাট AI",
-            bgColor: "primary",
-        },
-        {
-            icon: (
-                <div className="bg-warning text-white rounded-2 p-2 fs-4">
-                    🏆
-                </div>
-            ),
-            title: "লিডারবোর্ড",
-            bgColor: "warning",
-        },
-    ];
-
-    return (
-        <div className="d-flex min-vh-100 bg-light font-baloo ">
-            {/* Sidebar */}
-            {/* <div
-        className={`${isMobile ? "" : isCollapsed ? "" : ""}`}
-        style={{ width: isMobile ? "auto" : isCollapsed ? "60px" : "250px", transition: "width 0.3s ease" }}
-      >
-        <Sidebar
-          isCollapsed={isCollapsed}
-          setIsCollapsed={setIsCollapsed}
-          isMobile={isMobile}
-          showMobileSidebar={showMobileSidebar}
-          setShowMobileSidebar={setShowMobileSidebar}
-        />
-      </div> */}
-
-            {/* Main Content */}
-            <div className="flex-grow-1 d-flex flex-column">
-                {/* Header */}
-                {/* <header className="bg-white border-bottom p-3">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center">
-              {isMobile ? (
-                <button className="btn btn-light me-3" onClick={() => setShowMobileSidebar(true)}>
-                  <Menu size={20} />
-                </button>
-              ) : (
-                <button className="btn btn-light me-3" onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <Menu size={20} />
-                </button>
-              )}
-              <h4 className="mb-0 fw-bold">ড্যাশবোর্ড</h4>
-            </div>
-            <div className="d-flex align-items-center">
-              <button className="btn btn-light position-relative me-2">
-                <Bell size={20} />
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  0
-                </span>
-              </button>
-            </div>
-          </div>
-        </header> */}
-
-                {/* Dashboard Content */}
-                <main className="flex-grow-1 p-3">
-                    <div className="row g-3">
-                        {/* Feature Cards */}
-                        <div className="col-12 col-lg-8">
-                            <div className="row g-3">
-                                {features.map((feature, index) => (
-                                    <FeatureCard
-                                        key={index}
-                                        icon={feature.icon}
-                                        title={feature.title}
-                                        bgColor={feature.bgColor}
-                                    />
-                                ))}
-                            </div>
-
-                            {/* Leaderboard - Mobile/Tablet */}
-                            <div className="d-lg-none mt-4">
-                                <Leaderboard />
-                            </div>
-                        </div>
-
-                        {/* Right Sidebar - Desktop */}
-                        <div className="col-12 col-lg-4 d-none d-lg-block">
-                            <div className="row g-3">
-                                <div className="col-12">
-                                    <Leaderboard />
-                                </div>
-                                <div className="col-12">
-                                    <ProgressReport />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Progress Report - Mobile/Tablet */}
-                        <div className="col-12 d-lg-none">
-                            <ProgressReport />
-                        </div>
-                    </div>
-                </main>
-            </div>
+  return (
+    <div className="container py-4">
+      <h2 className="mb-4 fw-bold">ড্যাশবোর্ড</h2>
+      
+      <div className="row g-4 mb-4">
+        <div className="col-md-6 col-lg-4">
+          <StatCard 
+            icon={ClipboardList} 
+            title="মোট পরীক্ষা" 
+            value={stats.totalHeld} 
+            color="primary"
+            progress={100}
+          />
         </div>
-    );
+
+        <div className="col-md-6 col-lg-4">
+          <StatCard 
+            icon={CalendarCheck} 
+            title="পরীক্ষায় অংশগ্রহণ" 
+            value={stats.totalAttended} 
+            color="success"
+            progress={attendanceRate}
+          >
+            <small className="text-muted">{attendanceRate}% attendance rate</small>
+          </StatCard>
+        </div>
+
+        <div className="col-md-6 col-lg-4">
+          <StatCard 
+            icon={CalendarX} 
+            title="পরীক্ষা মিস" 
+            value={stats.totalMissed} 
+            color="danger"
+            progress={(stats.totalMissed/stats.totalHeld)*100}
+          />
+        </div>
+
+        <div className="col-md-6 col-lg-6">
+          <StatCard 
+            icon={PlayCircle} 
+            title="চলমান পরীক্ষা" 
+            value={stats.runningExams} 
+            color="warning"
+          >
+            <span className="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
+              <Clock size={16} className="me-1" /> এখনই অংশগ্রহণ করুন
+            </span>
+          </StatCard>
+        </div>
+
+        <div className="col-md-6 col-lg-6">
+          <StatCard 
+            icon={Clock} 
+            title="আসন্ন পরীক্ষা" 
+            value={stats.upcomingExams} 
+            color="info"
+          >
+            <span className="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
+              প্রস্তুতি নিন
+            </span>
+          </StatCard>
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0 mb-4">
+        <div className="card-body">
+          <h5 className="card-title fw-bold mb-4">সাম্প্রতিক কার্যক্রম</h5>
+          
+          <ActivityItem
+            icon={Award}
+            title="পদার্থবিজ্ঞান পরীক্ষা"
+            status="সম্পন্ন"
+            score={95}
+            color="success"
+          />
+          
+          <ActivityItem
+            icon={AlertTriangle}
+            title="রসায়ন পরীক্ষা"
+            status="মিস"
+            color="danger"
+          />
+          
+          <ActivityItem
+            icon={PlayCircle}
+            title="গণিত পরীক্ষা"
+            status="চলমান | ৩০ মিনিট বাকি"
+            color="warning"
+          />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 Dashboard.layout = (page) => <Layout children={page} />;
