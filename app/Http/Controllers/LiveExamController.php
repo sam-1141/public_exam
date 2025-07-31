@@ -10,4 +10,19 @@ class LiveExamController extends Controller
     {
         return Inertia::render('Student/LiveExam/LiveExamPage');
     }
+
+    public function loadAddExamPage()
+    {
+        return Inertia::render('Admin/Exam/AddExam');
+    }
+
+    public function loadAddLiveExamPage()
+    {
+        return Inertia::render('Admin/Exam/LiveExam/LiveExam');
+    }
+
+    public function loadAddPracticeExamPage()
+    {
+        return Inertia::render('Admin/Exam/PracticeExam/PracticeExam');
+    }
 }
