@@ -56,6 +56,24 @@ function AdminNavLinks() {
                             </Link>
                         </li>
                         <li className="pc-item">
+                            <Link
+                                href={route("admin.add.exam")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">
+                                        create_new_folder
+                                    </i>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Add Question"
+                                >
+                                    Add Exam
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
                             <Link href={route("mcq.bank")} className="pc-link">
                                 <span className="pc-micon">
                                     <svg className="pc-icon">

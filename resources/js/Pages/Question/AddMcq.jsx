@@ -158,8 +158,13 @@ function AddMcq({
                             <select
                                 className="form-select"
                                 id="hardness"
-                                value={data.hardness_id || hardness.find((h) => h.name === "Easy")?.id}
-                                onChange={(e) => setData("hardness_id", e.target.value)}
+                                value={
+                                    data.hardness_id ||
+                                    hardness.find((h) => h.name === "Easy")?.id
+                                }
+                                onChange={(e) =>
+                                    setData("hardness_id", e.target.value)
+                                }
                             >
                                 {hardness.map((h) => (
                                     <option key={h.id} value={h.id}>
@@ -167,7 +172,6 @@ function AddMcq({
                                     </option>
                                 ))}
                             </select>
-
                         </div>
                     </div>
                 </div>
@@ -189,11 +193,16 @@ function AddMcq({
                             }))}
                             value={tags
                                 .filter((tag) => data.tags.includes(tag.id))
-                                .map((tag) => ({ value: tag.id, label: tag.name }))}
+                                .map((tag) => ({
+                                    value: tag.id,
+                                    label: tag.name,
+                                }))}
                             onChange={(selectedOptions) =>
                                 setData(
                                     "tags",
-                                    selectedOptions.map((option) => option.value)
+                                    selectedOptions.map(
+                                        (option) => option.value
+                                    )
                                 )
                             }
                             className="basic-multi-select"
@@ -201,12 +210,11 @@ function AddMcq({
                             styles={{
                                 menu: (provided) => ({
                                     ...provided,
-                                    zIndex: 1050,  // Bootstrap z-index range (1050 should be enough)
-                                    position: 'absolute',  // Ensure the dropdown is positioned correctly
+                                    zIndex: 1050, // Bootstrap z-index range (1050 should be enough)
+                                    position: "absolute", // Ensure the dropdown is positioned correctly
                                 }),
                             }}
                         />
-
                     </div>
 
                     <div>
@@ -219,16 +227,20 @@ function AddMcq({
                             }
                             init={{
                                 height: 300,
-                                menubar: false,
-                                plugins: [
-                                    "advlist autolink lists link image charmap print preview anchor",
-                                    "searchreplace visualblocks code fullscreen",
-                                    "insertdatetime media table paste code help wordcount",
-                                ],
+                                selector: "textarea#open-source-plugins",
+                                plugins:
+                                    "preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons accordion",
+                                editimage_cors_hosts: ["picsum.photos"],
+                                menubar:
+                                    "file edit view insert format tools table help",
                                 toolbar:
-                                    "undo redo | formatselect | bold italic backcolor | \
-                                alignleft aligncenter alignright alignjustify | \
-                                bullist numlist outdent indent | removeformat | help",
+                                    "undo redo | accordion accordionremove | blocks fontfamily fontsize | bold italic underline strikethrough | align numlist bullist | link image | table media | lineheight outdent indent| forecolor backcolor removeformat | charmap emoticons | code fullscreen preview | save print | pagebreak anchor codesample | ltr rtl",
+                                autosave_ask_before_unload: true,
+                                autosave_interval: "30s",
+                                autosave_prefix: "{path}{query}-{id}-",
+                                autosave_restore_when_empty: false,
+                                autosave_retention: "2m",
+                                image_advtab: true,
                             }}
                         />
                     </div>
