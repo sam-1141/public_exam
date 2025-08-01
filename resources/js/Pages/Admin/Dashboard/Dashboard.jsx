@@ -1,6 +1,8 @@
-import { Link } from "@inertiajs/react";
 import React from "react";
 import Layout from "../../../layouts/Layout";
+import { exams, practiceExams } from "../Exam/exam";
+import { route } from "ziggy-js";
+import { Link } from "@inertiajs/react";
 
 function AdminDashboard() {
     return (
@@ -14,54 +16,22 @@ function AdminDashboard() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="col-lg-3 col-md-6 mb-4">
+                <div className="col-lg-3 col-md-6">
                     <div className="card card-statistic bg-primary text-white">
                         <div className="card-body">
                             <h5 className="card-title">Total Questions</h5>
                             <h2 className="mb-0">12,450</h2>
-                            <div className="d-flex justify-content-between mt-2">
-                                <small>Last 7 days: +320</small>
-                                <i className="fas fa-question-circle"></i>
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="col-lg-3 col-md-6 mb-4">
+                <div className="col-lg-3 col-md-6 ">
                     <div className="card card-statistic bg-success text-white">
                         <div className="card-body">
-                            <h5 className="card-title">Active Exams</h5>
-                            <h2 className="mb-0">24</h2>
-                            <div className="d-flex justify-content-between mt-2">
-                                <small>Upcoming: 5</small>
-                                <i className="fas fa-clipboard-list"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-lg-3 col-md-6 mb-4">
-                    <div className="card card-statistic bg-warning text-dark">
-                        <div className="card-body">
-                            <h5 className="card-title">Total Students</h5>
-                            <h2 className="mb-0">3,842</h2>
-                            <div className="d-flex justify-content-between mt-2">
-                                <small>New today: 42</small>
-                                <i className="fas fa-users"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-lg-3 col-md-6 mb-4">
-                    <div className="card card-statistic bg-info text-white">
-                        <div className="card-body">
-                            <h5 className="card-title">Pending Actions</h5>
-                            <h2 className="mb-0">8</h2>
-                            <div className="d-flex justify-content-between mt-2">
-                                <small>Reviews: 5</small>
-                                <i className="fas fa-tasks"></i>
-                            </div>
+                            <h5 className="card-title">Total Exams</h5>
+                            <h2 className="mb-0">
+                                {exams.length + practiceExams.length}
+                            </h2>
                         </div>
                     </div>
                 </div>
@@ -75,7 +45,7 @@ function AdminDashboard() {
                     </h4>
                 </div>
 
-                <div className="col-md-3 col-sm-6 mb-3">
+                <div className="col-md-3 col-sm-6 ">
                     <Link
                         href="/add-questions"
                         className="card quick-action-card"
@@ -89,9 +59,9 @@ function AdminDashboard() {
                     </Link>
                 </div>
 
-                <div className="col-md-3 col-sm-6 mb-3">
+                <div className="col-md-3 col-sm-6">
                     <Link
-                        href="/add-questions"
+                        href="/admin/add-exam/live-exam"
                         className="card quick-action-card"
                     >
                         <div className="card-body text-center">
@@ -102,27 +72,82 @@ function AdminDashboard() {
                         </div>
                     </Link>
                 </div>
+            </div>
 
-                <div className="col-md-3 col-sm-6 mb-3">
-                    <Link href="/" className="card quick-action-card">
-                        <div className="card-body text-center">
-                            <div className="action-icon mb-2">
-                                <i className="fas fa-user-cog text-warning"></i>
-                            </div>
-                            <h6 className="mb-0">Manage Users</h6>
+            {/* Exams Section */}
+            <div className="row">
+                <div className="col-12">
+                    <div className="card">
+                        <div className="card-header">
+                            <h4 className="card-title font-bold text-xl">
+                                Live Exams
+                            </h4>
                         </div>
-                    </Link>
-                </div>
+                        <div className="card-body">
+                            <div className="row">
+                                {exams.map((exam) => (
+                                    <div key={exam.id} className="col-md-12 ">
+                                        <Link
+                                            href={route("admin.exam.details", {
+                                                exam: exam.id,
+                                                type: "live",
+                                            })}
+                                            className="card exam-card "
+                                        >
+                                            <div className="card-body">
+                                                <h5 className="card-title font-semibold text-lg">
+                                                    {exam.title}
+                                                </h5>
+                                                <p className="card-text text-muted">
+                                                    {exam.description.substring(
+                                                        0,
+                                                        100
+                                                    )}
+                                                    ...
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
 
-                <div className="col-md-3 col-sm-6 mb-3">
-                    <Link href="/" className="card quick-action-card">
-                        <div className="card-body text-center">
-                            <div className="action-icon mb-2">
-                                <i className="fas fa-chart-bar text-info"></i>
-                            </div>
-                            <h6 className="mb-0">View Reports</h6>
+                    <div className="card">
+                        <div className="card-header">
+                            <h4 className="card-title font-bold text-xl">
+                                Practice Exams
+                            </h4>
                         </div>
-                    </Link>
+                        <div className="card-body">
+                            <div className="row">
+                                {practiceExams.map((exam) => (
+                                    <div key={exam.id} className="col-md-12">
+                                        <Link
+                                            href={route("admin.exam.details", {
+                                                exam: exam.id,
+                                                type: "practice",
+                                            })}
+                                            className="card exam-card"
+                                        >
+                                            <div className="card-body">
+                                                <h5 className="card-title font-semibold text-lg">
+                                                    {exam.title}
+                                                </h5>
+                                                <p className="card-text text-muted">
+                                                    {exam.description.substring(
+                                                        0,
+                                                        100
+                                                    )}
+                                                    ...
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
