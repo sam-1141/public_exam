@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 
-const EditExamModal = ({ show, onClose, exam, onSubmit }) => {
+const EditExamModal = ({
+    show,
+    onClose,
+    exam,
+    onSubmit,
+    examType = "live",
+}) => {
     const [formData, setFormData] = useState({
         name: exam.title || "",
         description: exam.description || "",
@@ -32,6 +38,9 @@ const EditExamModal = ({ show, onClose, exam, onSubmit }) => {
 
     if (!show) return null;
 
+    // Determine if this is a practice exam
+    const isPracticeExam = examType === "practice";
+
     return (
         <div
             className="modal fade show"
@@ -41,8 +50,12 @@ const EditExamModal = ({ show, onClose, exam, onSubmit }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title text-xl font-semibold">
-                            Edit Exam: {exam.title} (ID: {exam.id})
+                            {isPracticeExam
+                                ? "Edit Practice Exam"
+                                : "Edit Live Exam"}{" "}
+                            : {exam.title || "Exam Details"}
                         </h5>
+
                         <button
                             type="button"
                             className="btn-close"
@@ -183,7 +196,9 @@ const EditExamModal = ({ show, onClose, exam, onSubmit }) => {
                                 {/* Advanced Settings */}
                                 <div className="col-12">
                                     <hr />
-                                    <h6 className="mb-3">Advanced Settings</h6>
+                                    <h6 className="my-3 text-xl font-semibold">
+                                        Advanced Settings
+                                    </h6>
                                 </div>
 
                                 <div className="col-md-6">
@@ -236,34 +251,37 @@ const EditExamModal = ({ show, onClose, exam, onSubmit }) => {
                                             placeholder="Enter batch name or ID"
                                         />
                                     </div>
+                                    {!isPracticeExam && (
+                                        <>
+                                            <div className="mb-3">
+                                                <label className="form-label">
+                                                    Exam Start Time:
+                                                </label>
+                                                <input
+                                                    type="datetime-local"
+                                                    className="form-control"
+                                                    name="startTime"
+                                                    value={formData.startTime}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
 
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Exam Start Time:
-                                        </label>
-                                        <input
-                                            type="datetime-local"
-                                            className="form-control"
-                                            name="startTime"
-                                            value={formData.startTime}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Exam End Time:
-                                        </label>
-                                        <input
-                                            type="datetime-local"
-                                            className="form-control"
-                                            name="endTime"
-                                            value={formData.endTime}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
+                                            <div className="mb-3">
+                                                <label className="form-label">
+                                                    Exam End Time:
+                                                </label>
+                                                <input
+                                                    type="datetime-local"
+                                                    className="form-control"
+                                                    name="endTime"
+                                                    value={formData.endTime}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 

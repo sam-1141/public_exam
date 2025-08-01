@@ -81,7 +81,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
         Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
 
-        Route::get('/exams/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+        Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
 
     });
 

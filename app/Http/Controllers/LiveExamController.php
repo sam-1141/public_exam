@@ -28,11 +28,12 @@ class LiveExamController extends Controller
     }
 
     
-    public function loadViewExamDetails($examId)
+    public function loadViewExamDetails($type, $examId)
     {
         return Inertia::render('Admin/Exam/ViewDetails',[
             'exam' => $examId, 
-            
+            'examType' => $type
+        
         ]);
     }
 }

@@ -154,18 +154,6 @@ const QuestionList = ({ questions, examId }) => {
                                         )}
                                     </div>
                                 )}
-
-                                {/* Description */}
-                                {question.description && (
-                                    <div className="mb-4">
-                                        <h4 className="font-medium">
-                                            Description:
-                                        </h4>
-                                        <p className="whitespace-pre-line">
-                                            {question.description}
-                                        </p>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
