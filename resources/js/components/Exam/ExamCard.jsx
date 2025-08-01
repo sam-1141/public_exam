@@ -25,7 +25,7 @@ const ExamCard = ({ exam }) => {
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Questions</span>
                                     <span className="badge bg-primary rounded-pill">
-                                        {exam.questions}
+                                        {exam.questionList.length}
                                     </span>
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-center">

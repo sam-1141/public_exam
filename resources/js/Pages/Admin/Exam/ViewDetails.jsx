@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { exams } from "./exam";
 import { route } from "ziggy-js";
+import AddQuestionModal from "./AddQuestion";
+import QuestionList from "./QuiestionList";
 
 const ExamDetails = () => {
     const { props } = usePage();
     const examId = parseInt(props.exam);
 
+    const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
+
     const exam = exams.find((e) => e.id === examId);
+
+    //copy exam link to clipboard
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        alert("Exam link copied to clipboard!");
+    };
 
     return (
         <div className="container py-4">
@@ -41,7 +51,7 @@ const ExamDetails = () => {
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Questions</span>
                                     <span className="badge bg-primary rounded-pill">
-                                        {exam.questions}
+                                        {exam.questionList.length}
                                     </span>
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -107,13 +117,20 @@ const ExamDetails = () => {
                 <button className="btn btn-primary">
                     <i className="fas fa-trophy me-2"></i>Leaderboard
                 </button>
-                <Link href={route("add.questions")} className="btn btn-success">
-                    <i className="fas fa-plus-circle me-2"></i>Add Question
-                </Link>
-                <Link href={route("mcq.bank")} className="btn btn-dark">
-                    <i className="fas fa-list me-2"></i>Question List
-                </Link>
+                <button
+                    onClick={() => setShowAddQuestionModal(true)}
+                    className="btn btn-success"
+                >
+                    <i className="fas fa-plus-circle me-2"></i> Add Question
+                </button>
             </div>
+            <QuestionList questions={exam.questionList} examId={exam.id} />
+            {/* Add Question Modal */}
+            <AddQuestionModal
+                show={showAddQuestionModal}
+                onClose={() => setShowAddQuestionModal(false)}
+                examId={exam.id}
+            />
         </div>
     );
 };
