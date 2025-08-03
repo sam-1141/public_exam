@@ -1,6 +1,36 @@
 "use client"
 
-const ExamSubmission = ({ exam, onBackToHome }) => {
+import { useState, useEffect } from "react"
+import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+
+const ExamSuccessPage = ({ examId }) => {
+  const [exam, setExam] = useState(null)
+
+  // Get exam data by ID
+  useEffect(() => {
+    const examData = liveExams.find(e => e.id == examId)
+    if (examData) {
+      setExam(examData)
+    } else {
+      // Redirect back to notice page if exam not found
+      window.location.href = '/student/live-exam/notice'
+    }
+  }, [examId])
+
+  const handleBackToHome = () => {
+    window.location.href = '/student/live-exam/notice'
+  }
+
+  if (!exam) {
+    return (
+      <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
       <div className="container">
@@ -23,7 +53,7 @@ const ExamSubmission = ({ exam, onBackToHome }) => {
                   </div>
                 </div>
 
-                <button className="btn btn-primary px-4 py-2 fw-semibold" onClick={onBackToHome}>
+                <button className="btn btn-primary px-4 py-2 fw-semibold" onClick={handleBackToHome}>
                   হোমে ফিরে যান
                 </button>
               </div>
@@ -35,4 +65,4 @@ const ExamSubmission = ({ exam, onBackToHome }) => {
   )
 }
 
-export default ExamSubmission
+export default ExamSuccessPage

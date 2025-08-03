@@ -2,13 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LiveExamController extends Controller
 {
-    public function loadLiveExamPage()
+    public function loadExamNoticePage()
+{
+    return Inertia::render('Student/LiveExam/ExamNoticePage');
+}
+
+    public function loadExamMainPage(Request $request)
     {
-        return Inertia::render('Student/LiveExam/LiveExamPage');
+        $examId = $request->query('examId');
+        
+        // Validate examId if needed
+        if (!$examId) {
+            return redirect()->route('student.live.exam.notice');
+        }
+        
+        return Inertia::render('Student/LiveExam/ExamMainPage', [
+            'examId' => $examId
+        ]);
+    }
+
+    public function loadExamSuccessPage(Request $request)
+    {
+        $examId = $request->query('examId');
+        
+        // Validate examId if needed
+        if (!$examId) {
+            return redirect()->route('student.live.exam.notice');
+        }
+        
+        return Inertia::render('Student/LiveExam/ExamSuccessPage', [
+            'examId' => $examId
+        ]);
     }
 
     public function loadAddExamPage()
