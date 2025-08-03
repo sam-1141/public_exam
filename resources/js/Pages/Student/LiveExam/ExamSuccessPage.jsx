@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../layouts/Layout"
 
 const ExamSuccessPage = ({ examId }) => {
   const [exam, setExam] = useState(null)
@@ -65,4 +66,5 @@ const ExamSuccessPage = ({ examId }) => {
   )
 }
 
+ExamSuccessPage.layout = (page) => <Layout children={page} />
 export default ExamSuccessPage

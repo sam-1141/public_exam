@@ -4,6 +4,7 @@ import ParticipationModal from "./ParticipationModal"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { useState } from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+import { router } from "@inertiajs/react"
 
 const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
   const [showModal, setShowModal] = useState(false)
@@ -15,9 +16,18 @@ const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isC
   }
 
   const handleConfirmParticipation = (exam) => {
-    // Redirect to exam page with exam data
-    window.location.href = `/student/live-exam/exam?examId=${exam.id}`
-  }
+  // Client-side navigation with Inertia
+  router.get(route('student.live.exam.main'), { 
+    examId: exam.id 
+  }, {
+    preserveState: true,
+    onSuccess: () => {
+      setCurrentExam(exam)
+      setExamState("exam")
+      setShowModal(false)
+    }
+  })
+}
 
   return (
     <div className="flex-grow-1 d-flex flex-column">

@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../layouts/Layout"
+import { router } from "@inertiajs/react"
 
 const ExamMainPage = ({ examId }) => {
   const [answers, setAnswers] = useState({})
@@ -60,9 +62,16 @@ const ExamMainPage = ({ examId }) => {
   }
 
   const handleSubmit = () => {
-    // Submit exam and redirect to success page
-    window.location.href = `/student/live-exam/success?examId=${exam.id}`
-  }
+  router.get(route('student.live.exam.success'), {
+    examId: exam.id,
+    answers: answers // Only for small answer sets
+  }, {
+    preserveState: true,
+    onBefore: () => {
+      // Optional: Show loading state
+    }
+  });
+}
 
   if (!exam) {
     return (
@@ -181,4 +190,5 @@ const ExamMainPage = ({ examId }) => {
   )
 }
 
+ExamMainPage.layout = (page) => <Layout children={page} />
 export default ExamMainPage

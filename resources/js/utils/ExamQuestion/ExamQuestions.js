@@ -269,7 +269,7 @@ export const liveExams = [
         totalQuestions: 30,
         participants: 654,
         status: "starting-soon",
-        startTime: "2025-08-02T23:00:00",
+        startTime: "2025-08-04T23:00:00",
         questions: [
             {
                 id: 1,
