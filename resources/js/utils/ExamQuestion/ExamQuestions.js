@@ -11,6 +11,28 @@ export const liveExams = [
             {
                 id: 1,
                 text: "নিউটনের প্রথম সূত্র কী?",
+                images: [
+                    {
+                        url: "/dummy-1.png",
+                        alt: "যৌগ A",
+                        caption: "A"
+                    },
+                    {
+                        url: "/dummy-2.png",
+                        alt: "যৌগ B",
+                        caption: "B"
+                    },
+                    {
+                        url: "/dymmy-3.png",
+                        alt: "যৌগ C",
+                        caption: "C"
+                    },
+                    {
+                        url: "/dummy-4.png",
+                        alt: "যৌগ D",
+                        caption: "D"
+                    }
+                ],
                 options: ["বস্তু স্থির থাকলে স্থির থাকবে", "ক্রিয়া ও প্রতিক্রিয়া সমান", "বল = ভর × ত্বরণ", "উপরের সবগুলো"],
                 correctAnswer: "বস্তু স্থির থাকলে স্থির থাকবে"
             },
@@ -269,7 +291,7 @@ export const liveExams = [
         totalQuestions: 30,
         participants: 654,
         status: "starting-soon",
-        startTime: "2025-08-02T23:00:00",
+        startTime: "2025-08-04T23:00:00",
         questions: [
             {
                 id: 1,

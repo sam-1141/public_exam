@@ -132,7 +132,7 @@ function AdminNavLinks() {
                         </li>
                         <li className="pc-item">
                             <Link
-                                href={route("student.live.exam")}
+                                href={route("student.live.exam.notice")}
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
@@ -145,6 +145,24 @@ function AdminNavLinks() {
                                     data-i18n="Question Bank"
                                 >
                                     লাইভ পরীক্ষা
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("student.practice.exam.list")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">
+                                        schedule
+                                    </i>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    প্র্যাকটিস পরীক্ষা
                                 </span>
                             </Link>
                         </li>

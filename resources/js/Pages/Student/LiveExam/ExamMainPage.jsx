@@ -3,11 +3,26 @@
 import { useState, useEffect } from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
+import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../layouts/Layout"
+import { router } from "@inertiajs/react"
 
-const ExamInterface = ({ exam, onSubmit }) => {
+const ExamMainPage = ({ examId }) => {
   const [answers, setAnswers] = useState({})
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+  const [exam, setExam] = useState(null)
+
+  // Get exam data by ID
+  useEffect(() => {
+    const examData = liveExams.find(e => e.id == examId)
+    if (examData) {
+      setExam(examData)
+    } else {
+      // Redirect back to notice page if exam not found
+      window.location.href = '/student/live-exam'
+    }
+  }, [examId])
 
   // Prevent page reload and navigation
   useEffect(() => {
@@ -47,7 +62,25 @@ const ExamInterface = ({ exam, onSubmit }) => {
   }
 
   const handleSubmit = () => {
-    onSubmit(answers)
+  router.get(route('student.live.exam.success'), {
+    examId: exam.id,
+    answers: answers // Only for small answer sets
+  }, {
+    preserveState: true,
+    onBefore: () => {
+      // Optional: Show loading state
+    }
+  });
+}
+
+  if (!exam) {
+    return (
+      <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    )
   }
 
   const answeredCount = Object.keys(answers).length
@@ -125,7 +158,7 @@ const ExamInterface = ({ exam, onSubmit }) => {
                     >
                       <span className="fs-1">⚠️</span>
                     </div>
-                    <h5 className="fw-bold text-dark mb-2">আপনি কি নিশ্��িত?</h5>
+                    <h5 className="fw-bold text-dark mb-2">আপনি কি নিশ্চিত?</h5>
                     <p className="text-muted mb-3">
                       আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {exam.questions.length}টির মধ্যে।
                     </p>
@@ -157,4 +190,5 @@ const ExamInterface = ({ exam, onSubmit }) => {
   )
 }
 
-export default ExamInterface
+ExamMainPage.layout = (page) => <Layout children={page} />
+export default ExamMainPage

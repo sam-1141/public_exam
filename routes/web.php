@@ -14,6 +14,7 @@ use App\Http\Controllers\HardnessController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\MaterialsController;
+use App\Http\Controllers\PracticeExamController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
@@ -73,16 +74,23 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     });
 
     Route::controller(LiveExamController::class)->group(function () {
-        Route::get('/student/live-exam', 'loadLiveExamPage')->name('student.live.exam');
-
-        /* Admin */
+        Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
+        Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
+        Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
+            /* Admin */
         // exam management
         Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
-        Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
+        Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
         Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
 
         Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
 
+    });
+
+    Route::controller(PracticeExamController::class)->group(function () {
+        Route::get('/student/practice-exam/practice', 'loadPracticeExamListPage')->name('student.practice.exam.list');
+        Route::get('/student/practice-exam/{exam}', 'loadPracticeExamPage')->name('student.practice.exam');
+        Route::post('/student/practice-exam/{exam}/result', 'loadPracticeExamResult')->name('student.practice.exam.result');
     });
 
     Route::controller(ArchiveController::class)->group(function () {
