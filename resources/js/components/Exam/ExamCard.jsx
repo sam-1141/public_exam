@@ -1,10 +1,13 @@
 import { Link } from "@inertiajs/react";
 import React, { useState } from "react";
-import EditExamModal from "../../Pages/Admin/Exam/LiveExam/EditLiveExam";
-import { route } from "ziggy-js";
 
-const ExamCard = ({ exam }) => {
+import { route } from "ziggy-js";
+import EditExamModal from "../../Pages/Admin/Exam/EditExam";
+
+const ExamCard = ({ exam, examType = "live" }) => {
     const [showEditModal, setShowEditModal] = useState(false);
+
+    const isPracticeExam = examType === "practice";
 
     return (
         <div className="col-md-12 mb-4">
@@ -12,20 +15,28 @@ const ExamCard = ({ exam }) => {
                 <div className="card-body">
                     {/* Exam title and description */}
                     <div className="mb-3">
-                        <h3 className="h5 card-title">{exam.title}</h3>
+                        <h3 className="h4 card-title ">
+                            {exam.title}
+                            {isPracticeExam && (
+                                <span className="badge bg-info text-dark mx-2">
+                                    Practice Exam
+                                </span>
+                            )}
+                        </h3>
                         <p className="card-text text-muted">
                             {exam.description}
                         </p>
                     </div>
 
                     <div className="row">
-                        {/* Exam details */}
+                        {/* Exam details - Common fields */}
                         <div className="col-md-6">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Questions</span>
                                     <span className="badge bg-primary rounded-pill">
-                                        {exam.questions}
+                                        {exam.questionList?.length ||
+                                            exam.questions}
                                     </span>
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
@@ -41,20 +52,27 @@ const ExamCard = ({ exam }) => {
                             </ul>
                         </div>
 
+                        {/* Exam details - Conditional fields */}
                         <div className="col-md-6">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Duration</span>
                                     <span>{exam.duration}</span>
                                 </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Start Time</span>
-                                    <span>{exam.startTime}</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>End Time</span>
-                                    <span>{exam.endTime}</span>
-                                </li>
+
+                                {/* Only show time fields for live exams */}
+                                {!isPracticeExam && (
+                                    <>
+                                        <li className="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Start Time</span>
+                                            <span>{exam.startTime}</span>
+                                        </li>
+                                        <li className="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>End Time</span>
+                                            <span>{exam.endTime}</span>
+                                        </li>
+                                    </>
+                                )}
                             </ul>
                         </div>
                     </div>
@@ -70,6 +88,7 @@ const ExamCard = ({ exam }) => {
                         <Link
                             href={route("admin.exam.details", {
                                 exam: exam.id,
+                                type: examType, // Pass exam type to details page
                             })}
                             className="btn btn-primary"
                         >
@@ -79,11 +98,12 @@ const ExamCard = ({ exam }) => {
                 </div>
             </div>
 
-            {/* Edit Modal */}
+            {/* Edit Modal - Pass examType to handle different forms */}
             <EditExamModal
                 show={showEditModal}
                 onClose={() => setShowEditModal(false)}
                 exam={exam}
+                examType={examType}
             />
         </div>
     );

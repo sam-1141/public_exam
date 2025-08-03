@@ -58,7 +58,7 @@ const LiveExam = () => {
             {/* Exams list */}
             <div className="row">
                 {exams.map((exam) => (
-                    <ExamCard key={exam.id} exam={exam} />
+                    <ExamCard key={exam.id} exam={exam} examType="live" />
                 ))}
             </div>
 

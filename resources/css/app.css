@@ -21,3 +21,8 @@
 body.modal-open .pc-sidebar {
     display: none;
 }
+
+.exam-card:hover {
+    background-color: #b6b2b2; /* or any color you prefer */
+    transition: background-color 0.2s ease;
+}
