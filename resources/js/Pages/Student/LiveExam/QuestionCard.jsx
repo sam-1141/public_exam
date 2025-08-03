@@ -9,6 +9,45 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
           <h6 className="mb-0 fw-semibold">{question.text}</h6>
         </div>
 
+        {/* Question Images */}
+        {question.images && question.images.length > 0 && (
+          <div className="mb-4">
+            {question.images.length === 1 ? (
+              // Single image - full width
+              <div className="text-center">
+                <img
+                  src={question.images[0].url}
+                  alt={question.images[0].alt || `Question ${questionNumber} image`}
+                  className="img-fluid rounded shadow-sm"
+                  style={{ maxHeight: "400px", objectFit: "contain" }}
+                />
+                {question.images[0].caption && (
+                  <p className="text-muted small mt-2 mb-0">{question.images[0].caption}</p>
+                )}
+              </div>
+            ) : (
+              // Multiple images - grid layout
+              <div className="row g-3">
+                {question.images.map((image, index) => (
+                  <div key={index} className={`col-12 ${question.images.length === 2 ? 'col-md-6' : question.images.length === 3 ? 'col-md-4' : 'col-md-3'}`}>
+                    <div className="text-center">
+                      <img
+                        src={image.url}
+                        alt={image.alt || `Question ${questionNumber} image ${index + 1}`}
+                        className="img-fluid rounded shadow-sm"
+                        style={{ maxHeight: "600px", objectFit: "contain", width: "100%" }}
+                      />
+                      {image.caption && (
+                        <p className="text-muted small mt-2 mb-0">{image.caption}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="row g-2">
           {question.options.map((option, index) => (
             <div key={index} className="col-12 col-md-6">
