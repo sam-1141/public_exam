@@ -6,6 +6,7 @@
         "dev": "vite"
     },
     "devDependencies": {
+        "@iconify/react": "^6.0.0",
         "@vitejs/plugin-react": "^4.3.4",
         "autoprefixer": "^10.4.20",
         "axios": "^1.7.4",
