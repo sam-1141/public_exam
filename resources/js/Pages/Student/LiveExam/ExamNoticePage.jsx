@@ -1,17 +1,14 @@
 import Layout from "../../../layouts/Layout"
 import LiveExamCard from "./LiveExamCard"
 import ParticipationModal from "./ParticipationModal"
-import ExamInterface from "./ExamInterface"
-import ExamSubmission from "./ExamSubmission"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { useState } from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
+import { router } from "@inertiajs/react"
 
-const LiveExamPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
+const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedExam, setSelectedExam] = useState(null)
-  const [examState, setExamState] = useState("list") // list, exam, submitted
-  const [currentExam, setCurrentExam] = useState(null)
 
   const handleExamClick = (exam) => {
     setSelectedExam(exam)
@@ -19,29 +16,18 @@ const LiveExamPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCol
   }
 
   const handleConfirmParticipation = (exam) => {
-    setCurrentExam(exam)
-    setExamState("exam")
-    setShowModal(false)
-  }
-
-  const handleExamSubmit = (answers) => {
-    console.log("Exam submitted with answers:", answers)
-    setExamState("submitted")
-  }
-
-  const handleBackToHome = () => {
-    setExamState("list")
-    setCurrentExam(null)
-    setSelectedExam(null)
-  }
-
-  if (examState === "exam" && currentExam) {
-    return <ExamInterface exam={currentExam} onSubmit={handleExamSubmit} />
-  }
-
-  if (examState === "submitted" && currentExam) {
-    return <ExamSubmission exam={currentExam} onBackToHome={handleBackToHome} />
-  }
+  // Client-side navigation with Inertia
+  router.get(route('student.live.exam.main'), { 
+    examId: exam.id 
+  }, {
+    preserveState: true,
+    onSuccess: () => {
+      setCurrentExam(exam)
+      setExamState("exam")
+      setShowModal(false)
+    }
+  })
+}
 
   return (
     <div className="flex-grow-1 d-flex flex-column">
@@ -89,5 +75,5 @@ const LiveExamPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCol
   )
 }
 
-LiveExamPage.layout = (page) => <Layout children={page} />;
-export default LiveExamPage;
+ExamNoticePage.layout = (page) => <Layout children={page} />
+export default ExamNoticePage
