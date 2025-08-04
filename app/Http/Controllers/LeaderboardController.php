@@ -10,4 +10,9 @@ class LeaderboardController extends Controller
     {
         return Inertia::render('Student/LeaderBoardPage/LeaderBoardPage');
     }
+
+    public function loadAdminLeaderBoardPage()
+    {
+        return Inertia::render('Admin/LeaderBoard/Leaderboard');
+    }
 }

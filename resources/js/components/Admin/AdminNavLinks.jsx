@@ -62,7 +62,7 @@ function AdminNavLinks() {
                             >
                                 <span className="pc-micon">
                                     <i className="material-icons-two-tone">
-                                        create_new_folder
+                                        add_circle_outline
                                     </i>
                                 </span>
                                 <span
@@ -76,9 +76,9 @@ function AdminNavLinks() {
                         <li className="pc-item">
                             <Link href={route("mcq.bank")} className="pc-link">
                                 <span className="pc-micon">
-                                    <svg className="pc-icon">
-                                        <use xlinkHref="#custom-folder-open" />
-                                    </svg>
+                                    <i className="material-icons-two-tone">
+                                        question_answer
+                                    </i>
                                 </span>
                                 <span
                                     className="pc-mtext"
@@ -94,15 +94,33 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <svg className="pc-icon">
-                                        <use xlinkHref="#custom-folder-open" />
-                                    </svg>
+                                    <i className="material-icons-two-tone">
+                                        library_books
+                                    </i>
                                 </span>
                                 <span
                                     className="pc-mtext"
                                     data-i18n="Question Bank"
                                 >
                                     Manage Material
+                                </span>
+                            </Link>
+                        </li>
+                        <li className="pc-item">
+                            <Link
+                                href={route("admin.leaderboard")}
+                                className="pc-link"
+                            >
+                                <span className="pc-micon">
+                                    <i className="material-icons-two-tone">
+                                        leaderboard
+                                    </i>
+                                </span>
+                                <span
+                                    className="pc-mtext"
+                                    data-i18n="Question Bank"
+                                >
+                                    Leaderboard
                                 </span>
                             </Link>
                         </li>

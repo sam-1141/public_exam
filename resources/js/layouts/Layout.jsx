@@ -7,7 +7,7 @@ import Secure from "../helper/Secure";
 function Layout({ children }) {
     return (
         <main className="pc-layout ">
-            <Secure />
+            {/* <Secure /> */}
             <Navbar />
             <div className="pc-container ">
                 <div className="pc-content">{children}</div>
