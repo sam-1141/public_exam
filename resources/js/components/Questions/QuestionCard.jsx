@@ -36,41 +36,45 @@ function QuestionCard({ question, auth }) {
             <div className="card-body" style={{ padding: 20 }}>
                 <div className="d-flex mb-2 align-items-center">
                     <span
-                        className="badge text-success border border-success me-2 px-3 py-2 rounded-pill"
+                        className="badge text-success border border-success me-2 px-2 py-1.5 rounded-pill"
                         style={{
-                            fontSize: 14,
+                            fontSize: 12,
                             backgroundColor: "#e8f5e9",
                         }}
                     >
                         Class: {question?.class?.name}
                     </span>
                     <span
-                        className="badge text-success border border-success me-2 px-3 py-2 rounded-pill"
+                        className="badge text-success border border-success me-2 px-2 py-1.5 rounded-pill"
                         style={{
-                            fontSize: 14,
+                            fontSize: 12,
                             backgroundColor: "#e8f5e9",
                         }}
                     >
                         Subject: {question?.subject?.name}
                     </span>
-                    <span
-                        className="badge text-success border border-success me-2 px-3 py-2 rounded-pill"
-                        style={{
-                            fontSize: 14,
-                            backgroundColor: "#e8f5e9",
-                        }}
-                    >
-                        Chapter: {question?.chapter?.name}
-                    </span>
-                    <span
-                        className="badge text-success border border-success me-2 px-3 py-2 rounded-pill"
-                        style={{
-                            fontSize: 14,
-                            backgroundColor: "#e8f5e9",
-                        }}
-                    >
-                        Hardness: {question?.hardness?.name}
-                    </span>
+                    {question?.chapter && (
+                        <span
+                            className="badge text-success border border-success me-2 px-2 py-1.5 rounded-pill"
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#e8f5e9",
+                            }}
+                        >
+                            Chapter: {question?.chapter?.name}
+                        </span>
+                    )}
+                    {question?.hardness && (
+                        <span
+                            className="badge text-success border border-success me-2 px-2 py-1.5 rounded-pill"
+                            style={{
+                                fontSize: 12,
+                                backgroundColor: "#e8f5e9",
+                            }}
+                        >
+                            Hardness: {question?.hardness?.name}
+                        </span>
+                    )}
                     <div className="ms-auto d-flex align-items-center">
                         <Link
                             href={route("edit.mcq", question?.id)}
@@ -81,7 +85,7 @@ function QuestionCard({ question, auth }) {
                                 className="btn btn-outline-primary btn-sm me-2"
                                 style={{
                                     borderRadius: 20,
-                                    padding: "8px 16px",
+                                    padding: "5px 10px",
                                 }}
                             >
                                 <i className="fas fa-edit" />
@@ -92,7 +96,7 @@ function QuestionCard({ question, auth }) {
                                 className="btn btn-outline-danger btn-sm me-2"
                                 style={{
                                     borderRadius: 20,
-                                    padding: "8px 16px",
+                                    padding: "5px 10px",
                                 }}
                                 onClick={handleDelete}
                             >
@@ -103,7 +107,7 @@ function QuestionCard({ question, auth }) {
                             className="btn btn-outline-secondary btn-sm"
                             style={{
                                 borderRadius: 20,
-                                padding: "8px 16px",
+                                padding: "5px 10px",
                             }}
                             onClick={() => toggleActiveQuestion(question?.id)}
                         >
@@ -117,9 +121,9 @@ function QuestionCard({ question, auth }) {
                 </div>
                 <div className="d-flex mb-3 align-items-center">
                     <span
-                        className="badge text-success border border-success px-3 py-2 rounded-pill"
+                        className="badge text-success border border-success px-2 py-1.5 rounded-pill"
                         style={{
-                            fontSize: 14,
+                            fontSize: 12,
                             backgroundColor: "#e8f5e9",
                         }}
                     >
@@ -127,6 +131,7 @@ function QuestionCard({ question, auth }) {
                         {question?.topic ? question?.topic?.name : "No Topic"}
                     </span>
                 </div>
+
                 <div
                     className="mb-3 p-3 border rounded-3 shadow-sm"
                     style={{
@@ -135,7 +140,10 @@ function QuestionCard({ question, auth }) {
                         boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
                     }}
                 >
-                    <h5 className="font-weight-bold" style={{ color: "#333" }}>
+                    <h5
+                        className="font-weight-bold pb-1"
+                        style={{ color: "#333" }}
+                    >
                         Question:
                     </h5>
                     <p
@@ -154,10 +162,11 @@ function QuestionCard({ question, auth }) {
                 </div>
                 {isActive && (
                     <div
-                        className={`transition-all duration-200 ${isActive
-                            ? "max-h-screen opacity-100"
-                            : "max-h-0 opacity-0"
-                            } overflow-hidden`}
+                        className={`transition-all duration-200 ${
+                            isActive
+                                ? "max-h-screen opacity-100"
+                                : "max-h-0 opacity-0"
+                        } overflow-hidden`}
                     >
                         {/* Options Section */}
                         <div className="mb-3">
@@ -186,22 +195,26 @@ function QuestionCard({ question, auth }) {
                                 ))}
                             </div>
                         </div>
-                        {/* Tags Section */}
-                        <div className="d-flex flex-wrap gap-2 mt-3">
-                            {question?.tags?.map((tag) => (
+                    </div>
+                )}
+
+                {/* Tags Section */}
+                {question?.tags?.length > 0 && (
+                    <>
+                        <h6 className="font-medium text-gray-900 mb-2">
+                            Tags:
+                        </h6>
+                        <div className="flex flex-wrap gap-2">
+                            {question.tags.map((tag) => (
                                 <span
                                     key={tag?.id}
-                                    className="badge text-warning border border-secondary me-2 px-3 py-2 rounded-pill"
-                                    style={{
-                                        backgroundColor: "#fff",
-                                        fontSize: 14,
-                                    }}
+                                    className="px-2 py-1 bg-gray-100 border border-secondary rounded-md text-sm"
                                 >
                                     {tag?.tag?.name}
                                 </span>
                             ))}
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
         </div>
