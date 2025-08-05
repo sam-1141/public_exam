@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500&display=swap");
-
 @layer base {
     @font-face {
         font-family: "Roboto";
