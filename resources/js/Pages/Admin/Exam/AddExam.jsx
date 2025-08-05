@@ -6,7 +6,7 @@ import { route } from "ziggy-js";
 const AddExam = () => {
     return (
         <div className="container py-4">
-            <h1 className="h2 mb-4">Exam Management</h1>
+            <h1 className="h3 font-semibold mb-4">Exam Management</h1>
 
             <div className="row">
                 {/* Live Exam Card */}

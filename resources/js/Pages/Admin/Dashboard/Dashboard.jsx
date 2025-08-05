@@ -10,7 +10,7 @@ function AdminDashboard() {
             {/* Quick Stats Row */}
             <div className="row mb-4">
                 <div className="col-12">
-                    <h2 className="mb-4 text-2xl font-semibold">
+                    <h2 className="mb-4 h3 font-semibold">
                         Dashboard Overview
                     </h2>
                 </div>
