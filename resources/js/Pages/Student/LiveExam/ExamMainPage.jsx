@@ -9,7 +9,7 @@ import { router } from "@inertiajs/react"
 
 const ExamMainPage = ({ examId }) => {
   const [answers, setAnswers] = useState({})
-  const [currentQuestion, setCurrentQuestion] = useState(0)
+  
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [exam, setExam] = useState(null)
 

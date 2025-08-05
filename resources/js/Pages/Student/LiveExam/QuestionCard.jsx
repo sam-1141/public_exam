@@ -2,7 +2,7 @@
 
 const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer, isAnswered }) => {
   return (
-    <div className={`card mb-4 border-0 shadow-sm ${isAnswered ? "bg-success-subtle border border-success-subtle" : ""}`}>
+    <div className={`card mb-4 shadow-sm ${isAnswered ? "border-2 border-success" : ""}`}>
       <div className="card-body p-4">
         <div className="d-flex align-items-start mb-3">
           <span className="badge bg-primary me-3 fs-6">{questionNumber}</span>
