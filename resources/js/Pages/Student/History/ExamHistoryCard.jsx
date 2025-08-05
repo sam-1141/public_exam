@@ -1,6 +1,6 @@
 import { router } from "@inertiajs/react"
 
-const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
+const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard, date }) => {
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100
     if (percentage >= 80) return "text-success"
@@ -31,8 +31,8 @@ const ExamHistoryCard = ({ exam, onAnswerSheet, onLeaderboard }) => {
           <div className="col-12 col-md-6 mb-2 mb-md-0">
             <h6 className="fw-semibold mb-1">{exam.name}</h6>
             <div className="d-flex align-items-center text-muted small">
-              <span className="me-3">⏰ {formatTime(exam.time)}</span>
               <span className="me-3">⏱️ {exam.duration} মিনিট</span>
+              <span className="me-3">⏰ {date}</span>
               {/* <span>👥 {exam.participants} জন</span> */}
             </div>
           </div>

@@ -4,10 +4,8 @@ import { router } from "@inertiajs/react"
 import { courses, subjectsByCourse } from "../../../utils/ExamQuestion/PracticeExamQuestions"
 
 const PracticeExamListPage = () => {
-    const [selectedCourse, setSelectedCourse] = useState("")
-    const [selectedSubject, setSelectedSubject] = useState("")
-    const [availableSubjects, setAvailableSubjects] = useState([])
-    const [practiceExams, setPracticeExams] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const examsPerPage = 9
 
     const allPracticeExams = {
         physics: [
@@ -85,25 +83,17 @@ const PracticeExamListPage = () => {
         ],
     }
 
-    useEffect(() => {
-        if (selectedCourse) {
-            setAvailableSubjects(subjectsByCourse[selectedCourse] || [])
-            setSelectedSubject("")
-            setPracticeExams([])
-        } else {
-            setAvailableSubjects([])
-            setSelectedSubject("")
-            setPracticeExams([])
-        }
-    }, [selectedCourse])
-
-    useEffect(() => {
-        if (selectedSubject) {
-            setPracticeExams(allPracticeExams[selectedSubject] || [])
-        } else {
-            setPracticeExams([])
-        }
-    }, [selectedSubject])
+    // Flatten all exams from different subjects into one array
+    const allExams = Object.values(allPracticeExams).flat()
+    
+    // Sort exams from newest to oldest (assuming newer exams have higher IDs)
+    const sortedExams = [...allExams].sort((a, b) => b.id.localeCompare(a.id))
+    
+    // Get current exams for pagination
+    const indexOfLastExam = currentPage * examsPerPage
+    const indexOfFirstExam = indexOfLastExam - examsPerPage
+    const currentExams = sortedExams.slice(indexOfFirstExam, indexOfLastExam)
+    const totalPages = Math.ceil(sortedExams.length / examsPerPage)
 
     const handleExamClick = (exam) => {
         router.get(route('student.practice.exam', { exam: exam.id}))
@@ -124,10 +114,6 @@ const PracticeExamListPage = () => {
 
     return (
         <div className="flex-grow-1 d-flex flex-column">
-            {/* <PageHeader
-        title="প্র্যাকটিস পরীক্ষা"
-      /> */}
-
             <main className="flex-grow-1 p-3 bg-light">
                 <div className="container-fluid">
                     <div className="row justify-content-center">
@@ -135,113 +121,22 @@ const PracticeExamListPage = () => {
                             {/* Page Header */}
                             <div className="mb-4">
                                 <h3 className="fw-bold text-dark mb-1">প্র্যাকটিস পরীক্ষা</h3>
-                                <p className="text-muted mb-0">আপনার পছন্দের বিষয়ে অনুশীলন করুন এবং দক্ষতা বৃদ্ধি করুন</p>
+                                <p className="text-muted mb-0">সকল প্র্যাকটিস পরীক্ষা ({sortedExams.length} টি)</p>
                             </div>
 
-                            {/* Filter Section */}
-                            <div className="card border-0 shadow-sm mb-4">
-                                <div className="card-body p-4">
-                                    <h5 className="fw-semibold mb-3">ফিল্টার করুন</h5>
-                                    <div className="row g-3">
-                                        <div className="col-12 col-md-6">
-                                            <label className="form-label fw-medium">কোর্স নির্বাচন করুন</label>
-                                            <select
-                                                className="form-select"
-                                                value={selectedCourse}
-                                                onChange={(e) => setSelectedCourse(e.target.value)}
-                                            >
-                                                <option value="">-- কোর্স নির্বাচন করুন --</option>
-                                                {courses.map((course) => (
-                                                    <option key={course.id} value={course.id}>
-                                                        {course.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="col-12 col-md-6">
-                                            <label className="form-label fw-medium">বিষয় নির্বাচন করুন</label>
-                                            <select
-                                                className="form-select"
-                                                value={selectedSubject}
-                                                onChange={(e) => setSelectedSubject(e.target.value)}
-                                                disabled={!selectedCourse}
-                                            >
-                                                <option value="">-- বিষয় নির্বাচন করুন --</option>
-                                                {availableSubjects.map((subject) => (
-                                                    <option key={subject.id} value={subject.id}>
-                                                        {subject.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Content Area */}
-                            {!selectedCourse && !selectedSubject ? (
-                                /* Empty State - No Selection */
-                                <div className="text-center py-5">
-                                    <div
-                                        className="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
-                                        style={{ width: "120px", height: "120px" }}
-                                    >
-                                        <span className="fs-1">📚</span>
-                                    </div>
-                                    <h4 className="fw-bold text-muted mb-2">প্র্যাকটিস শুরু করুন</h4>
-                                    <p className="text-muted mb-0">উপরের ড্রপডাউন থেকে কোর্স এবং বিষয় নির্বাচন করে প্র্যাকটিস পরীক্ষা দেখুন</p>
-                                </div>
-                            ) : selectedCourse && !selectedSubject ? (
-                                /* Course Selected but No Subject */
-                                <div className="text-center py-5">
-                                    <div
-                                        className="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
-                                        style={{ width: "100px", height: "100px" }}
-                                    >
-                                        <span className="fs-1">📖</span>
-                                    </div>
-                                    <h4 className="fw-bold text-muted mb-2">বিষয় নির্বাচন করুন</h4>
-                                    <p className="text-muted mb-0">
-                                        {courses.find((c) => c.id === selectedCourse)?.name} কোর্স থেকে একটি বিষয় নির্বাচন করুন
-                                    </p>
-                                </div>
-                            ) : practiceExams.length === 0 ? (
-                                /* No Exams Available */
-                                <div className="text-center py-5">
-                                    <div
-                                        className="bg-secondary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
-                                        style={{ width: "100px", height: "100px" }}
-                                    >
-                                        <span className="fs-1">📝</span>
-                                    </div>
-                                    <h4 className="fw-bold text-muted mb-2">কোনো পরীক্ষা নেই</h4>
-                                    <p className="text-muted mb-0">
-                                        {availableSubjects.find((s) => s.id === selectedSubject)?.name} বিষয়ে এই মুহূর্তে কোনো প্র্যাকটিস পরীক্ষা
-                                        উপলব্ধ নেই
-                                    </p>
-                                </div>
-                            ) : (
-                                /* Show Practice Exams */
+                            {/* Exams Grid */}
+                            {currentExams.length > 0 ? (
                                 <>
-                                    <div className="d-flex align-items-center justify-content-between mb-4">
-                                        <div>
-                                            <h4 className="fw-bold text-dark mb-1">
-                                                {availableSubjects.find((s) => s.id === selectedSubject)?.name} - প্র্যাকটিস পরীক্ষা
-                                            </h4>
-                                            <p className="text-muted mb-0">{practiceExams.length} টি পরীক্ষা উপলব্ধ</p>
-                                        </div>
-                                    </div>
-
                                     <div className="row">
-                                        {practiceExams.map((exam) => (
+                                        {currentExams.map((exam) => (
                                             <div key={exam.id} className="col-12 col-md-6 col-lg-4 mb-4">
                                                 <div className="card h-100 border-0 shadow-sm">
                                                     <div className="card-body p-4">
                                                         <div className="d-flex justify-content-between align-items-start mb-3">
                                                             <h5 className="card-title fw-bold mb-0">{exam.name}</h5>
-                                                            <span className={`badge bg-${getDifficultyColor(exam.difficulty)}`}>
+                                                            {/* <span className={`badge bg-${getDifficultyColor(exam.difficulty)}`}>
                                                                 {exam.difficulty}
-                                                            </span>
+                                                            </span> */}
                                                         </div>
 
                                                         <div className="mb-3">
@@ -271,7 +166,57 @@ const PracticeExamListPage = () => {
                                             </div>
                                         ))}
                                     </div>
+
+                                    {/* Pagination */}
+                                    {totalPages > 1 && (
+                                        <nav className="mt-4">
+                                            <ul className="pagination justify-content-center">
+                                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                                    <button 
+                                                        className="page-link" 
+                                                        onClick={() => setCurrentPage(currentPage - 1)}
+                                                        disabled={currentPage === 1}
+                                                    >
+                                                        পূর্ববর্তী
+                                                    </button>
+                                                </li>
+                                                
+                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                                                    <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
+                                                        <button 
+                                                            className="page-link" 
+                                                            onClick={() => setCurrentPage(number)}
+                                                        >
+                                                            {number}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                                
+                                                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                                    <button 
+                                                        className="page-link" 
+                                                        onClick={() => setCurrentPage(currentPage + 1)}
+                                                        disabled={currentPage === totalPages}
+                                                    >
+                                                        পরবর্তী
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    )}
                                 </>
+                            ) : (
+                                /* No Exams Available */
+                                <div className="text-center py-5">
+                                    <div
+                                        className="bg-secondary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                                        style={{ width: "100px", height: "100px" }}
+                                    >
+                                        <span className="fs-1">📝</span>
+                                    </div>
+                                    <h4 className="fw-bold text-muted mb-2">কোনো পরীক্ষা নেই</h4>
+                                    <p className="text-muted mb-0">বর্তমানে কোনো প্র্যাকটিস পরীক্ষা উপলব্ধ নেই</p>
+                                </div>
                             )}
                         </div>
                     </div>

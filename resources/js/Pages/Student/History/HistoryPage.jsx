@@ -5,7 +5,7 @@ import HistoryPagination from "./HistoryPagination"
 import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 
-const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
+const HistoryPage = () => {
   const [selectedCourse, setSelectedCourse] = useState("physics")
   const [activeTab, setActiveTab] = useState("live")
   const [currentPage, setCurrentPage] = useState(1)
@@ -55,11 +55,6 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
     setCurrentPage(1)
   }
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab)
-    setCurrentPage(1)
-  }
-
   const handleAnswerSheet = (exam) => {
     console.log("Navigate to answer sheet:", exam.id)
     // Navigate to answer sheet page
@@ -77,7 +72,6 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
     <div className=" d-flex flex-column">
       <PageHeader
         title="ইতিহাস"
-        streak={12}
       />
 
       <main className="flex-grow-1 p-1 bg-light">
@@ -102,25 +96,6 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
                         ))}
                       </select>
                     </div>
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold mb-2">পরীক্ষার ধরন</label>
-                      <div className="btn-group w-100" role="group">
-                        <button
-                          type="button"
-                          className={`btn ${activeTab === "live" ? "btn-primary" : "btn-outline-primary"}`}
-                          onClick={() => handleTabChange("live")}
-                        >
-                          🔴 লাইভ পরীক্ষা
-                        </button>
-                        <button
-                          type="button"
-                          className={`btn ${activeTab === "practice" ? "btn-primary" : "btn-outline-primary"}`}
-                          onClick={() => handleTabChange("practice")}
-                        >
-                          📝 প্র্যাকটিস
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -129,16 +104,10 @@ const HistoryPage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isColl
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div>
                   <h4 className="fw-bold text-dark mb-1">
-                    {selectedCourseName} - {activeTab === "live" ? "লাইভ পরীক্ষা" : "প্র্যাকটিস"}
+                    {selectedCourseName}
                   </h4>
-                  <p className="text-muted mb-0">
-                    মোট {totalExams} টি পরীক্ষা • {groupedExams.length} টি তারিখে
-                  </p>
                 </div>
                 <div className="text-end">
-                  {/* <div className="badge bg-success fs-6 px-3 py-2">
-                    📊 {Math.round((totalExams / (groupedExams.length || 1)) * 10) / 10} গড় পরীক্ষা/দিন
-                  </div> */}
                 </div>
               </div>
 

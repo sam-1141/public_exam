@@ -122,34 +122,6 @@ const Dashboard = () => {
           </StatCard>
         </div>
       </div>
-
-      <div className="card shadow-sm border-0 mb-4">
-        <div className="card-body">
-          <h5 className="card-title fw-bold mb-4">সাম্প্রতিক কার্যক্রম</h5>
-          
-          <ActivityItem
-            icon={Award}
-            title="পদার্থবিজ্ঞান পরীক্ষা"
-            status="সম্পন্ন"
-            score={95}
-            color="success"
-          />
-          
-          <ActivityItem
-            icon={AlertTriangle}
-            title="রসায়ন পরীক্ষা"
-            status="মিস"
-            color="danger"
-          />
-          
-          <ActivityItem
-            icon={PlayCircle}
-            title="গণিত পরীক্ষা"
-            status="চলমান | ৩০ মিনিট বাকি"
-            color="warning"
-          />
-        </div>
-      </div>
     </div>
   );
 };

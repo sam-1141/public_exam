@@ -6,9 +6,17 @@ import { useState } from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
 import { router } from "@inertiajs/react"
 
-const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isCollapsed, setIsCollapsed }) => {
+const ExamNoticePage = ({ 
+  isMobile, 
+  showMobileSidebar, 
+  setShowMobileSidebar, 
+  isCollapsed, 
+  setIsCollapsed 
+}) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedExam, setSelectedExam] = useState(null)
+  const [currentExam, setCurrentExam] = useState(null) // Added missing state
+  const [examState, setExamState] = useState("notice") // Added missing state
 
   const handleExamClick = (exam) => {
     setSelectedExam(exam)
@@ -16,18 +24,21 @@ const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isC
   }
 
   const handleConfirmParticipation = (exam) => {
-  // Client-side navigation with Inertia
-  router.get(route('student.live.exam.main'), { 
-    examId: exam.id 
-  }, {
-    preserveState: true,
-    onSuccess: () => {
-      setCurrentExam(exam)
-      setExamState("exam")
-      setShowModal(false)
-    }
-  })
-}
+    router.get(route('student.live.exam.main'), { 
+      examId: exam.id 
+    }, {
+      preserveState: true,
+      onSuccess: () => {
+        setCurrentExam(exam)
+        setExamState("exam")
+        setShowModal(false)
+      },
+      onError: (errors) => {
+        console.error("Exam participation error:", errors)
+        // Consider adding error handling UI
+      }
+    })
+  }
 
   return (
     <div className="flex-grow-1 d-flex flex-column">
@@ -47,7 +58,9 @@ const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isC
                 </div>
                 <div className="d-flex align-items-center">
                   <span className="badge bg-success me-2">🔴</span>
-                  <span className="small text-muted">{liveExams.filter((e) => e.status === "live").length} টি লাইভ</span>
+                  <span className="small text-muted">
+                    {liveExams.filter((e) => e.status === "live").length} টি লাইভ
+                  </span>
                 </div>
               </div>
             </div>
@@ -55,22 +68,34 @@ const ExamNoticePage = ({ isMobile, showMobileSidebar, setShowMobileSidebar, isC
 
           <div className="row justify-content-center">
             <div className="col-12 col-lg-10">
-              <div className="row">
-                {liveExams.map((exam) => (
-                  <LiveExamCard key={exam.id} exam={exam} onClick={handleExamClick} />
-                ))}
-              </div>
+              {liveExams.length > 0 ? (
+                <div className="row">
+                  {liveExams.map((exam) => (
+                    <LiveExamCard 
+                      key={exam.id} 
+                      exam={exam} 
+                      onClick={handleExamClick} 
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="alert alert-info">
+                  বর্তমানে কোনো লাইভ পরীক্ষা চলমান নেই
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
 
-      <ParticipationModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        exam={selectedExam}
-        onConfirm={handleConfirmParticipation}
-      />
+      {selectedExam && (
+        <ParticipationModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          exam={selectedExam}
+          onConfirm={handleConfirmParticipation}
+        />
+      )}
     </div>
   )
 }

@@ -58,12 +58,12 @@ const DateSection = ({ date, exams, onAnswerSheet, onLeaderboard }) => {
   return (
     <div className="mb-4">
       <div className="d-flex align-items-center mb-3">
-        <h5 className="fw-bold text-dark mb-0 me-3">{getBanglaDate(date)}</h5>
-        <span className="badge bg-primary">{exams.length} টি পরীক্ষা</span>
+        {/* <h5 className="fw-bold text-dark mb-0 me-3">{getBanglaDate(date)}</h5>
+        <span className="badge bg-primary">{exams.length} টি পরীক্ষা</span> */}
       </div>
       <div className="ms-3">
         {exams.map((exam, index) => (
-          <ExamHistoryCard key={index} exam={exam} onAnswerSheet={onAnswerSheet} onLeaderboard={onLeaderboard} />
+          <ExamHistoryCard key={index} exam={exam} onAnswerSheet={onAnswerSheet} onLeaderboard={onLeaderboard} date={getBanglaDate(date)}/>
         ))}
       </div>
     </div>

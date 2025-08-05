@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { Menu, Bell } from "lucide-react"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
 
-const LeaderboardPage = ({ isMobile }) => {
+const LeaderboardPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [selectedExam, setSelectedExam] = useState("")
@@ -63,7 +62,6 @@ const LeaderboardPage = ({ isMobile }) => {
       {/* Header */}
       <PageHeader
         title="লিডারবোর্ড"
-        streak={5}
       />
 
       {/* Main Content */}
@@ -134,13 +132,6 @@ const LeaderboardPage = ({ isMobile }) => {
                                   boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
                                 }}
                               />
-                              {/* {isTopThree && (
-                                <span className={`position-absolute top-0 start-100 translate-middle badge top-three-badge ${user.rank === 1 ? 'gold-badge' :
-                                    user.rank === 2 ? 'silver-badge' : 'bronze-badge'
-                                  }`}>
-                                  {getMedal(user.rank)}
-                                </span>
-                              )} */}
                             </div>
                             <div className="flex-grow-1">
                               <div className="fw-semibold text-dark mb-1">
@@ -159,6 +150,9 @@ const LeaderboardPage = ({ isMobile }) => {
                               </div>
                               <div className={`small `}>
                                 স্কোর: {user.score}
+                              </div>
+                              <div className="small text-muted">
+                                {user.completionTime} 00:29:30 {/* Added completion time here */}
                               </div>
                             </div>
                           </div>
