@@ -6,6 +6,11 @@
     overflow-y: auto !important;
     overflow-x: hidden !important;
 }
+.pc-link:hover {
+    background-color: #f0eded !important;
+    color: #333 !important;
+    border-radius: 5px !important;
+}
 
 /* Force the sidebar container to be scrollable */
 .pc-sidebar,
@@ -101,17 +106,49 @@ body .pc-sidebar .pc-navbar {
     flex: 1 !important;
 }
 
-/* Method 10: Nuclear option - completely reset the sidebar */
-/* .sidebar-reset {
-    all: unset !important;
-    display: block !important;
-    height: 100vh !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    background: #fff !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 250px !important;
-    z-index: 1000 !important;
-} */
+/* Dropdown styles */
+.pc-hasmenu {
+    position: relative;
+}
+
+.pc-hasmenu .pc-submenu {
+    display: none;
+    padding-left: 10px;
+    /* background-color: #f8f9fa; */
+    border-radius: 4px;
+    margin: 2px 0;
+    transition: all 0.3s ease;
+    list-style: none;
+}
+
+.pc-hasmenu.active .pc-submenu {
+    display: block;
+}
+
+.pc-hasmenu .pc-arrow i {
+    transition: transform 0.3s ease;
+}
+
+.pc-hasmenu.active .pc-arrow i {
+    transform: rotate(180deg);
+}
+
+.pc-submenu .pc-item {
+    padding: 5px 0;
+}
+
+.pc-submenu .pc-link {
+    padding: 5px;
+    display: block;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.pc-submenu .pc-link:hover {
+    background-color: #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+}
