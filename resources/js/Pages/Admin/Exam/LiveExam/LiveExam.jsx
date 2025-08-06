@@ -10,6 +10,7 @@ const LiveExam = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
+        subject: "",
         description: "",
         totalQuestions: "",
         negativeMarks: "no",

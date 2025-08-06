@@ -15,15 +15,18 @@ const ExamCard = ({ exam, examType = "live" }) => {
                 <div className="card-body">
                     {/* Exam title and description */}
                     <div className="mb-3">
-                        <h3 className="h4 card-title ">
-                            {exam.title}
-                            {isPracticeExam && (
-                                <span className="badge bg-info text-dark mx-2">
-                                    Practice Exam
-                                </span>
-                            )}
-                        </h3>
-                        <p className="card-text text-muted">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <h3 className="h4 card-title mb-0">
+                                {exam.title}
+                                {isPracticeExam && (
+                                    <span className="badge bg-info text-dark mx-2">
+                                        Practice Exam
+                                    </span>
+                                )}
+                            </h3>
+                            <span className="badge bg-success">Published</span>
+                        </div>
+                        <p className="card-text text-muted mt-2">
                             {exam.description}
                         </p>
                     </div>

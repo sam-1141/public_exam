@@ -9,6 +9,7 @@ const EditExamModal = ({
 }) => {
     const [formData, setFormData] = useState({
         name: exam.title || "",
+        subject: exam.subject || "",
         description: exam.description || "",
         totalQuestions: exam.questions || "",
         hasNegativeMarks: exam.negativeMarks === "yes" || false,
@@ -90,6 +91,21 @@ const EditExamModal = ({
 
                                     <div className="mb-3">
                                         <label className="form-label">
+                                            Subject:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam subject"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label">
                                             Description:
                                         </label>
                                         <textarea
@@ -115,6 +131,61 @@ const EditExamModal = ({
                                             placeholder="How many questions do you want to add?"
                                             required
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Total Marks:
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            step="any"
+                                            className="form-control"
+                                            name="totalMarks"
+                                            value={formData.totalMarks}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam total marks"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Duration (min):
+                                        </label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            step="any"
+                                            className="form-control"
+                                            name="duration"
+                                            value={formData.duration}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam duration"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Question Type:
+                                        </label>
+                                        <select
+                                            className="form-select"
+                                            name="questionType"
+                                            value={formData.questionType}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="random">
+                                                Random
+                                            </option>
+                                            <option value="shuffle">
+                                                Shuffle
+                                            </option>
+                                        </select>
                                     </div>
 
                                     {/* Negative Marking Section */}
@@ -175,76 +246,6 @@ const EditExamModal = ({
                                             )}
                                         </div>
                                     </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Total Marks:
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="any"
-                                            className="form-control"
-                                            name="totalMarks"
-                                            value={formData.totalMarks}
-                                            onChange={handleChange}
-                                            placeholder="Enter exam total marks"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Duration (min):
-                                        </label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="any"
-                                            className="form-control"
-                                            name="duration"
-                                            value={formData.duration}
-                                            onChange={handleChange}
-                                            placeholder="Enter exam duration"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Question Type:
-                                        </label>
-                                        <select
-                                            className="form-select"
-                                            name="questionType"
-                                            value={formData.questionType}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="random">
-                                                Random
-                                            </option>
-                                            <option value="shuffle">
-                                                Shuffle
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    {/* <div className="mb-3">
-                                        <label className="form-label">
-                                            2nd Timer Restrictions:
-                                        </label>
-                                        <select
-                                            className="form-select"
-                                            name="timerRestriction"
-                                            value={formData.timerRestriction}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="off">OFF</option>
-                                            <option value="on">ON</option>
-                                        </select>
-                                    </div> */}
                                 </div>
 
                                 {/* Advanced Settings */}

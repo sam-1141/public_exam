@@ -53,6 +53,20 @@ const AddLiveExamModal = ({
                                             required
                                         />
                                     </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Subject:{" "}
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam subject"
+                                            required
+                                        />
+                                    </div>
 
                                     <div className="mb-3">
                                         <label className="form-label">
@@ -81,6 +95,57 @@ const AddLiveExamModal = ({
                                             placeholder="How many questions do you want to add?"
                                             required
                                         />
+                                    </div>
+                                </div>
+
+                                <div className="col-md-6">
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Total Marks:
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            name="totalMarks"
+                                            value={formData.totalMarks}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam total marks"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Duration (min):
+                                        </label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            name="duration"
+                                            value={formData.duration}
+                                            onChange={handleChange}
+                                            placeholder="Enter exam duration"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label">
+                                            Question Type:
+                                        </label>
+                                        <select
+                                            className="form-select"
+                                            name="questionType"
+                                            value={formData.questionType}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="random">
+                                                Random
+                                            </option>
+                                            <option value="shuffle">
+                                                Shuffle
+                                            </option>
+                                        </select>
                                     </div>
 
                                     {/* Negative Marking Section */}
@@ -157,57 +222,6 @@ const AddLiveExamModal = ({
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Total Marks:
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            name="totalMarks"
-                                            value={formData.totalMarks}
-                                            onChange={handleChange}
-                                            placeholder="Enter exam total marks"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Duration (min):
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            name="duration"
-                                            value={formData.duration}
-                                            onChange={handleChange}
-                                            placeholder="Enter exam duration"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            Question Type:
-                                        </label>
-                                        <select
-                                            className="form-select"
-                                            name="questionType"
-                                            value={formData.questionType}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="random">
-                                                Random
-                                            </option>
-                                            <option value="shuffle">
-                                                Shuffle
-                                            </option>
-                                        </select>
                                     </div>
                                 </div>
 
