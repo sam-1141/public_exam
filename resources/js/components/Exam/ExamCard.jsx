@@ -10,7 +10,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
     const isPracticeExam = examType === "practice";
 
     return (
-        <div className="col-md-12 mb-4">
+        <div className="col-md-12 ">
             <div className="card shadow-sm">
                 <div className="card-body">
                     {/* Exam title and description */}

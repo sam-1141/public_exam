@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const AddLiveExamModal = ({
     show,
@@ -11,7 +11,7 @@ const AddLiveExamModal = ({
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: value !== "" ? Math.max(0, parseFloat(value)) : "",
         }));
     };
 
@@ -83,19 +83,80 @@ const AddLiveExamModal = ({
                                         />
                                     </div>
 
+                                    {/* Negative Marking Section */}
                                     <div className="mb-3">
                                         <label className="form-label">
                                             Negative Marks:
                                         </label>
-                                        <select
-                                            className="form-select"
-                                            name="negativeMarks"
-                                            value={formData.negativeMarks}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="no">No</option>
-                                            <option value="yes">Yes</option>
-                                        </select>
+                                        <div className="d-flex align-items-center gap-5">
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="negativeMarksCheckbox"
+                                                    checked={
+                                                        formData.hasNegativeMarks
+                                                    }
+                                                    onChange={(e) => {
+                                                        setFormData({
+                                                            ...formData,
+                                                            hasNegativeMarks:
+                                                                e.target
+                                                                    .checked,
+                                                            negativeMarksValue:
+                                                                e.target.checked
+                                                                    ? ""
+                                                                    : null,
+                                                        });
+                                                    }}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor="negativeMarksCheckbox"
+                                                >
+                                                    Yes
+                                                </label>
+                                            </div>
+
+                                            {formData.hasNegativeMarks && (
+                                                <div
+                                                    className=""
+                                                    style={{ width: "200px" }}
+                                                >
+                                                    <input
+                                                        type="number"
+                                                        className="form-control "
+                                                        min="0"
+                                                        step="any"
+                                                        value={
+                                                            formData.negativeMarksValue ||
+                                                            ""
+                                                        }
+                                                        onChange={(e) => {
+                                                            const value =
+                                                                e.target
+                                                                    .value ===
+                                                                ""
+                                                                    ? null
+                                                                    : parseFloat(
+                                                                          e
+                                                                              .target
+                                                                              .value
+                                                                      );
+                                                            setFormData({
+                                                                ...formData,
+                                                                negativeMarksValue:
+                                                                    value,
+                                                            });
+                                                        }}
+                                                        placeholder="Enter marks"
+                                                    />
+                                                    <span>
+                                                        marks per wrong answer
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -148,21 +209,6 @@ const AddLiveExamModal = ({
                                             </option>
                                         </select>
                                     </div>
-
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            2nd Timer Restrictions:
-                                        </label>
-                                        <select
-                                            className="form-select"
-                                            name="timerRestriction"
-                                            value={formData.timerRestriction}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="off">OFF</option>
-                                            <option value="on">ON</option>
-                                        </select>
-                                    </div>
                                 </div>
 
                                 {/* Advanced Settings */}
@@ -210,7 +256,7 @@ const AddLiveExamModal = ({
                                 </div>
 
                                 <div className="col-md-6">
-                                    <div className="mb-3">
+                                    {/* <div className="mb-3">
                                         <label className="form-label">
                                             For Batch:
                                         </label>
@@ -225,7 +271,7 @@ const AddLiveExamModal = ({
                                                 Specific
                                             </option>
                                         </select>
-                                    </div>
+                                    </div> */}
 
                                     <div className="mb-3">
                                         <label className="form-label">

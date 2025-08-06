@@ -11,7 +11,8 @@ const EditExamModal = ({
         name: exam.title || "",
         description: exam.description || "",
         totalQuestions: exam.questions || "",
-        negativeMarks: exam.negativeMarks === "yes" ? "yes" : "no",
+        hasNegativeMarks: exam.negativeMarks === "yes" || false,
+        negativeMarksValue: exam.negativeMarksValue || "",
         totalMarks: exam.totalMarks || "",
         duration: exam.duration || "",
         questionType: exam.questionType || "random",
@@ -27,13 +28,18 @@ const EditExamModal = ({
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: value !== "" ? Math.max(0, parseFloat(value)) : "",
         }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+
+        const submitData = {
+            ...formData,
+            negativeMarks: formData.hasNegativeMarks ? "yes" : "no",
+        };
+        onSubmit(submitData);
     };
 
     if (!show) return null;
@@ -111,19 +117,63 @@ const EditExamModal = ({
                                         />
                                     </div>
 
+                                    {/* Negative Marking Section */}
                                     <div className="mb-3">
                                         <label className="form-label">
                                             Negative Marks:
                                         </label>
-                                        <select
-                                            className="form-select"
-                                            name="negativeMarks"
-                                            value={formData.negativeMarks}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="no">No</option>
-                                            <option value="yes">Yes</option>
-                                        </select>
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="form-check">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="negativeMarksCheckbox"
+                                                    checked={
+                                                        formData.hasNegativeMarks
+                                                    }
+                                                    onChange={(e) => {
+                                                        setFormData({
+                                                            ...formData,
+                                                            hasNegativeMarks:
+                                                                e.target
+                                                                    .checked,
+                                                            negativeMarksValue:
+                                                                e.target.checked
+                                                                    ? formData.negativeMarksValue ||
+                                                                      ""
+                                                                    : "",
+                                                        });
+                                                    }}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor="negativeMarksCheckbox"
+                                                >
+                                                    Yes
+                                                </label>
+                                            </div>
+
+                                            {formData.hasNegativeMarks && (
+                                                <div style={{ width: "200px" }}>
+                                                    <input
+                                                        type="number"
+                                                        className="form-control"
+                                                        min="0"
+                                                        step="any"
+                                                        name="negativeMarksValue"
+                                                        value={
+                                                            formData.negativeMarksValue ||
+                                                            ""
+                                                        }
+                                                        onChange={handleChange}
+                                                        placeholder="Enter marks"
+                                                    />
+                                                    <span>
+                                                        marks per wrong answer
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -134,6 +184,8 @@ const EditExamModal = ({
                                         </label>
                                         <input
                                             type="number"
+                                            min="0"
+                                            step="any"
                                             className="form-control"
                                             name="totalMarks"
                                             value={formData.totalMarks}
@@ -149,6 +201,8 @@ const EditExamModal = ({
                                         </label>
                                         <input
                                             type="number"
+                                            min="0"
+                                            step="any"
                                             className="form-control"
                                             name="duration"
                                             value={formData.duration}
@@ -177,7 +231,7 @@ const EditExamModal = ({
                                         </select>
                                     </div>
 
-                                    <div className="mb-3">
+                                    {/* <div className="mb-3">
                                         <label className="form-label">
                                             2nd Timer Restrictions:
                                         </label>
@@ -190,7 +244,7 @@ const EditExamModal = ({
                                             <option value="off">OFF</option>
                                             <option value="on">ON</option>
                                         </select>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 {/* Advanced Settings */}
@@ -238,19 +292,6 @@ const EditExamModal = ({
                                 </div>
 
                                 <div className="col-md-6">
-                                    <div className="mb-3">
-                                        <label className="form-label">
-                                            For Batch:
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            name="batch"
-                                            value={formData.batch}
-                                            onChange={handleChange}
-                                            placeholder="Enter batch name or ID"
-                                        />
-                                    </div>
                                     {!isPracticeExam && (
                                         <>
                                             <div className="mb-3">
