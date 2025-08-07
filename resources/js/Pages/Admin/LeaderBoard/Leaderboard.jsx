@@ -74,15 +74,15 @@ const Leaderboard = () => {
                                 onClick={downloadAsExcel}
                             >
                                 <Icon icon="vscode-icons:file-type-excel" />
-                                Export to Excel
+                                Export to CSV
                             </button>
-                            <button
+                            {/* <button
                                 className="btn btn-primary d-flex align-items-center gap-2"
                                 onClick={downloadAsDoc}
                             >
                                 <Icon icon="vscode-icons:file-type-word" />
                                 Export to Word
-                            </button>
+                            </button> */}
                         </div>
 
                         <div className="table-responsive border rounded shadow-sm">
