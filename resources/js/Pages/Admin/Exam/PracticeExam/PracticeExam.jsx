@@ -39,9 +39,9 @@ const PracticeExam = () => {
                 <div>
                     <Link
                         href={route("admin.add.exam")}
-                        className="btn btn-outline-secondary"
+                        className="btn btn-sm "
                     >
-                        <i className="fas fa-arrow-left me-2"></i>Back to Exams
+                        <i className="fas fa-arrow-left me-1"></i>Back
                     </Link>
                 </div>
                 {/* <button
@@ -53,7 +53,9 @@ const PracticeExam = () => {
             </div>
 
             {/* Page title */}
-            <h2 className="mb-4 font-semibold text-2xl">Practice Exams</h2>
+            <h2 className="mb-4 font-semibold text-2xl text-center">
+                Practice Exams
+            </h2>
 
             {/* Exams list */}
             <div className="row">
