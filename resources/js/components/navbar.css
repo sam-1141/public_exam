@@ -5,7 +5,7 @@
     position: sticky;
     top: 0;
     z-index: 1050;
-    background: rgba(255, 255, 255, 0.301); /* Semi-transparent white */
+    background: rgba(255, 255, 255, 0.212); /* Semi-transparent white */
     backdrop-filter: blur(10px); /* Backdrop blur effect */
     -webkit-backdrop-filter: blur(10px); /* Safari support */
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Optional: adds a subtle border */

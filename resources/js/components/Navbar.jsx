@@ -118,7 +118,7 @@ function Navbar() {
                         )}
                     </div>
                     <div className="navbar-content">
-                        {/* <div className="card pc-user-card">
+                        <div className="card pc-user-card">
                             <div className="card-body">
                                 <div className="d-flex align-items-center">
                                     <div className="flex-shrink-0">
@@ -129,12 +129,16 @@ function Navbar() {
                                         />
                                     </div>
                                     <div className="flex-grow-1 ms-3 me-2">
-                                        <h6 className="mb-0">Rabbi</h6>
-                                        <small>Admin</small>
+                                        <h6 className="h6 font-semibold mb-0">
+                                            Rabbi
+                                        </h6>
+                                        <small className="h6 font-normal">
+                                            admin
+                                        </small>
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
                         <div className="navbar-content">
                             <ul className="pc-navbar">
                                 {isStudent() && <StudentNavLinks />}
@@ -204,29 +208,6 @@ function Navbar() {
                                                     "calc(100vh - 225px)",
                                             }}
                                         >
-                                            <div className="card pc-user-card">
-                                                <div className="card-body">
-                                                    <div className="d-flex align-items-center">
-                                                        <div className="flex-shrink-0">
-                                                            <img
-                                                                src="/assets/images/user/avatar-1.png"
-                                                                alt="Fahads Tutorial | User Image"
-                                                                className="user-avtar"
-                                                            />
-                                                        </div>
-                                                        <div className="flex-grow-1 ms-3 me-0">
-                                                            <h2 className="mb-0">
-                                                                Rabbi
-                                                            </h2>
-                                                            <small>Admin</small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <h2 className="font-semibold text-lg mt-2">
-                                                Manage
-                                            </h2>
                                             <Link
                                                 // href={route(profileRoute)}
                                                 className="dropdown-item"

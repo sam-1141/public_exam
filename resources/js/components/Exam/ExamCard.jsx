@@ -1,107 +1,153 @@
 import { Link } from "@inertiajs/react";
 import React, { useState } from "react";
-
 import { route } from "ziggy-js";
 import EditExamModal from "../../Pages/Admin/Exam/EditExam";
 
 const ExamCard = ({ exam, examType = "live" }) => {
     const [showEditModal, setShowEditModal] = useState(false);
-
     const isPracticeExam = examType === "practice";
 
     return (
-        <div className="col-md-12 ">
-            <div className="card shadow-sm">
-                <div className="card-body">
+        <div className="col-md-6 mb-4">
+            <div className="card shadow-sm h-100">
+                <div className="card-body d-flex flex-column">
                     {/* Exam title and description */}
                     <div className="mb-3">
-                        <div className="d-flex justify-content-between align-items-center">
-                            <h3 className="h4 card-title mb-0">
-                                {exam.title}
+                        <div className="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h3 className="h5 card-title mb-1 text-wrap">
+                                    {exam.title}
+                                </h3>
                                 {isPracticeExam && (
-                                    <span className="badge bg-info text-dark mx-2">
+                                    <span className="badge bg-info text-dark">
                                         Practice Exam
                                     </span>
                                 )}
-                            </h3>
+                            </div>
                             <span className="badge bg-success">Published</span>
                         </div>
-                        <p className="card-text text-muted mt-2">
-                            {exam.description}
-                        </p>
+                        {exam.description && (
+                            <p className="card-text text-muted mt-2 text-truncate-2">
+                                {exam.description}
+                            </p>
+                        )}
                     </div>
 
-                    <div className="row">
-                        {/* Exam details - Common fields */}
-                        <div className="col-md-6">
-                            <ul className="list-group list-group-flush">
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Questions</span>
-                                    <span className="badge bg-primary rounded-pill">
-                                        {exam.questionList?.length ||
-                                            exam.questions}
-                                    </span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Total marks</span>
-                                    <span className="badge bg-primary rounded-pill">
-                                        {exam.totalMarks}
-                                    </span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Negative Marks</span>
-                                    <span>{exam.negativeMarks}</span>
-                                </li>
-                            </ul>
+                    {/* Metrics Grid - Two columns layout */}
+                    <div className="row mt-2">
+                        {/* First Column */}
+                        <div className="col-6">
+                            <div className="d-flex flex-column gap-3">
+                                {/* Questions */}
+                                <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                        <i className="fas fa-question-circle fa-lg text-success"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-bold">Questions</div>
+                                        <small>
+                                            {exam.questionList?.length ||
+                                                exam.questions}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                {/* Negative Marks */}
+                                <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                        <i className="fas fa-times-circle fa-lg text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-bold">
+                                            Negative Marks
+                                        </div>
+                                        <small>{exam.negativeMarks}</small>
+                                    </div>
+                                </div>
+
+                                {/* Start Time */}
+                                {!isPracticeExam && (
+                                    <div className="d-flex align-items-center">
+                                        <div className="me-3">
+                                            <i className="fas fa-calendar-alt fa-lg text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-bold">
+                                                Start Time
+                                            </div>
+                                            <small>{exam.startTime}</small>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Exam details - Conditional fields */}
-                        <div className="col-md-6">
-                            <ul className="list-group list-group-flush">
-                                <li className="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>Duration</span>
-                                    <span>{exam.duration}</span>
-                                </li>
+                        {/* Second Column */}
+                        <div className="col-6">
+                            <div className="d-flex flex-column gap-3">
+                                {/* Total Marks */}
+                                <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                        <i className="fas fa-check-circle fa-lg text-info"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-bold">
+                                            Total Marks
+                                        </div>
+                                        <small>{exam.totalMarks}</small>
+                                    </div>
+                                </div>
 
-                                {/* Only show time fields for live exams */}
+                                {/* Duration */}
+                                <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                        <i className="fas fa-clock fa-lg text-warning"></i>
+                                    </div>
+                                    <div>
+                                        <div className="fw-bold">Duration</div>
+                                        <small>{exam.duration}</small>
+                                    </div>
+                                </div>
+
+                                {/* End Time */}
                                 {!isPracticeExam && (
-                                    <>
-                                        <li className="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>Start Time</span>
-                                            <span>{exam.startTime}</span>
-                                        </li>
-                                        <li className="list-group-item d-flex justify-content-between align-items-center">
-                                            <span>End Time</span>
-                                            <span>{exam.endTime}</span>
-                                        </li>
-                                    </>
+                                    <div className="d-flex align-items-center">
+                                        <div className="me-3">
+                                            <i className="fas fa-calendar-times fa-lg text-danger"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-bold">
+                                                End Time
+                                            </div>
+                                            <small>{exam.endTime}</small>
+                                        </div>
+                                    </div>
                                 )}
-                            </ul>
+                            </div>
                         </div>
                     </div>
 
                     {/* Action buttons */}
-                    <div className="d-flex justify-content-end mt-3">
+                    <div className="d-flex justify-content-end mt-auto pt-3">
                         <button
                             onClick={() => setShowEditModal(true)}
-                            className="btn btn-outline-primary me-2"
+                            className="btn btn-outline-warning btn-sm me-2"
                         >
                             <i className="fas fa-edit me-1"></i> Edit
                         </button>
                         <Link
                             href={route("admin.exam.details", {
                                 exam: exam.id,
-                                type: examType, // Pass exam type to details page
+                                type: examType,
                             })}
-                            className="btn btn-primary"
+                            className="btn btn-warning btn-sm"
                         >
-                            <i className="fas fa-eye me-1"></i> View Details
+                            <i className="fas fa-eye me-1"></i> View
                         </Link>
                     </div>
                 </div>
             </div>
 
-            {/* Edit Modal - Pass examType to handle different forms */}
             <EditExamModal
                 show={showEditModal}
                 onClose={() => setShowEditModal(false)}

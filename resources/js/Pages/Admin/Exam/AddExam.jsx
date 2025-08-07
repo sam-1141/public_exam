@@ -10,7 +10,7 @@ const AddExam = () => {
 
             <div className="row">
                 {/* Live Exam Card */}
-                <div className="col-md-6 mb-4">
+                <div className="col-md-6">
                     <Link
                         href={route("admin.add.live.exam")}
                         className="text-decoration-none"
@@ -74,7 +74,7 @@ const AddExam = () => {
                 </div>
 
                 {/* Practice Exam Card */}
-                <div className="col-md-6 mb-4">
+                <div className="col-md-6">
                     <Link
                         href={route("admin.add.practice.exam")}
                         className="text-decoration-none"

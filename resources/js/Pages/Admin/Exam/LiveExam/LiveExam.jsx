@@ -36,25 +36,23 @@ const LiveExam = () => {
     return (
         <div className="container py-4">
             {/* Header with buttons */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <Link
-                        href={route("admin.add.exam")}
-                        className="btn btn-outline-secondary"
-                    >
-                        <i className="fas fa-arrow-left me-2"></i>Back to Exams
-                    </Link>
-                </div>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <Link href={route("admin.add.exam")} className="btn btn-sm ">
+                    <i className="fas fa-arrow-left me-1"></i>Back
+                </Link>
                 <button
+                    type="button"
                     className="btn btn-primary"
                     onClick={() => setShowAddModal(true)}
                 >
-                    <i className="fas fa-plus me-2"></i>Add Live Exam
+                    <i className="ti ti-plus me-1"></i>Add Exam
                 </button>
             </div>
 
             {/* Page title */}
-            <h2 className="mb-4 font-semibold text-2xl">Live Exams</h2>
+            <h2 className="mb-4 font-semibold text-2xl text-center">
+                Live Exams
+            </h2>
 
             {/* Exams list */}
             <div className="row">
@@ -65,7 +63,7 @@ const LiveExam = () => {
 
             {/* Empty state */}
             {exams.length === 0 && (
-                <div className="text-center py-5">
+                <div className="text-center py-3">
                     <div className="mb-3">
                         <i className="fas fa-calendar-times fa-3x text-muted"></i>
                     </div>
