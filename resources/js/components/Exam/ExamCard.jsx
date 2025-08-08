@@ -7,6 +7,13 @@ const ExamCard = ({ exam, examType = "live" }) => {
     const [showEditModal, setShowEditModal] = useState(false);
     const isPracticeExam = examType === "practice";
 
+    // Format negative marks display
+    const negativeMarksDisplay = exam.hasNegativeMarks
+        ? (exam.negativeMarksValue !== null && exam.negativeMarksValue !== undefined)
+            ? `-${exam.negativeMarksValue} per wrong`
+            : "Yes"
+        : "No";
+
     return (
         <div className="col-md-6 mb-4">
             <div className="card shadow-sm h-100">
@@ -16,7 +23,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                         <div className="d-flex justify-content-between align-items-start">
                             <div>
                                 <h3 className="h5 card-title mb-1 text-wrap">
-                                    {exam.title}
+                                    {exam.name}
                                 </h3>
                                 {isPracticeExam && (
                                     <span className="badge bg-info text-dark">
@@ -33,7 +40,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                         )}
                     </div>
 
-                    {/* Metrics Grid - Two columns layout */}
+                    {/* Metrics Grid */}
                     <div className="row mt-2">
                         {/* First Column */}
                         <div className="col-6">
@@ -45,10 +52,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Questions</div>
-                                        <small>
-                                            {exam.questionList?.length ||
-                                                exam.questions}
-                                        </small>
+                                        <small>{exam.totalQuestions}</small>
                                     </div>
                                 </div>
 
@@ -58,10 +62,8 @@ const ExamCard = ({ exam, examType = "live" }) => {
                                         <i className="fas fa-times-circle fa-lg text-danger"></i>
                                     </div>
                                     <div>
-                                        <div className="fw-bold">
-                                            Negative Marks
-                                        </div>
-                                        <small>{exam.negativeMarks}</small>
+                                        <div className="fw-bold">Negative Marks</div>
+                                        <small>{negativeMarksDisplay}</small>
                                     </div>
                                 </div>
 
@@ -72,9 +74,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                                             <i className="fas fa-calendar-alt fa-lg text-warning"></i>
                                         </div>
                                         <div>
-                                            <div className="fw-bold">
-                                                Start Time
-                                            </div>
+                                            <div className="fw-bold">Start Time</div>
                                             <small>{exam.startTime}</small>
                                         </div>
                                     </div>
@@ -91,9 +91,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                                         <i className="fas fa-check-circle fa-lg text-info"></i>
                                     </div>
                                     <div>
-                                        <div className="fw-bold">
-                                            Total Marks
-                                        </div>
+                                        <div className="fw-bold">Total Marks</div>
                                         <small>{exam.totalMarks}</small>
                                     </div>
                                 </div>
@@ -116,9 +114,7 @@ const ExamCard = ({ exam, examType = "live" }) => {
                                             <i className="fas fa-calendar-times fa-lg text-danger"></i>
                                         </div>
                                         <div>
-                                            <div className="fw-bold">
-                                                End Time
-                                            </div>
+                                            <div className="fw-bold">End Time</div>
                                             <small>{exam.endTime}</small>
                                         </div>
                                     </div>
@@ -148,12 +144,12 @@ const ExamCard = ({ exam, examType = "live" }) => {
                 </div>
             </div>
 
-            <EditExamModal
-                show={showEditModal}
-                onClose={() => setShowEditModal(false)}
-                exam={exam}
-                examType={examType}
-            />
+            {/*<EditExamModal*/}
+            {/*    show={showEditModal}*/}
+            {/*    onClose={() => setShowEditModal(false)}*/}
+            {/*    exam={exam}*/}
+            {/*    examType={examType}*/}
+            {/*/>*/}
         </div>
     );
 };
