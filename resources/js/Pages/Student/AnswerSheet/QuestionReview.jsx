@@ -24,7 +24,7 @@ const QuestionReview = ({ question, questionNumber }) => {
   }
 
   return (
-    <div className={`card mb-4 border-2 ${getQuestionBgColor()}`}>
+    <div className={`card mb-4 border-2 font-baloo ${getQuestionBgColor()}`}>
       <div className="card-body p-2 p-md-4">
         {/* Question Header */}
         <div className="d-flex align-items-start justify-content-between mb-3">

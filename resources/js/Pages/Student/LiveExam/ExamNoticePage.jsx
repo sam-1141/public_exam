@@ -41,7 +41,7 @@ const ExamNoticePage = ({
   }
 
   return (
-    <div className="flex-grow-1 d-flex flex-column">
+    <div className="flex-grow-1 d-flex flex-column font-baloo">
       <PageHeader
         title="লাইভ পরীক্ষা"
         streak={7}

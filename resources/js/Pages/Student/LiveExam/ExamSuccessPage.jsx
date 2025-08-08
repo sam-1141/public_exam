@@ -33,7 +33,7 @@ const ExamSuccessPage = ({ examId }) => {
   }
 
   return (
-    <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+    <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center font-baloo">
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-6">

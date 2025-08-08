@@ -42,7 +42,7 @@ const PracticeExamResult = ({ examId, results, exam, answers }) => {
 
     if (!result) {
         return (
-            <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+            <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center font-baloo">
                 <div className="text-center">
                     <div
                         className="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"

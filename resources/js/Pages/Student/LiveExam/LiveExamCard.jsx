@@ -59,7 +59,7 @@ const LiveExamCard = ({ exam, onClick }) => {
   }
 
   return (
-    <div className="col-12 col-md-6 col-lg-4 mb-4">
+    <div className="col-12 col-md-6 col-lg-4 mb-4 font-baloo">
       <div className="card h-100 border-0 shadow-sm">
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-start mb-3">

@@ -60,7 +60,7 @@ const Dashboard = () => {
   const attendanceRate = Math.round((stats.totalAttended / stats.totalHeld) * 100);
 
   return (
-    <div className="container py-4">
+    <div className="container py-4 font-baloo">
       <h2 className="mb-4 fw-bold">ড্যাশবোর্ড</h2>
       
       <div className="row g-4 mb-4">
