@@ -24,7 +24,7 @@ const AnswerSheetPage = () => {
   };
 
   return (
-    <div className="flex-grow-1 d-flex flex-column">
+    <div className="flex-grow-1 d-flex flex-column font-baloo">
       <PageHeader
         title="উত্তরপত্র"
         streak={8}

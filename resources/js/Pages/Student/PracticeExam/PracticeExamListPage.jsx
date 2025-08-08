@@ -113,7 +113,7 @@ const PracticeExamListPage = () => {
     }
 
     return (
-        <div className="flex-grow-1 d-flex flex-column">
+        <div className="flex-grow-1 d-flex flex-column font-baloo">
             <main className="flex-grow-1 p-3 bg-light">
                 <div className="container-fluid">
                     <div className="row justify-content-center">

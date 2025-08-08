@@ -75,7 +75,7 @@ const ExamMainPage = ({ examId }) => {
 
   if (!exam) {
     return (
-      <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
+      <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center font-baloo">
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Loading...</span>
         </div>
@@ -87,7 +87,7 @@ const ExamMainPage = ({ examId }) => {
   const progressPercentage = (answeredCount / exam.questions.length) * 100
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div className="min-vh-100 bg-light font-baloo">
       {/* Exam Header */}
       <div className="bg-white border-bottom sticky-top">
         <div className="container-fluid py-3">

@@ -69,7 +69,7 @@ const HistoryPage = () => {
   const totalExams = currentExamData.reduce((total, dateGroup) => total + dateGroup.exams.length, 0)
 
   return (
-    <div className=" d-flex flex-column">
+    <div className=" d-flex flex-column font-baloo">
       <PageHeader
         title="ইতিহাস"
       />

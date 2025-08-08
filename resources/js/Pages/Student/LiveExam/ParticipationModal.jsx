@@ -6,7 +6,7 @@ const ParticipationModal = ({ show, onHide, exam, onConfirm }) => {
   return (
     <>
       <div className="modal-backdrop fade show"></div>
-      <div className="modal fade show d-block" tabIndex="-1">
+      <div className="modal fade show d-block font-baloo" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header border-0">

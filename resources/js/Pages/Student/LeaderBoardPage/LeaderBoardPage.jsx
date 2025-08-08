@@ -58,7 +58,7 @@ const LeaderboardPage = () => {
   }
 
   return (
-    <div className="flex-grow-1 d-flex flex-column">
+    <div className="flex-grow-1 d-flex flex-column font-baloo">
       {/* Header */}
       <PageHeader
         title="লিডারবোর্ড"
