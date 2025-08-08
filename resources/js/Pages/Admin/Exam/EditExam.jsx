@@ -1,52 +1,99 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { route } from "ziggy-js";
 
-const EditExamModal = ({
-    show,
-    onClose,
-    exam,
-    onSubmit,
-    examType = "live",
-}) => {
-    const [formData, setFormData] = useState({
-        name: exam.title || "",
-        subject: exam.subject || "",
-        description: exam.description || "",
-        totalQuestions: exam.questions || "",
-        hasNegativeMarks: exam.negativeMarks === "yes" || false,
-        negativeMarksValue: exam.negativeMarksValue || "",
-        totalMarks: exam.totalMarks || "",
-        duration: exam.duration || "",
-        questionType: exam.questionType || "random",
-        timerRestriction: exam.timerRestriction || "off",
-        privacy: exam.privacy || "everyone",
-        publishInstant: exam.publishInstant || "no",
-        batch: exam.batch || "all",
-        startTime: exam.startTime || "",
-        endTime: exam.endTime || "",
-    });
+const EditExamModal = ({ show, onClose, exam, loading, onSuccess }) => {
+    const [formData, setFormData] = useState(null);
+    const [errors, setErrors] = useState({});
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => {
+        if (exam) {
+            setFormData({
+                name: exam.name || "",
+                subject: exam.subject || "",
+                description: exam.description || "",
+                totalQuestions: exam.totalQuestions || "",
+                hasNegativeMarks: exam.hasNegativeMarks || false,
+                negativeMarksValue: exam.negativeMarksValue || "",
+                totalMarks: exam.totalMarks || "",
+                duration: exam.duration || "",
+                questionType: exam.questionType || "random",
+                privacy: exam.privacy || "everyone",
+                publishInstant: exam.publishInstant || false,
+                startTime: exam.startTime || "",
+                endTime: exam.endTime || "",
+            });
+            setErrors({});
+        }
+    }, [exam]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value !== "" ? Math.max(0, parseFloat(value)) : "",
+            [name]: name === "privacy" && value === "" ? null
+                : type === "checkbox" ? checked
+                    : value,
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const submitData = {
-            ...formData,
-            negativeMarks: formData.hasNegativeMarks ? "yes" : "no",
-        };
-        onSubmit(submitData);
+        if (!formData) return;
+        setSubmitting(true);
+        setErrors({});
+        try {
+            await axios.put(
+                route("update.single.exam", { slug: exam.slug }),
+                formData,
+                {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                }
+            );
+            setSubmitting(false);
+            onClose();
+            if (onSuccess) onSuccess();
+        } catch (err) {
+            if (err.response) {
+                if (err.response.status === 422) {
+                    setErrors(err.response.data.errors);
+                } else if (err.response.status === 401) {
+                    setErrors({ general: "You must be logged in to update the exam." });
+                } else {
+                    setErrors({ general: "Something went wrong!" });
+                }
+            } else {
+                setErrors({ general: "Network error." });
+            }
+            setSubmitting(false);
+        }
     };
 
     if (!show) return null;
+    if (!exam) return null;
 
-    // Determine if this is a practice exam
-    const isPracticeExam = examType === "practice";
+    if (loading || !formData) {
+        return (
+            <div
+                className="modal fade show"
+                style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
+            >
+                <div className="modal-dialog modal-lg modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-body d-flex justify-content-center align-items-center" style={{ minHeight: 300 }}>
+                            <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -57,164 +104,142 @@ const EditExamModal = ({
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title text-xl font-semibold">
-                            {isPracticeExam
-                                ? "Edit Practice Exam"
-                                : "Edit Live Exam"}{" "}
-                            : {exam.title || "Exam Details"}
+                            Edit Live Exam : {exam.name}
                         </h5>
-
                         <button
                             type="button"
                             className="btn-close"
                             onClick={onClose}
+                            disabled={submitting}
                         ></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>
+                            {errors.general && (
+                                <div className="alert alert-danger">{errors.general}</div>
+                            )}
                             <div className="row g-3">
-                                {/* Basic Information */}
                                 <div className="col-md-6">
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Name:
-                                        </label>
+                                        <label className="form-label">Name:</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control ${errors.name ? "is-invalid" : ""}`}
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            placeholder="Enter exam name"
-                                            required
                                         />
+                                        {errors.name && (
+                                            <div className="invalid-feedback">
+                                                {errors.name[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Subject:
-                                        </label>
+                                        <label className="form-label">Subject:</label>
                                         <input
                                             type="text"
-                                            className="form-control"
+                                            className={`form-control ${errors.subject ? "is-invalid" : ""}`}
                                             name="subject"
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            placeholder="Enter exam subject"
-                                            required
                                         />
+                                        {errors.subject && (
+                                            <div className="invalid-feedback">
+                                                {errors.subject[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Description:
-                                        </label>
+                                        <label className="form-label">Description:</label>
                                         <textarea
-                                            className="form-control"
+                                            className={`form-control ${errors.description ? "is-invalid" : ""}`}
                                             name="description"
                                             value={formData.description}
                                             onChange={handleChange}
-                                            placeholder="Enter exam description"
                                             rows="3"
                                         ></textarea>
+                                        {errors.description && (
+                                            <div className="invalid-feedback">
+                                                {errors.description[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Total Questions:
-                                        </label>
+                                        <label className="form-label">Total Questions:</label>
                                         <input
                                             type="number"
-                                            className="form-control"
+                                            className={`form-control ${errors.totalQuestions ? "is-invalid" : ""}`}
                                             name="totalQuestions"
                                             value={formData.totalQuestions}
                                             onChange={handleChange}
-                                            placeholder="How many questions do you want to add?"
-                                            required
                                         />
+                                        {errors.totalQuestions && (
+                                            <div className="invalid-feedback">
+                                                {errors.totalQuestions[0]}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-
                                 <div className="col-md-6">
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Total Marks:
-                                        </label>
+                                        <label className="form-label">Total Marks:</label>
                                         <input
                                             type="number"
-                                            min="0"
-                                            step="any"
-                                            className="form-control"
+                                            className={`form-control ${errors.totalMarks ? "is-invalid" : ""}`}
                                             name="totalMarks"
                                             value={formData.totalMarks}
                                             onChange={handleChange}
-                                            placeholder="Enter exam total marks"
-                                            required
                                         />
+                                        {errors.totalMarks && (
+                                            <div className="invalid-feedback">
+                                                {errors.totalMarks[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Duration (min):
-                                        </label>
+                                        <label className="form-label">Duration (min):</label>
                                         <input
                                             type="number"
-                                            min="0"
-                                            step="any"
-                                            className="form-control"
+                                            className={`form-control ${errors.duration ? "is-invalid" : ""}`}
                                             name="duration"
                                             value={formData.duration}
                                             onChange={handleChange}
-                                            placeholder="Enter exam duration"
-                                            required
                                         />
+                                        {errors.duration && (
+                                            <div className="invalid-feedback">
+                                                {errors.duration[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Question Type:
-                                        </label>
+                                        <label className="form-label">Question Type:</label>
                                         <select
-                                            className="form-select"
+                                            className={`form-select ${errors.questionType ? "is-invalid" : ""}`}
                                             name="questionType"
                                             value={formData.questionType}
                                             onChange={handleChange}
                                         >
-                                            <option value="random">
-                                                Random
-                                            </option>
-                                            <option value="shuffle">
-                                                Shuffle
-                                            </option>
+                                            <option value="random">Random</option>
+                                            <option value="shuffle">Shuffle</option>
                                         </select>
+                                        {errors.questionType && (
+                                            <div className="invalid-feedback">
+                                                {errors.questionType[0]}
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {/* Negative Marking Section */}
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Negative Marks:
-                                        </label>
-                                        <div className="d-flex align-items-center gap-3">
+                                        <label className="form-label">Negative Marks:</label>
+                                        <div className="d-flex align-items-center gap-5">
                                             <div className="form-check">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id="negativeMarksCheckbox"
-                                                    checked={
-                                                        formData.hasNegativeMarks
-                                                    }
-                                                    onChange={(e) => {
-                                                        setFormData({
-                                                            ...formData,
-                                                            hasNegativeMarks:
-                                                                e.target
-                                                                    .checked,
-                                                            negativeMarksValue:
-                                                                e.target.checked
-                                                                    ? formData.negativeMarksValue ||
-                                                                      ""
-                                                                    : "",
-                                                        });
-                                                    }}
+                                                    checked={formData.hasNegativeMarks}
+                                                    onChange={handleChange}
+                                                    name="hasNegativeMarks"
                                                 />
                                                 <label
                                                     className="form-check-label"
@@ -223,123 +248,119 @@ const EditExamModal = ({
                                                     Yes
                                                 </label>
                                             </div>
-
                                             {formData.hasNegativeMarks && (
                                                 <div style={{ width: "200px" }}>
                                                     <input
                                                         type="number"
-                                                        className="form-control"
+                                                        className={`form-control ${errors.negativeMarksValue ? "is-invalid" : ""}`}
                                                         min="0"
                                                         step="any"
-                                                        name="negativeMarksValue"
-                                                        value={
-                                                            formData.negativeMarksValue ||
-                                                            ""
-                                                        }
-                                                        onChange={handleChange}
+                                                        value={formData.negativeMarksValue}
+                                                        onChange={e => setFormData({ ...formData, negativeMarksValue: e.target.value })}
                                                         placeholder="Enter marks"
+                                                        name="negativeMarksValue"
                                                     />
-                                                    <span>
-                                                        marks per wrong answer
-                                                    </span>
+                                                    <span>marks per wrong answer</span>
+                                                    {errors.negativeMarksValue && (
+                                                        <div className="invalid-feedback">
+                                                            {errors.negativeMarksValue[0]}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Advanced Settings */}
                                 <div className="col-12">
                                     <hr />
-                                    <h6 className="my-3 text-xl font-semibold">
+                                    <h6 className="my-3 font-semibold text-lg">
                                         Advanced Settings
                                     </h6>
                                 </div>
-
                                 <div className="col-md-6">
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Privacy:
-                                        </label>
+                                        <label className="form-label">Privacy:</label>
                                         <select
-                                            className="form-select"
+                                            className={`form-select ${errors.privacy ? "is-invalid" : ""}`}
                                             name="privacy"
                                             value={formData.privacy}
                                             onChange={handleChange}
                                         >
-                                            <option value="everyone">
-                                                Everyone
-                                            </option>
-                                            <option value="link">
-                                                By Link Only
-                                            </option>
+                                            <option value="everyone">Everyone</option>
+                                            <option value="link">By Link Only</option>
                                         </select>
+                                        {errors.privacy && (
+                                            <div className="invalid-feedback">
+                                                {errors.privacy[0]}
+                                            </div>
+                                        )}
                                     </div>
-
                                     <div className="mb-3">
-                                        <label className="form-label">
-                                            Publish Instant?
-                                        </label>
+                                        <label className="form-label">Publish Instant?</label>
                                         <select
-                                            className="form-select"
+                                            className={`form-select ${errors.publishInstant ? "is-invalid" : ""}`}
                                             name="publishInstant"
                                             value={formData.publishInstant}
                                             onChange={handleChange}
                                         >
-                                            <option value="no">NO</option>
-                                            <option value="yes">YES</option>
+                                            <option value="0">NO</option>
+                                            <option value="1">YES</option>
                                         </select>
+                                        {errors.publishInstant && (
+                                            <div className="invalid-feedback">
+                                                {errors.publishInstant[0]}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-
                                 <div className="col-md-6">
-                                    {!isPracticeExam && (
-                                        <>
-                                            <div className="mb-3">
-                                                <label className="form-label">
-                                                    Exam Start Time:
-                                                </label>
-                                                <input
-                                                    type="datetime-local"
-                                                    className="form-control"
-                                                    name="startTime"
-                                                    value={formData.startTime}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
+                                    <div className="mb-3">
+                                        <label className="form-label">Exam Start Time:</label>
+                                        <input
+                                            type="datetime-local"
+                                            className={`form-control ${errors.startTime ? "is-invalid" : ""}`}
+                                            name="startTime"
+                                            value={formData.startTime}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.startTime && (
+                                            <div className="invalid-feedback">
+                                                {errors.startTime[0]}
                                             </div>
-
-                                            <div className="mb-3">
-                                                <label className="form-label">
-                                                    Exam End Time:
-                                                </label>
-                                                <input
-                                                    type="datetime-local"
-                                                    className="form-control"
-                                                    name="endTime"
-                                                    value={formData.endTime}
-                                                    onChange={handleChange}
-                                                    required
-                                                />
+                                        )}
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label">Exam End Time:</label>
+                                        <input
+                                            type="datetime-local"
+                                            className={`form-control ${errors.endTime ? "is-invalid" : ""}`}
+                                            name="endTime"
+                                            value={formData.endTime}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.endTime && (
+                                            <div className="invalid-feedback">
+                                                {errors.endTime[0]}
                                             </div>
-                                        </>
-                                    )}
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-
                             <div className="modal-footer">
                                 <button
                                     type="button"
                                     className="btn btn-secondary"
                                     onClick={onClose}
+                                    disabled={submitting}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     className="btn btn-primary"
+                                    disabled={submitting}
                                 >
-                                    Save Changes
+                                    {submitting ? "Saving..." : "Save Changes"}
                                 </button>
                             </div>
                         </form>

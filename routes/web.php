@@ -75,8 +75,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
     });
 
-    Route::post('/exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
-    Route::get('/exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
+    Route::post('/admin/exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
+    Route::get('/admin/exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
+    Route::get('/admin/exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
+    Route::put('/admin/exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
+//    Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
