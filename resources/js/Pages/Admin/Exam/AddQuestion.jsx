@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
 
-const AddQuestionModal = ({ show, onClose, examId }) => {
+const AddQuestionModal = ({ show, onClose, examSlug }) => {
     const { data, setData, post, processing, errors } = useForm({
         question: "",
         options: [
@@ -29,7 +29,7 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
             }
         });
 
-        post(route("admin.exam.questions.store", { exam: examId }), {
+        post(route("admin.exam.questions.store", { exam: examSlug }), {
             data: formData,
             onSuccess: () => {
                 onClose();
@@ -141,7 +141,7 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
                                                 className={`flex items-start gap-4 p-3 rounded-lg border ${
                                                     errors[
                                                         `option_${index + 1}`
-                                                    ]
+                                                        ]
                                                         ? "border-danger"
                                                         : "border-gray-200"
                                                 } ${
@@ -218,7 +218,7 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
                                                             `option_${
                                                                 index + 1
                                                             }`
-                                                        ]
+                                                            ]
                                                     }
                                                 </p>
                                             )}

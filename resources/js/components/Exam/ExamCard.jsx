@@ -119,7 +119,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                         </button>
                         <Link
                             href={route("admin.exam.details", {
-                                exam: exam.id,
+                                exam: exam.slug,
                                 type: examType,
                             })}
                             className="btn btn-warning btn-sm"
