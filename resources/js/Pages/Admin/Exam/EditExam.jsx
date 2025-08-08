@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { route } from "ziggy-js";
+import { courses } from "./LiveExam/courses";
 
 const EditExamModal = ({ show, onClose, exam, loading, onSuccess }) => {
     const [formData, setFormData] = useState(null);
@@ -11,7 +12,7 @@ const EditExamModal = ({ show, onClose, exam, loading, onSuccess }) => {
         if (exam) {
             setFormData({
                 name: exam.name || "",
-                subject: exam.subject || "",
+                course: exam.course || "",
                 description: exam.description || "",
                 totalQuestions: exam.totalQuestions || "",
                 hasNegativeMarks: exam.hasNegativeMarks || false,
@@ -136,18 +137,22 @@ const EditExamModal = ({ show, onClose, exam, loading, onSuccess }) => {
                                         )}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label">Subject:</label>
-                                        <input
-                                            type="text"
-                                            className={`form-control ${errors.subject ? "is-invalid" : ""}`}
-                                            name="subject"
-                                            value={formData.subject}
+                                        <label className="form-label">Courses:</label>
+                                        <select
+                                            className={`form-select ${errors.course ? "is-invalid" : ""}`}
+                                            name="course"
+                                            value={formData.course}
                                             onChange={handleChange}
-                                        />
-                                        {errors.subject && (
-                                            <div className="invalid-feedback">
-                                                {errors.subject[0]}
-                                            </div>
+                                        >
+                                            <option value="">Select a course</option>
+                                            {courses.map((course, idx) => (
+                                                <option key={idx} value={course.courseName}>
+                                                    {course.courseName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.course && (
+                                            <div className="invalid-feedback">{errors.course[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
