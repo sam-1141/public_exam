@@ -77,7 +77,7 @@ function Navbar() {
     return (
         <>
             <nav
-                className={`pc-sidebar ${
+                className={`pc-sidebar${
                     isSideBarActive ? "mob-sidebar-active" : ""
                 } ${isDesktopCollapsed ? "pc-sidebar-hide" : ""}`}
                 ref={sidebarRef}
@@ -161,7 +161,7 @@ function Navbar() {
                                     id="sidebar-hide"
                                     onClick={handleDesktopCollapse}
                                 >
-                                    <i className="ti ti-menu-2" />
+                                    <i className="ti ti-menu-2 ms-2" />
                                 </a>
                             </li>
                             {/* ======= Menu collapse Icon for Mobile ===== */}
@@ -180,7 +180,7 @@ function Navbar() {
                     {/* [Mobile Media Block end] */}
                     <div className="ms-auto">
                         <ul className="list-unstyled">
-                            <li className="dropdown pc-h-item header-user-profile">
+                            <li className="dropdown pc-h-item header-user-profile me-3">
                                 <a
                                     className="pc-head-link dropdown-toggle arrow-none me-0"
                                     data-bs-toggle="dropdown"

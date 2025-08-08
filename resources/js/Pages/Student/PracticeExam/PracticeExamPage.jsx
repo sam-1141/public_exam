@@ -211,10 +211,10 @@ const PracticeExamPage = () => {
   const progressPercentage = (answeredCount / exam.questions.length) * 100
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div className="position-relative min-vh-100 bg-light">
       {/* Exam Header */}
-      <div className="bg-white border-bottom sticky-top">
-        <div className="container-fluid py-3">
+      <div className=" bg-white border-bottom top-0 custom-sticky-top rounded">
+        <div className="container-fluid py-3 ">
           <div className="row align-items-center">
             <div className="col-md-4">
               <h4 className="mb-0 fw-bold">{exam.name}</h4>
