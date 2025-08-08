@@ -1,8 +1,8 @@
 const QuestionReview = ({ question, questionNumber }) => {
   const getQuestionBgColor = () => {
-    if (question.userAnswer === null) return "bg-warning bg-opacity-10 border-warning" // Skipped
-    if (question.userAnswer === question.correctAnswer) return "bg-success bg-opacity-10 border-success" // Correct
-    return "bg-danger bg-opacity-10 border-danger" // Wrong
+    if (question.userAnswer === null) return " border-warning" // Skipped
+    if (question.userAnswer === question.correctAnswer) return " border-success" // Correct
+    return " border-danger" // Wrong
   }
 
   const getStatusIcon = () => {

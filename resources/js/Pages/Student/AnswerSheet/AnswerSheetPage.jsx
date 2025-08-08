@@ -27,13 +27,12 @@ const AnswerSheetPage = () => {
     <div className="flex-grow-1 d-flex flex-column font-baloo">
       <PageHeader
         title="উত্তরপত্র"
-        streak={8}
       />
 
       <main className="flex-grow-1 px-0 py-2 bg-light">
-        <div className="container-fluid">
+        <div className="">
           <div className="row justify-content-center">
-            <div className="col-12 col-lg-10">
+            <div className="col-12 ">
               {/* Exam Summary */}
               <ExamSummary examData={examData} />
 
