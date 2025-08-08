@@ -2,6 +2,22 @@ import { Link } from "@inertiajs/react";
 import React, { useState } from "react";
 import { route } from "ziggy-js";
 import "./admin.css";
+import {
+  LayoutDashboard,
+  ShieldCheck,
+  Users,
+  GraduationCap,
+  FilePlus,
+  BookOpenCheck,
+  Library,
+  Trophy,
+  CalendarClock ,
+  ClipboardCheck,
+  ClipboardPlus,
+  History,
+  ChevronDown ,
+    ChevronUp
+} from "lucide-react";
 
 function AdminNavLinks() {
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -30,9 +46,7 @@ function AdminNavLinks() {
                     <li className="pc-item">
                         <Link href={route("dashboard")} className="pc-link">
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    dashboard
-                                </i>
+                                <LayoutDashboard size={18}/>
                             </span>
                             <span className="pc-mtext" data-i18n="Dashboard">
                                 Dashboard
@@ -55,15 +69,15 @@ function AdminNavLinks() {
                             }}
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    admin_panel_settings
-                                </i>
+                                <ShieldCheck size={18}/>
                             </span>
                             <span className="pc-mtext">Admins</span>
                             <span className="pc-arrow">
-                                <i className="material-icons-two-tone">
-                                    keyboard_arrow_down
-                                </i>
+                                {openDropdown === "admin" ? (
+                                    <ChevronUp size={18} />
+                                    ) : (
+                                    <ChevronDown size={18} />
+                                )}
                             </span>
                         </a>
                         <ul
@@ -103,15 +117,15 @@ function AdminNavLinks() {
                             }}
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    people_alt
-                                </i>
+                                <Users size={18}/>
                             </span>
                             <span className="pc-mtext">Teachers</span>
                             <span className="pc-arrow">
-                                <i className="material-icons-two-tone">
-                                    keyboard_arrow_down
-                                </i>
+                                {openDropdown === "teacher" ? (
+                                    <ChevronUp size={18} />
+                                    ) : (
+                                    <ChevronDown size={18} />
+                                )}
                             </span>
                         </a>
                         <ul
@@ -154,15 +168,15 @@ function AdminNavLinks() {
                             }}
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    school
-                                </i>
+                                <GraduationCap size={18}/>
                             </span>
                             <span className="pc-mtext">Students</span>
                             <span className="pc-arrow">
-                                <i className="material-icons-two-tone">
-                                    keyboard_arrow_down
-                                </i>
+                                {openDropdown === "student" ? (
+                                    <ChevronUp size={18} />
+                                    ) : (
+                                    <ChevronDown size={18} />
+                                )}
                             </span>
                         </a>
                         <ul
@@ -195,9 +209,7 @@ function AdminNavLinks() {
                     <li className="pc-item">
                         <Link href={route("add.questions")} className="pc-link">
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    create_new_folder
-                                </i>
+                                <FilePlus size={18}/>
                             </span>
                             <span className="pc-mtext" data-i18n="Add Question">
                                 Add Question
@@ -210,9 +222,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    add_circle_outline
-                                </i>
+                                <ClipboardPlus size={18}/>
                             </span>
                             <span className="pc-mtext" data-i18n="Add Question">
                                 Add Exam
@@ -222,9 +232,7 @@ function AdminNavLinks() {
                     <li className="pc-item">
                         <Link href={route("mcq.bank")} className="pc-link">
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    question_answer
-                                </i>
+                                <BookOpenCheck  size={18}/>
                             </span>
                             <span
                                 className="pc-mtext"
@@ -240,9 +248,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    library_books
-                                </i>
+                                <Library  size={18}/>
                             </span>
                             <span
                                 className="pc-mtext"
@@ -258,9 +264,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <i className="material-icons-two-tone">
-                                    leaderboard
-                                </i>
+                                <Trophy size={18}/>
                             </span>
                             <span
                                 className="pc-mtext"
@@ -281,9 +285,7 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <i className="material-icons-two-tone">
-                                        dashboard
-                                    </i>
+                                    <LayoutDashboard size={18}/>
                                 </span>
                                 <span
                                     className="pc-mtext"
@@ -299,9 +301,7 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <i className="material-icons-two-tone">
-                                        schedule
-                                    </i>
+                                    <CalendarClock size={18}/>
                                 </span>
                                 <span
                                     className="pc-mtext"
@@ -317,9 +317,7 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <i className="material-icons-two-tone">
-                                        schedule
-                                    </i>
+                                    <ClipboardCheck size={18}/>
                                 </span>
                                 <span
                                     className="pc-mtext"
@@ -371,9 +369,7 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <i className="material-icons-two-tone">
-                                        leaderboard
-                                    </i>
+                                    <Trophy size={18}/>
                                 </span>
                                 <span
                                     className="pc-mtext"
@@ -389,9 +385,7 @@ function AdminNavLinks() {
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
-                                    <i className="material-icons-two-tone">
-                                        history
-                                    </i>
+                                    <History size={18}/>
                                 </span>
                                 <span
                                     className="pc-mtext"
