@@ -59,12 +59,41 @@ class LiveExamController extends Controller
     }
 
 
-    public function loadViewExamDetails($type, $examId)
-    {
-        return Inertia::render('Admin/Exam/ViewDetails',[
-            'exam' => $examId,
-            'examType' => $type
+//    public function loadViewExamDetails($type, $examSlug)
+//    {
+////        dd($type);
+//        return Inertia::render('Admin/Exam/ViewDetails',[
+//            'exam' => $examSlug,
+//            'examType' => $type
+//
+//        ]);
+//    }
 
+    public function loadViewExamDetails($type, $examSlug)
+    {
+        $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
+        // You can format or append other data here if needed.
+
+        return Inertia::render('Admin/Exam/ViewDetails', [
+            'exam' => [
+                'id' => $exam->id,
+                'name' => $exam->name,
+                'slug' => $exam->slug,
+                'subject' => $exam->subject,
+                'description' => $exam->description,
+                'totalQuestions' => $exam->total_questions,
+                'hasNegativeMarks' => $exam->has_negative_marks,
+                'negativeMarksValue' => $exam->negative_marks_value,
+                'totalMarks' => $exam->total_marks,
+                'duration' => $exam->duration,
+                'questionType' => $exam->question_type,
+                'privacy' => $exam->privacy,
+                'publishInstant' => $exam->publish_instant,
+                'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
+                'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
+                'examUrl' => $exam->exam_url,
+            ],
+            'examType' => $type,
         ]);
     }
 
