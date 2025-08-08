@@ -144,12 +144,12 @@ const ExamCard = ({ exam, examType = "live" }) => {
                 </div>
             </div>
 
-            {/*<EditExamModal*/}
-            {/*    show={showEditModal}*/}
-            {/*    onClose={() => setShowEditModal(false)}*/}
-            {/*    exam={exam}*/}
-            {/*    examType={examType}*/}
-            {/*/>*/}
+            <EditExamModal
+                show={showEditModal}
+                onClose={() => setShowEditModal(false)}
+                exam={exam}
+                examType={examType}
+            />
         </div>
     );
 };

@@ -1,16 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
-import Layout from "../../../../layouts/Layout";
 import { route } from "ziggy-js";
-// import { exams } from "../exam";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AddLiveExamModal from "./AddLiveExam";
 import ExamCard from "../../../../components/Exam/ExamCard";
+import Layout from "../../../../layouts/Layout";
 
-const LiveExam = ({ exams }) => {
+const LiveExam = () => {
     const [showAddModal, setShowAddModal] = useState(false);
+    const [exams, setExams] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(false);
+
+    // Fetch exams
+    useEffect(() => {
+        setLoading(true);
+        axios.get(route("show.exam.list"))
+            .then((res) => {
+                setExams(res.data.exams || []);
+            })
+            .catch(() => {
+                toast.error("Failed to load exams");
+                setExams([]);
+            })
+            .finally(() => setLoading(false));
+    }, [refresh]);
+
+    const handleExamCreated = () => {
+        setRefresh((prev) => !prev);
+        toast.success("Exam created successfully!");
+    };
 
     return (
         <div className="container py-4">
+            <ToastContainer position="top-right" autoClose={2500} />
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <Link href={route("admin.add.exam")} className="btn btn-sm ">
                     <i className="fas fa-arrow-left me-1"></i>Back
@@ -24,40 +49,46 @@ const LiveExam = ({ exams }) => {
                 </button>
             </div>
 
-            {/* Page title */}
             <h2 className="mb-4 font-semibold text-2xl text-center">
                 Live Exams
             </h2>
 
-            {/* Exams list */}
-            <div className="row">
-                {exams.map((exam) => (
-                    <ExamCard key={exam.id} exam={exam} examType="live" />
-                ))}
-            </div>
-
-            {/* Empty state */}
-            {exams.length === 0 && (
-                <div className="text-center py-3">
-                    <div className="mb-3">
-                        <i className="fas fa-calendar-times fa-3x text-muted"></i>
+            {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
+                    <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                        <span className="visually-hidden">Loading...</span>
                     </div>
-                    <h4 className="mb-2">No Live Exams Found</h4>
-                    <p className="text-muted mb-4">
-                        You haven't created any live exams yet
-                    </p>
-                    <Link href="/exams/live/create" className="btn btn-primary">
-                        <i className="fas fa-plus me-2"></i>Create Your First
-                        Live Exam
-                    </Link>
                 </div>
+            ) : (
+                <>
+                    <div className="row">
+                        {exams.map((exam) => (
+                            <ExamCard key={exam.id} exam={exam} examType="live" />
+                        ))}
+                    </div>
+
+                    {exams.length === 0 && (
+                        <div className="text-center py-3">
+                            <div className="mb-3">
+                                <i className="fas fa-calendar-times fa-3x text-muted"></i>
+                            </div>
+                            <h4 className="mb-2">No Live Exams Found</h4>
+                            <p className="text-muted mb-4">
+                                You haven't created any live exams yet
+                            </p>
+                            <Link href="/exams/live/create" className="btn btn-primary">
+                                <i className="fas fa-plus me-2"></i>Create Your First
+                                Live Exam
+                            </Link>
+                        </div>
+                    )}
+                </>
             )}
 
-            {/* Modal Component */}
             <AddLiveExamModal
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
-                setShowAddModal={setShowAddModal}
+                onSuccess={handleExamCreated} // callback after creation
             />
         </div>
     );
