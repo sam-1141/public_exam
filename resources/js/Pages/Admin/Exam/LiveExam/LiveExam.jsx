@@ -2,40 +2,15 @@ import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import Layout from "../../../../layouts/Layout";
 import { route } from "ziggy-js";
-import { exams } from "../exam";
+// import { exams } from "../exam";
 import AddLiveExamModal from "./AddLiveExam";
 import ExamCard from "../../../../components/Exam/ExamCard";
 
-const LiveExam = () => {
+const LiveExam = ({ exams }) => {
     const [showAddModal, setShowAddModal] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        subject: "",
-        description: "",
-        totalQuestions: "",
-        negativeMarks: "no",
-        totalMarks: "",
-        duration: "",
-        questionType: "random",
-        timerRestriction: "off",
-        privacy: "everyone",
-        publishInstant: "no",
-        batch: "all",
-        startTime: "",
-        endTime: "",
-    });
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission here
-        console.log(formData);
-        setShowAddModal(false);
-        // Reset form or keep data as needed
-    };
 
     return (
         <div className="container py-4">
-            {/* Header with buttons */}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <Link href={route("admin.add.exam")} className="btn btn-sm ">
                     <i className="fas fa-arrow-left me-1"></i>Back
@@ -82,9 +57,7 @@ const LiveExam = () => {
             <AddLiveExamModal
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
-                onSubmit={handleSubmit}
-                formData={formData}
-                setFormData={setFormData}
+                setShowAddModal={setShowAddModal}
             />
         </div>
     );

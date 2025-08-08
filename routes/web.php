@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\LiveExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
-use App\Http\Controllers\LiveExamController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\TrialExamController;
 use Inertia\Inertia;
@@ -74,6 +74,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::controller(TrialExamController::class)->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
     });
+
+    Route::post('/exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
