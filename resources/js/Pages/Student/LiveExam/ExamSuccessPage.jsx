@@ -33,10 +33,10 @@ const ExamSuccessPage = ({ examId }) => {
   }
 
   return (
-    <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center font-baloo">
+    <div className=" bg-light d-flex align-items-center justify-content-center font-baloo">
       <div className="container">
         <div className="row justify-content-center">
-          <div className="col-12 col-md-6">
+          <div className="col-12 col-md-8">
             <div className="card border-0 shadow-lg">
               <div className="card-body text-center py-5">
                 <div className="mb-4">

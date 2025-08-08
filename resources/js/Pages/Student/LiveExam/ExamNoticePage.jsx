@@ -42,15 +42,15 @@ const ExamNoticePage = ({
 
   return (
     <div className="flex-grow-1 d-flex flex-column font-baloo">
-      <PageHeader
+      {/* <PageHeader
         title="লাইভ পরীক্ষা"
         streak={7}
-      />
+      /> */}
 
-      <main className="flex-grow-1 p-1 bg-light">
-        <div className="container-fluid">
-          <div className="row justify-content-center mb-4">
-            <div className="col-12 col-lg-10">
+      <main className="flex-grow-1 p-1 bg-light mt-2">
+        <div className="">
+          <div className=" justify-content-center mb-4">
+            <div className="col-12">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div>
                   <h3 className="fw-bold text-dark mb-1">চলমান পরীক্ষাসমূহ</h3>
@@ -66,8 +66,8 @@ const ExamNoticePage = ({
             </div>
           </div>
 
-          <div className="row justify-content-center">
-            <div className="col-12 col-lg-10">
+          <div className="">
+            <div className="col-12">
               {liveExams.length > 0 ? (
                 <div className="row">
                   {liveExams.map((exam) => (

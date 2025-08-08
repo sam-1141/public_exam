@@ -1,13 +1,12 @@
 import Layout from "../../../layouts/Layout"
 import { useState, useMemo } from "react"
-import DateSection from "./DateSection"
 import HistoryPagination from "./HistoryPagination"
 import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
+import ExamHistoryCard from "./ExamHistoryCard"
 
 const HistoryPage = () => {
   const [selectedCourse, setSelectedCourse] = useState("physics")
-  const [activeTab, setActiveTab] = useState("live")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
@@ -20,116 +19,94 @@ const HistoryPage = () => {
     { id: "english", name: "English" },
   ]
 
-  const currentExamData = examHistory[selectedCourse]?.[activeTab] || []
+  const currentExamData = examHistory[selectedCourse]?.live || []
 
-  // Group exams by date and sort
+  // Group & sort exams (newest date first, then time descending)
   const groupedExams = useMemo(() => {
     const grouped = currentExamData.reduce((acc, dateGroup) => {
-      acc[dateGroup.date] = dateGroup.exams.sort((a, b) => {
-        return new Date(`2000-01-01 ${b.time}`) - new Date(`2000-01-01 ${a.time}`)
-      })
+      acc[dateGroup.date] = dateGroup.exams.sort(
+        (a, b) => new Date(`2000-01-01 ${b.time}`) - new Date(`2000-01-01 ${a.time}`)
+      )
       return acc
     }, {})
 
-    // Sort dates (newest first)
-    const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a))
-
-    return sortedDates.map((date) => ({
-      date,
-      exams: grouped[date],
-    }))
+    return Object.keys(grouped)
+      .sort((a, b) => new Date(b) - new Date(a)) // sort newest date first
+      .map((date) => ({ date, exams: grouped[date] }))
   }, [currentExamData])
 
-  // Pagination
   const totalPages = Math.ceil(groupedExams.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentPageData = groupedExams.slice(startIndex, endIndex)
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+  const currentPageData = groupedExams.slice(startIndex, startIndex + itemsPerPage)
 
   const handleCourseChange = (courseId) => {
     setSelectedCourse(courseId)
     setCurrentPage(1)
   }
 
-  const handleAnswerSheet = (exam) => {
-    console.log("Navigate to answer sheet:", exam.id)
-    // Navigate to answer sheet page
-  }
-
-  const handleLeaderboard = (exam) => {
-    console.log("Navigate to leaderboard:", exam.id)
-    // Navigate to leaderboard page
-  }
-
   const selectedCourseName = courses.find((c) => c.id === selectedCourse)?.name || ""
-  const totalExams = currentExamData.reduce((total, dateGroup) => total + dateGroup.exams.length, 0)
+
+  // Bangla date formatter
+  const getBanglaDate = (dateStr) => {
+    const englishToBangla = { 0: "০", 1: "১", 2: "২", 3: "৩", 4: "৪", 5: "৫", 6: "৬", 7: "৭", 8: "৮", 9: "৯" }
+    const monthNames = {
+      January: "জানুয়ারি", February: "ফেব্রুয়ারি", March: "মার্চ", April: "এপ্রিল",
+      May: "মে", June: "জুন", July: "জুলাই", August: "আগস্ট", September: "সেপ্টেম্বর",
+      October: "অক্টোবর", November: "নভেম্বর", December: "ডিসেম্বর"
+    }
+
+    const d = new Date(dateStr)
+    const day = d.getDate().toString().replace(/\d/g, (num) => englishToBangla[num])
+    const month = monthNames[d.toLocaleDateString("en-US", { month: "long" })]
+    const year = d.getFullYear().toString().replace(/\d/g, (num) => englishToBangla[num])
+
+    return `${day} ${month}, ${year}`
+  }
 
   return (
-    <div className=" d-flex flex-column font-baloo">
-      <PageHeader
-        title="ইতিহাস"
-      />
+    <div className="d-flex flex-column font-baloo">
+      <PageHeader title="ইতিহাস" />
 
-      <main className="flex-grow-1 p-1 bg-light">
-        <div className="container-fluid">
-          <div className="row justify-content-center">
-            <div className="col-12 col-lg-10">
-              {/* Controls */}
+      <main className="flex-grow-1 mt-2 bg-light">
+        <div className="col-12">
+
+              {/* Course Selector */}
               <div className="card border-0 shadow-sm mb-4">
                 <div className="card-body p-3">
-                  <div className="row align-items-center g-3">
-                    <div className="col-12 col-md-6">
-                      <label className="form-label fw-semibold mb-2">কোর্স নির্বাচন করুন</label>
-                      <select
-                        className="form-select"
-                        value={selectedCourse}
-                        onChange={(e) => handleCourseChange(e.target.value)}
-                      >
-                        {courses.map((course) => (
-                          <option key={course.id} value={course.id}>
-                            {course.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                  <label className="form-label fw-semibold mb-2">কোর্স নির্বাচন করুন</label>
+                  <select
+                    className="form-select"
+                    value={selectedCourse}
+                    onChange={(e) => handleCourseChange(e.target.value)}
+                  >
+                    {courses.map((course) => (
+                      <option key={course.id} value={course.id}>
+                        {course.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
               {/* Summary */}
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <div>
-                  <h4 className="fw-bold text-dark mb-1">
-                    {selectedCourseName}
-                  </h4>
-                </div>
-                <div className="text-end">
-                </div>
-              </div>
+              <h4 className="fw-bold text-dark mb-4">{selectedCourseName}</h4>
 
               {/* Exam History */}
               {currentPageData.length > 0 ? (
                 <>
                   {currentPageData.map((dateGroup, index) => (
-                    <DateSection
-                      key={index}
-                      date={dateGroup.date}
-                      exams={dateGroup.exams}
-                      onAnswerSheet={handleAnswerSheet}
-                      onLeaderboard={handleLeaderboard}
-                    />
+                    <div key={index} className=" ms-3">
+                      {dateGroup.exams.map((exam, idx) => (
+                        <ExamHistoryCard key={idx} exam={exam} date={getBanglaDate(dateGroup.date)} />
+                      ))}
+                    </div>
                   ))}
 
-                  {/* Pagination */}
                   {totalPages > 1 && (
                     <HistoryPagination
                       currentPage={currentPage}
                       totalPages={totalPages}
-                      onPageChange={handlePageChange}
+                      onPageChange={setCurrentPage}
                       totalItems={groupedExams.length}
                       itemsPerPage={itemsPerPage}
                     />
@@ -145,17 +122,16 @@ const HistoryPage = () => {
                   </div>
                   <h5 className="fw-bold text-muted mb-2">কোনো পরীক্ষার ইতিহাস নেই</h5>
                   <p className="text-muted">
-                    {selectedCourseName} এর {activeTab === "live" ? "লাইভ পরীক্ষা" : "প্র্যাকটিস"} এ এখনো অংশগ্রহণ করেননি।
+                    {selectedCourseName} এর লাইভ পরীক্ষায় এখনো অংশগ্রহণ করেননি।
                   </p>
                 </div>
               )}
+
             </div>
-          </div>
-        </div>
       </main>
     </div>
   )
 }
 
-HistoryPage.layout = (page) => <Layout children={page} />;
-export default HistoryPage;
+HistoryPage.layout = (page) => <Layout>{page}</Layout>
+export default HistoryPage
