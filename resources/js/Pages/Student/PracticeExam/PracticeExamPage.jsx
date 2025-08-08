@@ -254,9 +254,9 @@ const PracticeExamPage = () => {
       </div>
 
       {/* Questions */}
-      <div className="container-fluid py-4">
-        <div className="row justify-content-center">
-          <div className="col-12 col-lg-8">
+      <div className=" py-4">
+        <div className=" justify-content-center">
+          <div className="col-12 ">
             {exam.questions.map((question, index) => (
               <QuestionCard
                 key={question.id}

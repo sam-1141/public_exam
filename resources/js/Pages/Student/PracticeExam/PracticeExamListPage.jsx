@@ -114,10 +114,10 @@ const PracticeExamListPage = () => {
 
     return (
         <div className="flex-grow-1 d-flex flex-column font-baloo">
-            <main className="flex-grow-1 p-3 bg-light">
-                <div className="container-fluid">
-                    <div className="row justify-content-center">
-                        <div className="col-12 col-lg-10">
+            <main className="flex-grow-1 p-1 bg-light">
+                <div className="">
+                    <div className=" justify-content-center">
+                        <div className="col-12">
                             {/* Page Header */}
                             <div className="mb-4">
                                 <h3 className="fw-bold text-dark mb-1">প্র্যাকটিস পরীক্ষা</h3>
@@ -129,8 +129,8 @@ const PracticeExamListPage = () => {
                                 <>
                                     <div className="row">
                                         {currentExams.map((exam) => (
-                                            <div key={exam.id} className="col-12 col-md-6 col-lg-4 mb-4">
-                                                <div className="card h-100 border-0 shadow-sm">
+                                            <div key={exam.id} className="col-12 col-md-6 col-lg-4 mb-2">
+                                                <div className="card  border-0 shadow-sm">
                                                     <div className="card-body p-4">
                                                         <div className="d-flex justify-content-between align-items-start mb-3">
                                                             <h5 className="card-title fw-bold mb-0">{exam.name}</h5>
