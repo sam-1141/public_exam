@@ -24,3 +24,9 @@ body.modal-open .pc-sidebar {
     background-color: #b6b2b2; /* or any color you prefer */
     transition: background-color 0.2s ease;
 }
+
+.custom-sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1050; /* higher than Bootstrap default 1020 */
+}

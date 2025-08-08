@@ -37,7 +37,7 @@ body.pc-sidebar-hide .pc-header {
         width: 280px;
         position: fixed;
         left: -280px;
-        z-index: 1050;
+        z-index: 1060;
     }
 
     .pc-sidebar.mob-sidebar-active {

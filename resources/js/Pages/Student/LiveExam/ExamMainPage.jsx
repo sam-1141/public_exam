@@ -87,9 +87,9 @@ const ExamMainPage = ({ examId }) => {
   const progressPercentage = (answeredCount / exam.questions.length) * 100
 
   return (
-    <div className="min-vh-100 bg-light font-baloo">
+    <div className="position-relative min-vh-100 bg-light font-baloo">
       {/* Exam Header */}
-      <div className="bg-white border-bottom sticky-top">
+      <div className="bg-white border-bottom top-0 custom-sticky-top rounded">
         <div className="container-fluid py-3">
           <div className="row align-items-center">
             <div className="col-md-4">
