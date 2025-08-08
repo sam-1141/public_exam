@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {route} from "ziggy-js";
+import { route } from "ziggy-js";
+import { courses } from "./courses";
 
-const AddLiveExamModal = ({show, onClose, onSuccess}) => {
+
+const AddLiveExamModal = ({ show, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
         name: "",
-        subject: "",
+        course: "",
         description: "",
         total_questions: "",
         has_negative_marks: false,
@@ -26,8 +28,11 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
 
         setFormData((prev) => ({
             ...prev,
-            [name]: name === "privacy" && value === "" ? null
-                : type === "checkbox" ? checked
+            [name]:
+                name === "privacy" && value === ""
+                    ? null
+                    : type === "checkbox"
+                    ? checked
                     : value,
         }));
     };
@@ -38,18 +43,20 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
         setErrors({});
         try {
             await axios.post(
-                route('execute.store.exam'),
+                route("execute.store.exam"),
                 formData,
                 {
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        "X-CSRF-TOKEN": document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content"),
                     },
                 }
             );
             setFormData({
                 name: "",
-                subject: "",
+                course: "",
                 description: "",
                 total_questions: "",
                 has_negative_marks: false,
@@ -93,11 +100,7 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                         <h5 className="modal-title text-xl font-semibold">
                             Create New Live Exam
                         </h5>
-                        <button
-                            type="button"
-                            className="btn-close"
-                            onClick={onClose}
-                        ></button>
+                        <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>
@@ -110,36 +113,44 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                         <label className="form-label">Name:</label>
                                         <input
                                             type="text"
-                                            className={`form-control ${errors.name ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.name ? "is-invalid" : ""
+                                            }`}
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
                                         />
                                         {errors.name && (
-                                            <div className="invalid-feedback">
-                                                {errors.name[0]}
-                                            </div>
+                                            <div className="invalid-feedback">{errors.name[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label">Subject:</label>
-                                        <input
-                                            type="text"
-                                            className={`form-control ${errors.subject ? "is-invalid" : ""}`}
-                                            name="subject"
-                                            value={formData.subject}
+                                        <label className="form-label">Courses:</label>
+                                        <select
+                                            className={`form-select w-100${
+                                                errors.course ? "is-invalid" : ""
+                                            }`}
+                                            name="course"
+                                            value={formData.course}
                                             onChange={handleChange}
-                                        />
-                                        {errors.subject && (
-                                            <div className="invalid-feedback">
-                                                {errors.subject[0]}
-                                            </div>
+                                        >
+                                            <option value="">Select a course</option>
+                                            {courses.map((course, idx) => (
+                                                <option key={idx} value={course.courseName}>
+                                                    {course.courseName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.course && (
+                                            <div className="invalid-feedback">{errors.course[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Description:</label>
                                         <textarea
-                                            className={`form-control ${errors.description ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.description ? "is-invalid" : ""
+                                            }`}
                                             name="description"
                                             value={formData.description}
                                             onChange={handleChange}
@@ -155,7 +166,9 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                         <label className="form-label">Total Questions:</label>
                                         <input
                                             type="number"
-                                            className={`form-control ${errors.total_questions ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.total_questions ? "is-invalid" : ""
+                                            }`}
                                             name="total_questions"
                                             value={formData.total_questions}
                                             onChange={handleChange}
@@ -172,7 +185,9 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                         <label className="form-label">Total Marks:</label>
                                         <input
                                             type="number"
-                                            className={`form-control ${errors.total_marks ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.total_marks ? "is-invalid" : ""
+                                            }`}
                                             name="total_marks"
                                             value={formData.total_marks}
                                             onChange={handleChange}
@@ -187,21 +202,23 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                         <label className="form-label">Duration (min):</label>
                                         <input
                                             type="number"
-                                            className={`form-control ${errors.duration ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.duration ? "is-invalid" : ""
+                                            }`}
                                             name="duration"
                                             value={formData.duration}
                                             onChange={handleChange}
                                         />
                                         {errors.duration && (
-                                            <div className="invalid-feedback">
-                                                {errors.duration[0]}
-                                            </div>
+                                            <div className="invalid-feedback">{errors.duration[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Question Type:</label>
                                         <select
-                                            className={`form-select ${errors.question_type ? "is-invalid" : ""}`}
+                                            className={`form-select ${
+                                                errors.question_type ? "is-invalid" : ""
+                                            }`}
                                             name="question_type"
                                             value={formData.question_type}
                                             onChange={handleChange}
@@ -238,11 +255,20 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                                 <div style={{ width: "200px" }}>
                                                     <input
                                                         type="number"
-                                                        className={`form-control ${errors.negative_marks_value ? "is-invalid" : ""}`}
+                                                        className={`form-control ${
+                                                            errors.negative_marks_value
+                                                                ? "is-invalid"
+                                                                : ""
+                                                        }`}
                                                         min="0"
                                                         step="any"
                                                         value={formData.negative_marks_value}
-                                                        onChange={e => setFormData({ ...formData, negative_marks_value: e.target.value })}
+                                                        onChange={(e) =>
+                                                            setFormData({
+                                                                ...formData,
+                                                                negative_marks_value: e.target.value,
+                                                            })
+                                                        }
                                                         placeholder="Enter marks"
                                                         name="negative_marks_value"
                                                     />
@@ -260,39 +286,33 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                 {/* Advanced Settings */}
                                 <div className="col-12">
                                     <hr />
-                                    <h6 className="my-3 font-semibold text-lg">
-                                        Advanced Settings
-                                    </h6>
+                                    <h6 className="my-3 font-semibold text-lg">Advanced Settings</h6>
                                 </div>
                                 <div className="col-md-6">
                                     <div className="mb-3">
                                         <label className="form-label">Privacy:</label>
                                         <select
-                                            className={`form-select ${errors.privacy ? "is-invalid" : ""}`}
+                                            className={`form-select ${
+                                                errors.privacy ? "is-invalid" : ""
+                                            }`}
                                             name="privacy"
                                             value={formData.privacy}
                                             onChange={handleChange}
                                         >
-                                            <option value="everyone">
-                                                Select
-                                            </option>
-                                            <option value="everyone">
-                                                Everyone
-                                            </option>
-                                            <option value="link">
-                                                By Link Only
-                                            </option>
+                                            <option value="everyone">Select</option>
+                                            <option value="everyone">Everyone</option>
+                                            <option value="link">By Link Only</option>
                                         </select>
                                         {errors.privacy && (
-                                            <div className="invalid-feedback">
-                                                {errors.privacy[0]}
-                                            </div>
+                                            <div className="invalid-feedback">{errors.privacy[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Publish Instant?</label>
                                         <select
-                                            className={`form-select ${errors.publish_instant ? "is-invalid" : ""}`}
+                                            className={`form-select ${
+                                                errors.publish_instant ? "is-invalid" : ""
+                                            }`}
                                             name="publish_instant"
                                             value={formData.publish_instant}
                                             onChange={handleChange}
@@ -312,30 +332,30 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                         <label className="form-label">Exam Start Time:</label>
                                         <input
                                             type="datetime-local"
-                                            className={`form-control ${errors.start_time ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.start_time ? "is-invalid" : ""
+                                            }`}
                                             name="start_time"
                                             value={formData.start_time}
                                             onChange={handleChange}
                                         />
                                         {errors.start_time && (
-                                            <div className="invalid-feedback">
-                                                {errors.start_time[0]}
-                                            </div>
+                                            <div className="invalid-feedback">{errors.start_time[0]}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Exam End Time:</label>
                                         <input
                                             type="datetime-local"
-                                            className={`form-control ${errors.end_time ? "is-invalid" : ""}`}
+                                            className={`form-control ${
+                                                errors.end_time ? "is-invalid" : ""
+                                            }`}
                                             name="end_time"
                                             value={formData.end_time}
                                             onChange={handleChange}
                                         />
                                         {errors.end_time && (
-                                            <div className="invalid-feedback">
-                                                {errors.end_time[0]}
-                                            </div>
+                                            <div className="invalid-feedback">{errors.end_time[0]}</div>
                                         )}
                                     </div>
                                 </div>
@@ -349,11 +369,7 @@ const AddLiveExamModal = ({show, onClose, onSuccess}) => {
                                 >
                                     Cancel
                                 </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                    disabled={submitting}
-                                >
+                                <button type="submit" className="btn btn-primary" disabled={submitting}>
                                     {submitting ? "Creating..." : "Create Exam"}
                                 </button>
                             </div>
