@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
-import { exams, practiceExams } from "./exam";
 import { route } from "ziggy-js";
 import AddQuestionModal from "./AddQuestion";
 import QuestionList from "./QuiestionList";
 
-const ExamDetails = ({ examType = "live" }) => {
-    const { props } = usePage();
-    const examId = parseInt(props.exam);
+const ExamDetails = ({ examType, exam }) => {
+    // const { exam } = usePage().props;
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
-
-    const exam =
-        examType === "practice"
-            ? practiceExams.find((e) => e.id === examId)
-            : exams.find((e) => e.id === examId);
 
     const isPracticeExam = examType === "practice";
 
@@ -27,12 +20,8 @@ const ExamDetails = ({ examType = "live" }) => {
         <div className="container py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <Link
-                    href={
-                        isPracticeExam
-                            ? route("admin.add.practice.exam")
-                            : route("admin.add.live.exam")
-                    }
-                    className="btn  btn-sm"
+                    href={route(isPracticeExam ? "admin.add.practice.exam" : "admin.add.exam")}
+                    className="btn btn-sm"
                 >
                     <i className="fas fa-arrow-left me-1"></i>Back
                 </Link>
@@ -51,7 +40,7 @@ const ExamDetails = ({ examType = "live" }) => {
                         <div className="d-flex justify-content-between align-items-start">
                             <div>
                                 <h3 className="h5 card-title mb-1">
-                                    {exam.title}
+                                    {exam.name}
                                 </h3>
                                 <p className="card-text text-muted text-truncate-2">
                                     {exam.description}
@@ -72,7 +61,7 @@ const ExamDetails = ({ examType = "live" }) => {
                                     <div>
                                         <div className="fw-bold">Questions</div>
                                         <small>
-                                            {exam.questionList.length}
+                                            {exam.totalQuestions}
                                         </small>
                                     </div>
                                 </div>
@@ -85,7 +74,11 @@ const ExamDetails = ({ examType = "live" }) => {
                                         <div className="fw-bold">
                                             Negative Marks
                                         </div>
-                                        <small>{exam.negativeMarks}</small>
+                                        <small>
+                                            {exam.hasNegativeMarks
+                                                ? `-${exam.negativeMarksValue} per wrong`
+                                                : "No"}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -167,6 +160,7 @@ const ExamDetails = ({ examType = "live" }) => {
                             className="btn btn-outline-primary btn-sm"
                             onClick={() =>
                                 copyToClipboard(
+                                    exam.examUrl ??
                                     `${window.location.origin}/exams/${exam.id}`
                                 )
                             }
@@ -187,16 +181,16 @@ const ExamDetails = ({ examType = "live" }) => {
                 )}
             </div>
 
-            <QuestionList
-                questions={exam.questionList}
-                examId={exam.id}
-                examType={examType}
-            />
+            {/*<QuestionList*/}
+            {/*    questions={exam.questionList || []}*/}
+            {/*    examId={1}*/}
+            {/*    examType={examType}*/}
+            {/*/>*/}
 
             <AddQuestionModal
                 show={showAddQuestionModal}
                 onClose={() => setShowAddQuestionModal(false)}
-                examId={exam.id}
+                examSlug={exam.Slug}
                 examType={examType}
             />
         </div>

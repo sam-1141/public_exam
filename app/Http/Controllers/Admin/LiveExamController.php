@@ -33,7 +33,6 @@ class LiveExamController extends Controller
     {
         $examId = $request->query('examId');
 
-        // Validate examId if needed
         if (!$examId) {
             return redirect()->route('student.live.exam.notice');
         }
@@ -60,12 +59,41 @@ class LiveExamController extends Controller
     }
 
 
-    public function loadViewExamDetails($type, $examId)
-    {
-        return Inertia::render('Admin/Exam/ViewDetails',[
-            'exam' => $examId,
-            'examType' => $type
+//    public function loadViewExamDetails($type, $examSlug)
+//    {
+////        dd($type);
+//        return Inertia::render('Admin/Exam/ViewDetails',[
+//            'exam' => $examSlug,
+//            'examType' => $type
+//
+//        ]);
+//    }
 
+    public function loadViewExamDetails($type, $examSlug)
+    {
+        $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
+        // You can format or append other data here if needed.
+
+        return Inertia::render('Admin/Exam/ViewDetails', [
+            'exam' => [
+                'id' => $exam->id,
+                'name' => $exam->name,
+                'slug' => $exam->slug,
+                'subject' => $exam->subject,
+                'description' => $exam->description,
+                'totalQuestions' => $exam->total_questions,
+                'hasNegativeMarks' => $exam->has_negative_marks,
+                'negativeMarksValue' => $exam->negative_marks_value,
+                'totalMarks' => $exam->total_marks,
+                'duration' => $exam->duration,
+                'questionType' => $exam->question_type,
+                'privacy' => $exam->privacy,
+                'publishInstant' => $exam->publish_instant,
+                'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
+                'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
+                'examUrl' => $exam->exam_url,
+            ],
+            'examType' => $type,
         ]);
     }
 
@@ -128,6 +156,7 @@ class LiveExamController extends Controller
             return [
                 'id' => $exam->id,
                 'name' => $exam->name,
+                'slug' => $exam->slug,
                 'subject' => $exam->subject,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
@@ -147,4 +176,68 @@ class LiveExamController extends Controller
         return response()->json(['exams' => $exams], 200);
     }
 
+    public function getSingleExam($slug)
+    {
+        $exam = LiveExam::where('slug', $slug)->firstOrFail();
+        return response()->json([
+            'exam' => [
+                'id' => $exam->id,
+                'slug' => $exam->slug,
+                'name' => $exam->name,
+                'subject' => $exam->subject,
+                'description' => $exam->description,
+                'totalQuestions' => $exam->total_questions,
+                'hasNegativeMarks' => $exam->has_negative_marks,
+                'negativeMarksValue' => $exam->negative_marks_value,
+                'totalMarks' => $exam->total_marks,
+                'duration' => $exam->duration,
+                'questionType' => $exam->question_type,
+                'privacy' => $exam->privacy,
+                'publishInstant' => $exam->publish_instant,
+                'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d\TH:i') : null,
+                'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d\TH:i') : null,
+                'examUrl' => $exam->exam_url,
+            ]
+        ]);
+    }
+
+    public function updateExam(Request $request, $slug)
+    {
+        $exam = LiveExam::where('slug', $slug)->firstOrFail();
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subject' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'totalQuestions' => 'required|integer|min:1',
+            'hasNegativeMarks' => 'boolean',
+            'negativeMarksValue' => 'nullable|numeric|min:0',
+            'totalMarks' => 'required|integer|min:1',
+            'duration' => 'required|integer|min:1',
+            'questionType' => 'nullable|in:random,shuffle',
+            'privacy' => 'nullable|in:everyone,link',
+            'publishInstant' => 'nullable|boolean',
+            'startTime' => 'required|date',
+            'endTime' => 'required|date|after:startTime',
+        ]);
+
+        $exam->name = $validated['name'];
+        $exam->slug = \Str::slug($validated['name']);
+        $exam->subject = $validated['subject'];
+        $exam->description = $validated['description'];
+        $exam->total_questions = $validated['totalQuestions'];
+        $exam->has_negative_marks = $validated['hasNegativeMarks'];
+        $exam->negative_marks_value = $validated['negativeMarksValue'];
+        $exam->total_marks = $validated['totalMarks'];
+        $exam->duration = $validated['duration'];
+        $exam->question_type = $validated['questionType'];
+        $exam->privacy = $validated['privacy'];
+        $exam->publish_instant = $validated['publishInstant'];
+        $exam->start_time = $validated['startTime'];
+        $exam->end_time = $validated['endTime'];
+        $exam->exam_url = "https://demo.com/exams/{$exam->slug}";
+        $exam->save();
+
+        return response()->json(['message' => 'Exam updated successfully']);
+    }
 }
