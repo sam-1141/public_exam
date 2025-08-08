@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import AddLiveExamModal from "./AddLiveExam";
 import ExamCard from "../../../../components/Exam/ExamCard";
 import Layout from "../../../../layouts/Layout";
+import EditExamModal from "../../../../Pages/Admin/Exam/EditExam.jsx";
 
 const LiveExam = () => {
     const [showAddModal, setShowAddModal] = useState(false);
@@ -14,7 +15,11 @@ const LiveExam = () => {
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
 
-    // Fetch exams
+    const [editExamSlug, setEditExamSlug] = useState(null);
+    const [editExamData, setEditExamData] = useState(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+
     useEffect(() => {
         setLoading(true);
         axios.get(route("show.exam.list"))
@@ -28,9 +33,42 @@ const LiveExam = () => {
             .finally(() => setLoading(false));
     }, [refresh]);
 
+    const onClose = () => {
+        setEditExamSlug(null);
+        setEditExamData(null);
+        setEditModalOpen(false);
+    };
+
+    useEffect(() => {
+        if (editExamSlug) {
+            setEditExamData(null);
+            setEditLoading(true);
+            axios.get(route("get.single.exam", { slug: editExamSlug }))
+                .then(res => {
+                    setEditExamData(res.data.exam);
+                    setEditModalOpen(true);
+                })
+                .catch(() => {
+                    toast.error("Failed to load exam");
+                    setEditModalOpen(false);
+                })
+                .finally(() => setEditLoading(false));
+        } else {
+            setEditModalOpen(false);
+            setEditExamData(null);
+        }
+    }, [editExamSlug]);
+
     const handleExamCreated = () => {
         setRefresh((prev) => !prev);
         toast.success("Exam created successfully!");
+    };
+
+    const handleExamUpdated = () => {
+        setRefresh(prev => !prev);
+        setEditModalOpen(false);
+        setEditExamSlug(null);
+        toast.success("Exam updated successfully!");
     };
 
     return (
@@ -63,7 +101,12 @@ const LiveExam = () => {
                 <>
                     <div className="row">
                         {exams.map((exam) => (
-                            <ExamCard key={exam.id} exam={exam} examType="live" />
+                            <ExamCard
+                                key={exam.id}
+                                exam={exam}
+                                examType="live"
+                                setEditExamSlug={setEditExamSlug}
+                            />
                         ))}
                     </div>
 
@@ -88,8 +131,18 @@ const LiveExam = () => {
             <AddLiveExamModal
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
-                onSuccess={handleExamCreated} // callback after creation
+                onSuccess={handleExamCreated}
             />
+
+            {editModalOpen && editExamData && (
+                <EditExamModal
+                    show={true}
+                    onClose={onClose}
+                    exam={editExamData}
+                    loading={editLoading}
+                    onSuccess={handleExamUpdated}
+                />
+            )}
         </div>
     );
 };
