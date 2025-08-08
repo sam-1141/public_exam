@@ -50,30 +50,7 @@ class LiveExamController extends Controller
 
     public function loadAddLiveExamPage()
     {
-//        return Inertia::render('Admin/Exam/LiveExam/LiveExam');
-        $exams = LiveExam::orderBy('created_at', 'desc')->get()->map(function ($exam) {
-            return [
-                'id' => $exam->id,
-                'name' => $exam->name,
-                'subject' => $exam->subject,
-                'description' => $exam->description,
-                'totalQuestions' => $exam->total_questions,
-                'hasNegativeMarks' => $exam->has_negative_marks, // boolean
-                'negativeMarksValue' => $exam->negative_marks_value,
-                'totalMarks' => $exam->total_marks,
-                'duration' => $exam->duration,
-                'questionType' => $exam->question_type,
-                'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish_instant,
-                'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d H:i') : null,
-                'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d H:i') : null,
-                'examUrl' => $exam->exam_url,
-            ];
-        });
-
-        return Inertia::render('Admin/Exam/LiveExam/LiveExam', [
-            'exams' => $exams,
-        ]);
+        return Inertia::render('Admin/Exam/LiveExam/LiveExam');
     }
 
 
@@ -91,7 +68,6 @@ class LiveExamController extends Controller
 
         ]);
     }
-
 
     public function store(Request $request)
     {
@@ -145,4 +121,30 @@ class LiveExamController extends Controller
             'exam' => $exam
         ], 201);
     }
+
+    public function showAllExam()
+    {
+        $exams = LiveExam::orderBy('created_at', 'desc')->get()->map(function ($exam) {
+            return [
+                'id' => $exam->id,
+                'name' => $exam->name,
+                'subject' => $exam->subject,
+                'description' => $exam->description,
+                'totalQuestions' => $exam->total_questions,
+                'hasNegativeMarks' => $exam->has_negative_marks, // boolean
+                'negativeMarksValue' => $exam->negative_marks_value,
+                'totalMarks' => $exam->total_marks,
+                'duration' => $exam->duration,
+                'questionType' => $exam->question_type,
+                'privacy' => $exam->privacy,
+                'publishInstant' => $exam->publish_instant,
+                'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d H:i') : null,
+                'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d H:i') : null,
+                'examUrl' => $exam->exam_url,
+            ];
+        });
+
+        return response()->json(['exams' => $exams], 200);
+    }
+
 }

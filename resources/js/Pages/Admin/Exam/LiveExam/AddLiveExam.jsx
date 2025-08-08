@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import {route} from "ziggy-js";
 
-const AddLiveExamModal = ({show, onClose, setShowAddModal,}) => {
+const AddLiveExamModal = ({show, onClose, onSuccess}) => {
     const [formData, setFormData] = useState({
         name: "",
         subject: "",
@@ -47,7 +47,6 @@ const AddLiveExamModal = ({show, onClose, setShowAddModal,}) => {
                     },
                 }
             );
-            setShowAddModal(false);
             setFormData({
                 name: "",
                 subject: "",
@@ -63,6 +62,8 @@ const AddLiveExamModal = ({show, onClose, setShowAddModal,}) => {
                 start_time: "",
                 end_time: "",
             });
+            onClose();
+            if (onSuccess) onSuccess();
         } catch (err) {
             if (err.response) {
                 if (err.response.status === 422) {

@@ -76,6 +76,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     });
 
     Route::post('/exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
+    Route::get('/exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
