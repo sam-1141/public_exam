@@ -44,6 +44,10 @@ const PracticeExam = () => {
                         <i className="fas fa-arrow-left me-1"></i>Back
                     </Link>
                 </div>
+                {/* Page title */}
+                <h2 className="mb-4 font-semibold text-2xl text-center">
+                    Practice Exams
+                </h2>
                 {/* <button
                     className="btn btn-primary"
                     onClick={() => setShowAddModal(true)}
@@ -51,11 +55,6 @@ const PracticeExam = () => {
                     <i className="fas fa-plus me-2"></i>Add Practice Exam
                 </button> */}
             </div>
-
-            {/* Page title */}
-            <h2 className="mb-4 font-semibold text-2xl text-center">
-                Practice Exams
-            </h2>
 
             {/* Exams list */}
             <div className="row">

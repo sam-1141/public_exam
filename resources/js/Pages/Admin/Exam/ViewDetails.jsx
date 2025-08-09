@@ -20,7 +20,11 @@ const ExamDetails = ({ examType, exam }) => {
         <div className="container py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <Link
-                    href={route(isPracticeExam ? "admin.add.practice.exam" : "admin.add.exam")}
+                    href={route(
+                        isPracticeExam
+                            ? "admin.add.practice.exam"
+                            : "admin.add.live.exam"
+                    )}
                     className="btn btn-sm"
                 >
                     <i className="fas fa-arrow-left me-1"></i>Back
@@ -33,7 +37,7 @@ const ExamDetails = ({ examType, exam }) => {
                 )}
             </div>
 
-            {/* Exam Card - Matching ExamCard styling */}
+            {/* Exam Card  */}
             <div className="card shadow-sm mb-4">
                 <div className="card-body d-flex flex-column">
                     <div className="mb-3">
@@ -49,6 +53,47 @@ const ExamDetails = ({ examType, exam }) => {
                             <span className="badge bg-success">Published</span>
                         </div>
                     </div>
+                    {/* Course and Subject display */}
+                    <div className="row mt-2 mb-3">
+                        <div className="col-6">
+                            <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                    <i className="fas fa-book fa-lg text-primary"></i>
+                                </div>
+                                <div>
+                                    <div className="fw-bold">Courses</div>
+                                    <small
+                                        className="text-truncate d-block"
+                                        style={{ maxWidth: "150px" }}
+                                    >
+                                        {exam.courses
+                                            ? exam.courses
+                                                  .map((c) => c.name)
+                                                  .join(", ")
+                                            : "No Course"}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-6">
+                            <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                    <i className="fas fa-book-open fa-lg text-secondary"></i>
+                                </div>
+                                <div>
+                                    <div className="fw-bold">Subjects</div>
+                                    <small
+                                        className="text-truncate d-block"
+                                        style={{ maxWidth: "150px" }}
+                                    >
+                                        {exam.subject
+                                            ? exam.subject.name
+                                            : "No Subject"}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div className="row mt-2">
                         {/* First Column */}
@@ -60,9 +105,7 @@ const ExamDetails = ({ examType, exam }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Questions</div>
-                                        <small>
-                                            {exam.totalQuestions}
-                                        </small>
+                                        <small>{exam.totalQuestions}</small>
                                     </div>
                                 </div>
 
@@ -76,7 +119,7 @@ const ExamDetails = ({ examType, exam }) => {
                                         </div>
                                         <small>
                                             {exam.hasNegativeMarks
-                                                ? `-${exam.negativeMarksValue} per wrong`
+                                                ? `Yes (-${exam.negativeMarksValue} per wrong)`
                                                 : "No"}
                                         </small>
                                     </div>
@@ -161,7 +204,7 @@ const ExamDetails = ({ examType, exam }) => {
                             onClick={() =>
                                 copyToClipboard(
                                     exam.examUrl ??
-                                    `${window.location.origin}/exams/${exam.id}`
+                                        `${window.location.origin}/exams/${exam.id}`
                                 )
                             }
                         >
