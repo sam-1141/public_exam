@@ -9,7 +9,7 @@ import ExamCard from "../../../../components/Exam/ExamCard";
 import Layout from "../../../../layouts/Layout";
 import EditExamModal from "../../../../Pages/Admin/Exam/EditExam.jsx";
 
-const LiveExam = () => {
+const LiveExam = ({courses, subjects}) => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,6 +19,11 @@ const LiveExam = () => {
     const [editExamData, setEditExamData] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
+
+    useEffect(() => {
+        console.log("Courses:", courses);
+        console.log("subjects:", subjects);
+    }, []);
 
     useEffect(() => {
         setLoading(true);
