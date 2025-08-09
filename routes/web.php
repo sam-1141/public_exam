@@ -74,13 +74,12 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
     });
 
-    Route::post('/admin/exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
-    Route::get('/admin/exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
-    Route::get('/admin/exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
-    Route::put('/admin/exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
-//    Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
-    Route::post('/admin/exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
-    Route::delete('/exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
+    Route::post('/admin/live-exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
+    Route::get('/admin/live-exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
+    Route::get('/admin/live-exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
+    Route::put('/admin/live-exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
+    Route::post('/admin/live-exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
+    Route::delete('/admin/live-exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');

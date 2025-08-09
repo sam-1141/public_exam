@@ -270,7 +270,7 @@ class LiveExamController extends Controller
                 'question'    => $data['question'],
                 'options'     => json_encode($data['options']),
                 'explanation' => $data['explanation'],
-                'created_by'  => auth()->id() ?? 1,
+                'created_by'  => auth()->id(),
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);
