@@ -37,6 +37,7 @@ const LiveExam = ({ courses, subjects }) => {
                 setExams([]);
             })
             .finally(() => setLoading(false));
+        // console.log("Fetching exam list...", exams);
     }, [refresh]);
 
     const onClose = () => {
@@ -160,6 +161,8 @@ const LiveExam = ({ courses, subjects }) => {
                     exam={editExamData}
                     loading={editLoading}
                     onSuccess={handleExamUpdated}
+                    courses={courses}
+                    subjects={subjects}
                 />
             )}
         </div>
