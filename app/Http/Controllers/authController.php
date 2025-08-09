@@ -153,14 +153,14 @@ class AuthController extends Controller
     }
 
     // function for login
-    public function login(Request $req){
-        
+    public function login(Request $req)
+    {
         $req->validate([
             'login' => 'string|required',
             'password' => 'string|required',
         ]);
-        
-         // Determine if the input is an email or mobile number
+
+        // Determine if the input is an email or mobile number
         $loginField = filter_var($req->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
 
         $credential = [
@@ -168,37 +168,62 @@ class AuthController extends Controller
             'password' => $req->password,
         ];
 
-        
-      
-        if (Auth::attempt($credential)) {
+        $user = User::where($loginField, $req->login)->first();
+
+        // if (Auth::attempt($credential)) {
+        if ($user && password_verify($req->password, $user->password)) {
+            Auth::login($user);
             $user = Auth::user();
-           
+
             // check if the user's status is active
             if ($user->status == 1) {
-                
-                if($user->role == "admin" || $user->role == "moderator"){
-                    return to_route('dashboard');
-                } else {
-                Auth::logout();
-                return to_route('auth.login')->with('error', 'Currently you cannot login as a student. Please contact the administrator.');
-                }
-            } else {
-                // if status is 0, log the user out and redirect with an error
-                Auth::logout();
-                return to_route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.');
-            }
-        } 
-        
-        return to_route('auth.login')->with('error', 'Email/Mobile and password are incorrect.');
+                $token = $user->id;
+                $domain = '.' . implode('.', array_slice(explode('.', request()->getHost()), -2));
 
+
+                $cookie = cookie(
+                    'ft_roar',
+                    $token,
+                    60 * 24,
+                    '/',
+                    $domain,
+                    true,
+                    false,
+                    false,
+                    'lax'
+                );
+
+                $redirectUrl = session('redirect_url');
+                session()->forget('redirect_url');
+
+                if ($redirectUrl) {
+                    try {
+                        $decodedUrl = base64_decode($redirectUrl, true);
+                        if ($decodedUrl && filter_var($decodedUrl, FILTER_VALIDATE_URL)) {
+                            return response('', 409)->header('X-Inertia-Location', $decodedUrl)->withCookie($cookie);
+                        }
+                    } catch (\Exception $e) {
+                        return redirect()->route('dashboard')->withCookie($cookie);
+                    }
+                }
+                return redirect()->route('dashboard')->withCookie($cookie);
+            } else {
+                $forgetCookie = Cookie::forget('ft_roar');
+                Auth::logout();
+                return redirect()->route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.')->withCookie($forgetCookie);
+            }
+        }
+
+        return to_route('auth.login')->with('error', 'ইমেইল/মোবাইল বা পাসওয়ার্ড সঠিক নয়।');
     }
-    
+
 
     // method for logout
-    public function logout(Request $req){
-        $req->session()->flush();
+    public function logout(Request $req)
+    {
+        $forgetCookie = Cookie::forget('ft_roar');
         Auth::logout();
-        return to_route('auth.login');
+        return redirect()->route('auth.login')->withCookie($forgetCookie);
     }
 
 

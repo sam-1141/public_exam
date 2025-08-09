@@ -3,10 +3,12 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class AuthMiddleware
 {
@@ -17,23 +19,36 @@ class AuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if the user is authenticated
+        if (!Auth::check()) {
+            if (\Cookie::get('ft_roar')) {
+                $token = \Cookie::get('ft_roar');
+                $user = User::where('id', $token)->first();
+                if ($user) {
+                    Auth::login($user);
+                }else{
+                    return to_route('auth.login')->with('error', 'Please login!');
+                }
+
+                $user = Auth::user();
+                if ($user->status == 1) {
+                    return $next($request);
+                }
+                Auth::logout();
+                return to_route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.');
+            }
+        }
+
         if (Auth::check()) {
             $user = Auth::user();
-
-            // If the user is active, proceed
             if ($user->status == 1) {
                 return $next($request);
             }
-
-            // If the user's status is not active (status == 0), log them out
             Auth::logout();
+            $forgetCookie = Cookie::forget('ft_roar');
 
-            // Redirect to the login page with an error message
-            return to_route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.');
+            return to_route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.')->withCookie($forgetCookie);
         }
-
-        // If the user is not authenticated, redirect to the login page
         return to_route('auth.login')->with('error', 'Please login!');
+
     }
 }

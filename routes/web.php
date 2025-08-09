@@ -8,7 +8,7 @@ use App\Http\Controllers\TrialExamController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
-use App\Http\Controllers\authController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HardnessController;
 use App\Http\Controllers\HistoryController;
@@ -113,7 +113,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
 });
 
-Route::controller(authController::class)->group(function () {
+Route::controller(AuthController::class)->group(function () {
 
     // route for load login form
     Route::get("/auth/login", "loadLoginForm")->name("auth.login");
