@@ -184,7 +184,7 @@ class AuthController extends Controller
                 $cookie = cookie(
                     'ft_roar',
                     $token,
-                    60 * 24,
+                    60 * 24 * 7,
                     '/',
                     $domain,
                     true,
