@@ -3,13 +3,38 @@ import React from "react";
 import { route } from "ziggy-js";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
+    console.log("exam", exam);
+
     const isPracticeExam = examType === "practice";
 
     const negativeMarksDisplay = exam.hasNegativeMarks
-        ? (exam.negativeMarksValue !== null && exam.negativeMarksValue !== undefined)
-            ? `-${exam.negativeMarksValue} per wrong`
+        ? exam.negativeMarksValue !== null &&
+          exam.negativeMarksValue !== undefined
+            ? `Yes (-${exam.negativeMarksValue} per wrong)`
             : "Yes"
         : "No";
+
+    // Function to display course names
+    const displayCourses = () => {
+        if (!exam.courses) return "No courses";
+        if (Array.isArray(exam.courses)) {
+            return exam.courses.length > 0
+                ? exam.courses.map((c) => c.course_name || c.name).join(", ")
+                : "No courses";
+        }
+        return exam.courses;
+    };
+
+    // Function to display subject names
+    const displaySubjects = () => {
+        if (!exam.subjects) return "No subjects";
+        if (Array.isArray(exam.subjects)) {
+            return exam.subjects.length > 0
+                ? exam.subjects.map((s) => s.name).join(", ")
+                : "No subjects";
+        }
+        return exam.subjects;
+    };
 
     return (
         <div className="col-md-6 mb-4">
@@ -36,6 +61,42 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                         )}
                     </div>
 
+                    {/* Course and Subject display */}
+                    <div className="row mt-2 mb-3">
+                        <div className="col-6">
+                            <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                    <i className="fas fa-book fa-lg text-primary"></i>
+                                </div>
+                                <div>
+                                    <div className="fw-bold">Courses</div>
+                                    <small
+                                        className="text-truncate d-block"
+                                        style={{ maxWidth: "150px" }}
+                                    >
+                                        {displayCourses()}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-6">
+                            <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                    <i className="fas fa-book-open fa-lg text-secondary"></i>
+                                </div>
+                                <div>
+                                    <div className="fw-bold">Subjects</div>
+                                    <small
+                                        className="text-truncate d-block"
+                                        style={{ maxWidth: "150px" }}
+                                    >
+                                        {displaySubjects()}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row mt-2">
                         <div className="col-6">
                             <div className="d-flex flex-column gap-3">
@@ -54,7 +115,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         <i className="fas fa-times-circle fa-lg text-danger"></i>
                                     </div>
                                     <div>
-                                        <div className="fw-bold">Negative Marks</div>
+                                        <div className="fw-bold">
+                                            Negative Marks
+                                        </div>
                                         <small>{negativeMarksDisplay}</small>
                                     </div>
                                 </div>
@@ -65,7 +128,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                             <i className="fas fa-calendar-alt fa-lg text-warning"></i>
                                         </div>
                                         <div>
-                                            <div className="fw-bold">Start Time</div>
+                                            <div className="fw-bold">
+                                                Start Time
+                                            </div>
                                             <small>{exam.startTime}</small>
                                         </div>
                                     </div>
@@ -80,7 +145,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         <i className="fas fa-check-circle fa-lg text-info"></i>
                                     </div>
                                     <div>
-                                        <div className="fw-bold">Total Marks</div>
+                                        <div className="fw-bold">
+                                            Total Marks
+                                        </div>
                                         <small>{exam.totalMarks}</small>
                                     </div>
                                 </div>
@@ -101,7 +168,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                             <i className="fas fa-calendar-times fa-lg text-danger"></i>
                                         </div>
                                         <div>
-                                            <div className="fw-bold">End Time</div>
+                                            <div className="fw-bold">
+                                                End Time
+                                            </div>
                                             <small>{exam.endTime}</small>
                                         </div>
                                     </div>
