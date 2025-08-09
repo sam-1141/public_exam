@@ -9,7 +9,7 @@ import ExamCard from "../../../../components/Exam/ExamCard";
 import Layout from "../../../../layouts/Layout";
 import EditExamModal from "../../../../Pages/Admin/Exam/EditExam.jsx";
 
-const LiveExam = ({courses, subjects}) => {
+const LiveExam = ({ courses, subjects }) => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -27,7 +27,8 @@ const LiveExam = ({courses, subjects}) => {
 
     useEffect(() => {
         setLoading(true);
-        axios.get(route("show.exam.list"))
+        axios
+            .get(route("show.exam.list"))
             .then((res) => {
                 setExams(res.data.exams || []);
             })
@@ -48,8 +49,9 @@ const LiveExam = ({courses, subjects}) => {
         if (editExamSlug) {
             setEditExamData(null);
             setEditLoading(true);
-            axios.get(route("get.single.exam", { slug: editExamSlug }))
-                .then(res => {
+            axios
+                .get(route("get.single.exam", { slug: editExamSlug }))
+                .then((res) => {
                     setEditExamData(res.data.exam);
                     setEditModalOpen(true);
                 })
@@ -70,7 +72,7 @@ const LiveExam = ({courses, subjects}) => {
     };
 
     const handleExamUpdated = () => {
-        setRefresh(prev => !prev);
+        setRefresh((prev) => !prev);
         setEditModalOpen(false);
         setEditExamSlug(null);
         toast.success("Exam updated successfully!");
@@ -97,8 +99,15 @@ const LiveExam = ({courses, subjects}) => {
             </h2>
 
             {loading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 200 }}>
-                    <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status">
+                <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ minHeight: 200 }}
+                >
+                    <div
+                        className="spinner-border text-primary"
+                        style={{ width: "3rem", height: "3rem" }}
+                        role="status"
+                    >
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -124,9 +133,12 @@ const LiveExam = ({courses, subjects}) => {
                             <p className="text-muted mb-4">
                                 You haven't created any live exams yet
                             </p>
-                            <Link href="/exams/live/create" className="btn btn-primary">
-                                <i className="fas fa-plus me-2"></i>Create Your First
-                                Live Exam
+                            <Link
+                                href="/exams/live/create"
+                                className="btn btn-primary"
+                            >
+                                <i className="fas fa-plus me-2"></i>Create Your
+                                First Live Exam
                             </Link>
                         </div>
                     )}
@@ -137,6 +149,8 @@ const LiveExam = ({courses, subjects}) => {
                 show={showAddModal}
                 onClose={() => setShowAddModal(false)}
                 onSuccess={handleExamCreated}
+                courses={courses}
+                subjects={subjects}
             />
 
             {editModalOpen && editExamData && (
