@@ -15,11 +15,11 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('class_id');
-            $table->unsignedBigInteger('subject_id');
-            $table->unsignedBigInteger('chapter_id');
-            $table->unsignedBigInteger('topic_id');
-            $table->unsignedBigInteger('hardness_id');
+            $table->bigInteger('class_id')->nullable();
+            $table->bigInteger('subject_id')->nullable();
+            $table->bigInteger('chapter_id')->nullable();
+            $table->bigInteger('topic_id')->nullable();
+            $table->bigInteger('hardness_id')->nullable();
             $table->longText('question');
             $table->json('options');
             $table->longText('explanation')->nullable();
