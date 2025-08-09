@@ -8,16 +8,16 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         courses: [],
         subjects: [],
         description: "",
-        total_questions: "",
-        has_negative_marks: false,
-        negative_marks_value: "",
-        total_marks: "",
+        totalQuestions: "",
+        hasNegativeMarks: false,
+        negativeMarksValue: "",
+        totalMarks: "",
         duration: "",
-        question_type: "random",
+        questionType: "random",
         privacy: null,
-        publish_instant: "1",
-        start_time: "",
-        end_time: "",
+        publishInstant: "1",
+        startTime: "",
+        endTime: "",
     });
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
@@ -76,7 +76,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         }));
     };
 
-    // Tag input handlers for courses
+    // Input handlers for courses
     const addCourse = (courseId) => {
         const course = courses.find((c) => c.id == courseId);
         if (course && !formData.courses.includes(String(courseId))) {
@@ -96,7 +96,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         }));
     };
 
-    // Tag input handlers for subjects
+    // Input handlers for subjects
     const addSubject = (subjectId) => {
         const subject = subjects.find((s) => s.id == subjectId);
         if (subject && !formData.subjects.includes(String(subjectId))) {

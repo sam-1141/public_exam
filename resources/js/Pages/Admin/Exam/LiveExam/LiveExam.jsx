@@ -86,6 +86,9 @@ const LiveExam = ({ courses, subjects }) => {
                 <Link href={route("admin.add.exam")} className="btn btn-sm ">
                     <i className="fas fa-arrow-left me-1"></i>Back
                 </Link>
+                <h2 className="font-semibold text-2xl text-center">
+                    Live Exams
+                </h2>
                 <button
                     type="button"
                     className="btn btn-primary"
@@ -94,10 +97,6 @@ const LiveExam = ({ courses, subjects }) => {
                     <i className="ti ti-plus me-1"></i>Add Exam
                 </button>
             </div>
-
-            <h2 className="mb-4 font-semibold text-2xl text-center">
-                Live Exams
-            </h2>
 
             {loading ? (
                 <div
