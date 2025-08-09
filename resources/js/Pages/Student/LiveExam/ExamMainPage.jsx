@@ -16,6 +16,8 @@ const ExamMainPage = ({ examId }) => {
   const [warningCount, setWarningCount] = useState(0)
   const [showFocusWarning, setShowFocusWarning] = useState(false)
   const [lastWarningReason, setLastWarningReason] = useState(null)
+  const [showWarningDialog, setShowWarningDialog] = useState(false)
+  const [warningDialogText, setWarningDialogText] = useState("")
   const MAX_WARNINGS = 3
 
   // Get exam data by ID
@@ -44,16 +46,14 @@ const ExamMainPage = ({ examId }) => {
         if (next <= MAX_WARNINGS) {
           setLastWarningReason(reason)
           setShowFocusWarning(true)
-          // Auto-hide after 5s
-          setTimeout(() => setShowFocusWarning(false), 5000)
-          // Native browser alert / confirm so user is forced to acknowledge
-          try {
-            if (next < MAX_WARNINGS) {
-              window.alert(`সতর্কবার্তা ${next}/${MAX_WARNINGS}: পরীক্ষার সময় ট্যাব পরিবর্তন বা মিনিমাইজ করা যাবে না। আরো ${MAX_WARNINGS - next} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।`)
-            } else if (next === MAX_WARNINGS) {
-              window.confirm(`সর্বোচ্চ সতর্কবার্তা (${next}/${MAX_WARNINGS})! এখনই আপনার পরীক্ষা জমা দেওয়া হবে।`)
-            }
-          } catch (e) { /* ignore */ }
+          // Show custom (in-app) dialog instead of native alert to avoid extra blur events
+          if (next < MAX_WARNINGS) {
+            setWarningDialogText(`সতর্কবার্তা ${next}/${MAX_WARNINGS}: পরীক্ষার সময় ট্যাব পরিবর্তন বা মিনিমাইজ করা যাবে না। আরো ${MAX_WARNINGS - next} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।`)
+            setShowWarningDialog(true)
+          } else if (next === MAX_WARNINGS) {
+            setWarningDialogText(`সর্বোচ্চ সতর্কবার্তা (${next}/${MAX_WARNINGS})! এখনই আপনার পরীক্ষা জমা দেওয়া হবে।`)
+            setShowWarningDialog(true)
+          }
         }
         // Optional: auto submit after max warnings
         if (next >= MAX_WARNINGS) {
@@ -273,7 +273,28 @@ const ExamMainPage = ({ examId }) => {
                 )}
                 <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
               </div>
-              <button type="button" className="btn-close ms-2" onClick={() => setShowFocusWarning(false)}></button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Custom Warning Dialog */}
+      {showWarningDialog && (
+        <div>
+          <div className="modal-backdrop fade show" style={{ zIndex: 2000 }}></div>
+          <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 2001 }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content border-0 shadow">
+                <div className="modal-body text-center p-4">
+                  <div className="mb-3 fs-1">⚠️</div>
+                  <p className="fw-semibold mb-3" style={{ lineHeight: 1.4 }}>{warningDialogText}</p>
+                  {warningCount < MAX_WARNINGS && (
+                    <button className="btn btn-warning fw-semibold px-4" onClick={() => setShowWarningDialog(false)}>ঠিক আছে</button>
+                  )}
+                  {warningCount >= MAX_WARNINGS && (
+                    <button className="btn btn-danger fw-semibold px-4" disabled>জমা হচ্ছে...</button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
