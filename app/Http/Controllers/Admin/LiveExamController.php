@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\LiveExam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -49,9 +50,13 @@ class LiveExamController extends Controller
 
     public function loadAddLiveExamPage()
     {
-        return Inertia::render('Admin/Exam/LiveExam/LiveExam');
+        $courses = DB::connection('Webapp')->table('courses')->get();
+        $subjects = DB::connection('CoreDB')->table('subjects')->get();
+        return Inertia::render('Admin/Exam/LiveExam/LiveExam', [
+            'courses' => $courses,
+            'subjects' => $subjects
+        ]);
     }
-
 
     public function loadAddPracticeExamPage()
     {
