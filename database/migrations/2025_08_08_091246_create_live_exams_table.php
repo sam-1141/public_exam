@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('subject');
+            $table->bigInteger('subject_id');
+            $table->bigInteger('course_id');
             $table->text('description')->nullable();
             $table->integer('total_questions');
             $table->boolean('has_negative_marks')->default(false);

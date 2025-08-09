@@ -66,7 +66,7 @@ class QuestionController extends Controller
             'class_id' => $validatedData['class_id'],
             'subject_id' => $validatedData['subject_id'],
             'chapter_id' => $validatedData['chapter_id'],
-            'topic_id' => $validatedData['topic_id'], // Now NULL if not selected
+            'topic_id' => $validatedData['topic_id'],
             'hardness_id' => $validatedData['hardness_id'],
             'question' => $validatedData['question'],
             'options' => $validatedData['options'],

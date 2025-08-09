@@ -72,14 +72,13 @@ class LiveExamController extends Controller
     public function loadViewExamDetails($type, $examSlug)
     {
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
-        // You can format or append other data here if needed.
 
         return Inertia::render('Admin/Exam/ViewDetails', [
             'exam' => [
                 'id' => $exam->id,
                 'name' => $exam->name,
                 'slug' => $exam->slug,
-                'subject' => $exam->subject,
+                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks,
@@ -128,7 +127,8 @@ class LiveExamController extends Controller
         $exam = new LiveExam();
         $exam->name = $request->name;
         $exam->slug = $slug;
-        $exam->subject = $request->subject;
+        $exam->subject_id = 1;
+        $exam->course_id = 1;
         $exam->description = $request->description;
         $exam->total_questions = $request->total_questions;
         $exam->has_negative_marks = $request->has_negative_marks ?? false;
@@ -157,7 +157,7 @@ class LiveExamController extends Controller
                 'id' => $exam->id,
                 'name' => $exam->name,
                 'slug' => $exam->slug,
-                'subject' => $exam->subject,
+                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks, // boolean
@@ -184,7 +184,7 @@ class LiveExamController extends Controller
                 'id' => $exam->id,
                 'slug' => $exam->slug,
                 'name' => $exam->name,
-                'subject' => $exam->subject,
+                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks,
@@ -222,8 +222,9 @@ class LiveExamController extends Controller
         ]);
 
         $exam->name = $validated['name'];
-        $exam->slug = \Str::slug($validated['name']);
-        $exam->subject = $validated['subject'];
+        $exam->slug = Str::slug($validated['name']);
+        $exam->subject_id = 1;
+        $exam->course_id = 1;
         $exam->description = $validated['description'];
         $exam->total_questions = $validated['totalQuestions'];
         $exam->has_negative_marks = $validated['hasNegativeMarks'];
