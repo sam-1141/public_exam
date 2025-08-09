@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Link, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import AddQuestionModal from "./AddQuestion";
 import QuestionList from "./QuiestionList";
 
-const ExamDetails = ({ examType, exam }) => {
-    // const { exam } = usePage().props;
+const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
 
     const isPracticeExam = examType === "practice";
@@ -224,16 +223,15 @@ const ExamDetails = ({ examType, exam }) => {
                 )}
             </div>
 
-            {/*<QuestionList*/}
-            {/*    questions={exam.questionList || []}*/}
-            {/*    examId={1}*/}
-            {/*    examType={examType}*/}
-            {/*/>*/}
+            <QuestionList
+                questions={questions}
+                examType={examType}
+            />
 
             <AddQuestionModal
                 show={showAddQuestionModal}
                 onClose={() => setShowAddQuestionModal(false)}
-                examSlug={exam.Slug}
+                examId={exam.id}
                 examType={examType}
             />
         </div>

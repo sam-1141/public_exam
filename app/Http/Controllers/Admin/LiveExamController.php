@@ -78,6 +78,13 @@ class LiveExamController extends Controller
     {
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
 
+        $questions = DB::table('questions')
+            ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+            ->where('exam_question.exam_id', $exam->id)
+            ->select('questions.*')
+            ->get();
+
+//        dd($questions);
         return Inertia::render('Admin/Exam/ViewDetails', [
             'exam' => [
                 'id' => $exam->id,
@@ -98,6 +105,7 @@ class LiveExamController extends Controller
                 'examUrl' => $exam->exam_url,
             ],
             'examType' => $type,
+            'questions' => $questions,
         ]);
     }
 
@@ -246,4 +254,46 @@ class LiveExamController extends Controller
 
         return response()->json(['message' => 'Exam updated successfully']);
     }
+
+    public function storeExamQuestion(Request $request)
+    {
+        $data = $request->validate([
+            'examId'             => ['required', 'integer'],
+            'question'            => ['required', 'string'],
+            'options'             => ['required', 'array'],
+            'explanation'         => ['nullable', 'string'],
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $questionId = DB::table('questions')->insertGetId([
+                'question'    => $data['question'],
+                'options'     => json_encode($data['options']),
+                'explanation' => $data['explanation'],
+                'created_by'  => auth()->id() ?? 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+
+            DB::table('exam_question')->insert([
+                'exam_id'     => (int) $data['examId'],
+                'question_id' => (int) $questionId,
+            ]);
+
+            DB::commit();
+            return back()->with('success', 'Question added.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+            return back()->withErrors(['failed' => "Question couldn't be added."]);
+        }
+    }
+
+    public function destroyExamQuestion($id)
+    {
+        DB::table('questions')->where('id', $id)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Question deleted successfully']);
+    }
+
 }

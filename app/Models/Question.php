@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Question extends Model
 {
     use SoftDeletes;
-    
+
     protected $guarded = [];
 
     public function tags(){
@@ -33,7 +33,7 @@ class Question extends Model
 
     public function topic(){
         return $this->belongsTo(Topic::class, 'topic_id','id');
-    }   
+    }
 
     public function hardness(){
         return $this->belongsTo(Hardness::class, 'hardness_id','id');

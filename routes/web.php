@@ -5,7 +5,6 @@ use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\TrialExamController;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\AuthController;
@@ -80,6 +79,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/admin/exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
     Route::put('/admin/exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
 //    Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
+    Route::post('/admin/exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
+    Route::delete('/exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');

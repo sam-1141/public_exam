@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Link } from "@inertiajs/react";
+import {route} from "ziggy-js";
 
-const QuestionList = ({ questions, examId }) => {
+const QuestionList = ({ questions }) => {
     const [expandedQuestion, setExpandedQuestion] = useState(null);
 
-    const handleDelete = (questionId) => {
+    useEffect(() => {
+        console.log("Exam Details:", questions);
+    }, [questions]);
+
+    const handleDelete = async (questionId) => {
         if (confirm("Are you sure you want to delete this question?")) {
-            console.log(`Deleting question with ID: ${questionId}`);
+            try {
+                await axios.delete(route("admin.exam.questions.destroy", questionId), {
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    },
+                });
+                alert("Question deleted successfully!");
+            } catch (error) {
+                alert("Failed to delete question");
+            }
         }
     };
 
@@ -61,13 +75,13 @@ const QuestionList = ({ questions, examId }) => {
                                             Question:
                                         </h4>
                                         <div className="flex space-x-2 gap-2">
-                                            <Link
-                                                href=""
-                                                className="btn btn-sm btn-outline-primary"
-                                            >
-                                                <i className="fas fa-edit me-1"></i>{" "}
-                                                Edit
-                                            </Link>
+                                            {/*<Link*/}
+                                            {/*    href=""*/}
+                                            {/*    className="btn btn-sm btn-outline-primary"*/}
+                                            {/*>*/}
+                                            {/*    <i className="fas fa-edit me-1"></i>{" "}*/}
+                                            {/*    Edit*/}
+                                            {/*</Link>*/}
                                             <button
                                                 onClick={() =>
                                                     handleDelete(question.id)
