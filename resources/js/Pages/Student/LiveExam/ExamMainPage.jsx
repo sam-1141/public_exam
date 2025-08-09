@@ -6,19 +6,14 @@ import QuestionCard from "./QuestionCard"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
 import Layout from "../../../layouts/Layout"
 import { router } from "@inertiajs/react"
+import FocusWarning from "../../../components/FocusWarning"
 
 const ExamMainPage = ({ examId }) => {
   const [answers, setAnswers] = useState({})
   
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [exam, setExam] = useState(null)
-  // Anti-cheat / focus warnings
-  const [warningCount, setWarningCount] = useState(0)
-  const [showFocusWarning, setShowFocusWarning] = useState(true) // permanent banner
-  const [lastWarningReason, setLastWarningReason] = useState(null)
-  const [showWarningDialog, setShowWarningDialog] = useState(false)
-  const [warningDialogText, setWarningDialogText] = useState("")
-  const MAX_WARNINGS = 3
+  // (Focus warning logic moved into FocusWarning component)
 
   // Get exam data by ID
   useEffect(() => {
@@ -31,65 +26,7 @@ const ExamMainPage = ({ examId }) => {
     }
   }, [examId])
 
-  // Focus / tab switch / minimize detection
-  useEffect(() => {
-    let lastEventAt = 0
-
-    const triggerWarning = (reason) => {
-      // Avoid double-count (visibility + blur firing together)
-      const now = Date.now()
-      if (now - lastEventAt < 800) return
-      lastEventAt = now
-
-      setWarningCount((prev) => {
-        const next = prev + 1
-        if (next <= MAX_WARNINGS) {
-          setLastWarningReason(reason)
-          // Show custom (in-app) dialog instead of native alert to avoid extra blur events
-          if (next < MAX_WARNINGS) {
-            setWarningDialogText(`সতর্কবার্তা ${next}/${MAX_WARNINGS}: পরীক্ষার সময় ট্যাব পরিবর্তন বা মিনিমাইজ করা যাবে না। আরো ${MAX_WARNINGS - next} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।`)
-            setShowWarningDialog(true)
-          } else if (next === MAX_WARNINGS) {
-            setWarningDialogText(`সর্বোচ্চ সতর্কবার্তা (${next}/${MAX_WARNINGS})! এখনই আপনার পরীক্ষা জমা দেওয়া হবে।`)
-            setShowWarningDialog(true)
-          }
-        }
-        // Optional: auto submit after max warnings
-        if (next >= MAX_WARNINGS) {
-          // Give a very brief moment to show message then submit
-          setTimeout(() => {
-            if (exam) {
-              handleSubmit(true) // silent flag
-            }
-          }, 1200)
-        }
-        return next
-      })
-    }
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        triggerWarning('tab-change')
-      }
-    }
-
-    const handleBlur = () => {
-      // Window lost focus (could be alt-tab or minimize)
-      if (!document.hidden) {
-        // Still visible but blurred (e.g., OS-level overlay) – treat as potential minimize/other
-        triggerWarning('window-blur')
-      }
-    }
-
-    window.addEventListener('blur', handleBlur)
-    document.addEventListener('visibilitychange', handleVisibility)
-
-    return () => {
-      window.removeEventListener('blur', handleBlur)
-      document.removeEventListener('visibilitychange', handleVisibility)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exam])
+  // (Detection moved into FocusWarning component)
 
   // Prevent page reload and navigation
   useEffect(() => {
@@ -133,8 +70,7 @@ const ExamMainPage = ({ examId }) => {
     router.get(route('student.live.exam.success'), {
       examId: exam.id,
       answers: answers,
-      auto: isAuto,
-      warnings: warningCount
+      auto: isAuto
     }, {
       preserveState: true,
       onBefore: () => {
@@ -256,57 +192,11 @@ const ExamMainPage = ({ examId }) => {
           </div>
         </>
       )}
-      {/* Focus / Proctoring Warning Banner */}
-      {showFocusWarning && (
-        <div className="position-fixed top-0 start-50 translate-middle-x mt-2" style={{ zIndex: 1080, maxWidth: 520, width: '100%' }}>
-          <div className={`alert mb-0 shadow-sm border-0 ${warningCount > 0 ? 'alert-danger' : 'alert-warning'}`}>
-            <div className="d-flex align-items-start">
-              <div className="me-2 fs-4">⚠️</div>
-              <div className="flex-grow-1">
-                {warningCount === 0 && (
-                  <>
-                    <strong>পরীক্ষার সতর্কতা:</strong>{' '}পরীক্ষার সময় অন্য ট্যাবে যাওয়া, মিনিমাইজ বা ফোকাস হারানো যাবে না। ৩ বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।
-                  </>
-                )}
-                {warningCount > 0 && warningCount < MAX_WARNINGS && (
-                  <>
-                    <strong>সতর্কবার্তা {warningCount}/{MAX_WARNINGS}:</strong>{' '}আরও {MAX_WARNINGS - warningCount} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।
-                    <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
-                  </>
-                )}
-                {warningCount >= MAX_WARNINGS && (
-                  <>
-                    <strong>সর্বোচ্চ সতর্কবার্তা:</strong> আপনার পরীক্ষা জমা দেওয়া হচ্ছে...
-                    <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Custom Warning Dialog */}
-      {showWarningDialog && (
-        <div>
-          <div className="modal-backdrop fade show" style={{ zIndex: 2000 }}></div>
-          <div className="modal fade show d-block" tabIndex="-1" style={{ zIndex: 2001 }}>
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content border-0 shadow">
-                <div className="modal-body text-center p-4">
-                  <div className="mb-3 fs-1">⚠️</div>
-                  <p className="fw-semibold mb-3" style={{ lineHeight: 1.4 }}>{warningDialogText}</p>
-                  {warningCount < MAX_WARNINGS && (
-                    <button className="btn btn-warning fw-semibold px-4" onClick={() => setShowWarningDialog(false)}>ঠিক আছে</button>
-                  )}
-                  {warningCount >= MAX_WARNINGS && (
-                    <button className="btn btn-danger fw-semibold px-4" disabled>জমা হচ্ছে...</button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <FocusWarning
+        maxWarnings={3}
+        active={!!exam}
+        onMaxWarnings={() => handleSubmit(true)}
+      />
     </div>
   )
 }
