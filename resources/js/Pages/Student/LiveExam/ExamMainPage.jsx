@@ -46,6 +46,14 @@ const ExamMainPage = ({ examId }) => {
           setShowFocusWarning(true)
           // Auto-hide after 5s
           setTimeout(() => setShowFocusWarning(false), 5000)
+          // Native browser alert / confirm so user is forced to acknowledge
+          try {
+            if (next < MAX_WARNINGS) {
+              window.alert(`সতর্কবার্তা ${next}/${MAX_WARNINGS}: পরীক্ষার সময় ট্যাব পরিবর্তন বা মিনিমাইজ করা যাবে না। আরো ${MAX_WARNINGS - next} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।`)
+            } else if (next === MAX_WARNINGS) {
+              window.confirm(`সর্বোচ্চ সতর্কবার্তা (${next}/${MAX_WARNINGS})! এখনই আপনার পরীক্ষা জমা দেওয়া হবে।`)
+            }
+          } catch (e) { /* ignore */ }
         }
         // Optional: auto submit after max warnings
         if (next >= MAX_WARNINGS) {
