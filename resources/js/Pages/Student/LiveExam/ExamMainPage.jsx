@@ -12,6 +12,11 @@ const ExamMainPage = ({ examId }) => {
   
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [exam, setExam] = useState(null)
+  // Anti-cheat / focus warnings
+  const [warningCount, setWarningCount] = useState(0)
+  const [showFocusWarning, setShowFocusWarning] = useState(false)
+  const [lastWarningReason, setLastWarningReason] = useState(null)
+  const MAX_WARNINGS = 3
 
   // Get exam data by ID
   useEffect(() => {
@@ -23,6 +28,61 @@ const ExamMainPage = ({ examId }) => {
       window.location.href = '/student/live-exam'
     }
   }, [examId])
+
+  // Focus / tab switch / minimize detection
+  useEffect(() => {
+    let lastEventAt = 0
+
+    const triggerWarning = (reason) => {
+      // Avoid double-count (visibility + blur firing together)
+      const now = Date.now()
+      if (now - lastEventAt < 800) return
+      lastEventAt = now
+
+      setWarningCount((prev) => {
+        const next = prev + 1
+        if (next <= MAX_WARNINGS) {
+          setLastWarningReason(reason)
+          setShowFocusWarning(true)
+          // Auto-hide after 5s
+          setTimeout(() => setShowFocusWarning(false), 5000)
+        }
+        // Optional: auto submit after max warnings
+        if (next >= MAX_WARNINGS) {
+          // Give a very brief moment to show message then submit
+          setTimeout(() => {
+            if (exam) {
+              handleSubmit(true) // silent flag
+            }
+          }, 1200)
+        }
+        return next
+      })
+    }
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        triggerWarning('tab-change')
+      }
+    }
+
+    const handleBlur = () => {
+      // Window lost focus (could be alt-tab or minimize)
+      if (!document.hidden) {
+        // Still visible but blurred (e.g., OS-level overlay) – treat as potential minimize/other
+        triggerWarning('window-blur')
+      }
+    }
+
+    window.addEventListener('blur', handleBlur)
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      window.removeEventListener('blur', handleBlur)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [exam])
 
   // Prevent page reload and navigation
   useEffect(() => {
@@ -61,17 +121,20 @@ const ExamMainPage = ({ examId }) => {
     handleSubmit()
   }
 
-  const handleSubmit = () => {
-  router.get(route('student.live.exam.success'), {
-    examId: exam.id,
-    answers: answers // Only for small answer sets
-  }, {
-    preserveState: true,
-    onBefore: () => {
-      // Optional: Show loading state
-    }
-  });
-}
+  const handleSubmit = (isAuto = false) => {
+    if (!exam) return
+    router.get(route('student.live.exam.success'), {
+      examId: exam.id,
+      answers: answers,
+      auto: isAuto,
+      warnings: warningCount
+    }, {
+      preserveState: true,
+      onBefore: () => {
+        // Could set a submitting state here
+      }
+    })
+  }
 
   if (!exam) {
     return (
@@ -185,6 +248,27 @@ const ExamMainPage = ({ examId }) => {
             </div>
           </div>
         </>
+      )}
+      {/* Focus / Proctoring Warning Banner */}
+      {showFocusWarning && (
+        <div className="position-fixed top-0 start-50 translate-middle-x mt-2" style={{ zIndex: 1080, maxWidth: 480, width: '100%' }}>
+          <div className={`alert mb-0 shadow-sm border-0 ${warningCount >= MAX_WARNINGS ? 'alert-danger' : 'alert-warning'}`}>
+            <div className="d-flex align-items-start">
+              <div className="me-2 fs-4">⚠️</div>
+              <div className="flex-grow-1">
+                <strong>সতর্কবার্তা {warningCount}/{MAX_WARNINGS}:</strong>{' '}
+                {warningCount < MAX_WARNINGS && (
+                  <span>পরীক্ষার সময় অন্য ট্যাবে যাওয়া বা মিনিমাইজ করা নিষিদ্ধ। আরও {MAX_WARNINGS - warningCount} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।</span>
+                )}
+                {warningCount >= MAX_WARNINGS && (
+                  <span>সর্বোচ্চ সতর্কবার্তা পৌঁছেছে। আপনার পরীক্ষা জমা দেওয়া হচ্ছে...</span>
+                )}
+                <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
+              </div>
+              <button type="button" className="btn-close ms-2" onClick={() => setShowFocusWarning(false)}></button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
