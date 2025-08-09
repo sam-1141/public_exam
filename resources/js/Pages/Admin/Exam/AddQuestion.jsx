@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
+import {route} from "ziggy-js";
 
-const AddQuestionModal = ({ show, onClose, examSlug }) => {
+const AddQuestionModal = ({ show, onClose, examId }) => {
     const { data, setData, post, processing, errors } = useForm({
+        examId,
         question: "",
         options: [
             { option: "", ans: false },
@@ -14,27 +16,13 @@ const AddQuestionModal = ({ show, onClose, examSlug }) => {
         explanation: "",
     });
 
+
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const formData = new FormData();
-        formData.append("question", data.question);
-        formData.append("explanation", data.explanation);
-
-        // Add options and correct answers
-        data.options.forEach((opt, index) => {
-            formData.append(`option_${index + 1}`, opt.option);
-            if (opt.ans) {
-                formData.append("correct_options[]", index + 1);
-            }
-        });
-
-        post(route("admin.exam.questions.store", { exam: examSlug }), {
-            data: formData,
+        post(route("admin.exam.questions.store"), {
             onSuccess: () => {
-                onClose();
-                // Reset form
                 setData({
+                    examId,
                     question: "",
                     options: [
                         { option: "", ans: false },
@@ -44,9 +32,12 @@ const AddQuestionModal = ({ show, onClose, examSlug }) => {
                     ],
                     explanation: "",
                 });
+                onClose();
             },
         });
     };
+
+
 
     // Handle option text change
     const handleOptionTextChange = (index, value) => {
