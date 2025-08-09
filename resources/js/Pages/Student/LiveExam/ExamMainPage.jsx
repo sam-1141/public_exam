@@ -14,7 +14,7 @@ const ExamMainPage = ({ examId }) => {
   const [exam, setExam] = useState(null)
   // Anti-cheat / focus warnings
   const [warningCount, setWarningCount] = useState(0)
-  const [showFocusWarning, setShowFocusWarning] = useState(false)
+  const [showFocusWarning, setShowFocusWarning] = useState(true) // permanent banner
   const [lastWarningReason, setLastWarningReason] = useState(null)
   const [showWarningDialog, setShowWarningDialog] = useState(false)
   const [warningDialogText, setWarningDialogText] = useState("")
@@ -45,7 +45,6 @@ const ExamMainPage = ({ examId }) => {
         const next = prev + 1
         if (next <= MAX_WARNINGS) {
           setLastWarningReason(reason)
-          setShowFocusWarning(true)
           // Show custom (in-app) dialog instead of native alert to avoid extra blur events
           if (next < MAX_WARNINGS) {
             setWarningDialogText(`সতর্কবার্তা ${next}/${MAX_WARNINGS}: পরীক্ষার সময় ট্যাব পরিবর্তন বা মিনিমাইজ করা যাবে না। আরো ${MAX_WARNINGS - next} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।`)
@@ -259,19 +258,28 @@ const ExamMainPage = ({ examId }) => {
       )}
       {/* Focus / Proctoring Warning Banner */}
       {showFocusWarning && (
-        <div className="position-fixed top-0 start-50 translate-middle-x mt-2" style={{ zIndex: 1080, maxWidth: 480, width: '100%' }}>
-          <div className={`alert mb-0 shadow-sm border-0 ${warningCount >= MAX_WARNINGS ? 'alert-danger' : 'alert-warning'}`}>
+        <div className="position-fixed top-0 start-50 translate-middle-x mt-2" style={{ zIndex: 1080, maxWidth: 520, width: '100%' }}>
+          <div className={`alert mb-0 shadow-sm border-0 ${warningCount > 0 ? 'alert-danger' : 'alert-warning'}`}>
             <div className="d-flex align-items-start">
               <div className="me-2 fs-4">⚠️</div>
               <div className="flex-grow-1">
-                <strong>সতর্কবার্তা {warningCount}/{MAX_WARNINGS}:</strong>{' '}
-                {warningCount < MAX_WARNINGS && (
-                  <span>পরীক্ষার সময় অন্য ট্যাবে যাওয়া বা মিনিমাইজ করা নিষিদ্ধ। আরও {MAX_WARNINGS - warningCount} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।</span>
+                {warningCount === 0 && (
+                  <>
+                    <strong>পরীক্ষার সতর্কতা:</strong>{' '}পরীক্ষার সময় অন্য ট্যাবে যাওয়া, মিনিমাইজ বা ফোকাস হারানো যাবে না। ৩ বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।
+                  </>
+                )}
+                {warningCount > 0 && warningCount < MAX_WARNINGS && (
+                  <>
+                    <strong>সতর্কবার্তা {warningCount}/{MAX_WARNINGS}:</strong>{' '}আরও {MAX_WARNINGS - warningCount} বার করলে পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হবে।
+                    <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
+                  </>
                 )}
                 {warningCount >= MAX_WARNINGS && (
-                  <span>সর্বোচ্চ সতর্কবার্তা পৌঁছেছে। আপনার পরীক্ষা জমা দেওয়া হচ্ছে...</span>
+                  <>
+                    <strong>সর্বোচ্চ সতর্কবার্তা:</strong> আপনার পরীক্ষা জমা দেওয়া হচ্ছে...
+                    <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
+                  </>
                 )}
-                <div className="small text-muted mt-1">কারণ: {lastWarningReason === 'tab-change' ? 'ট্যাব পরিবর্তন / মিনিমাইজ' : 'উইন্ডো ফোকাস হারানো'}</div>
               </div>
             </div>
           </div>
