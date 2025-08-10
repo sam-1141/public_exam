@@ -85,7 +85,7 @@ const EditExamModal = ({
         return updateData;
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmitForUpdate = async (e) => {
         e.preventDefault();
         if (!formData) return;
 
@@ -95,6 +95,8 @@ const EditExamModal = ({
         // Prepare data with correct types
         const updateData = updateFormData(formData);
         console.log("updateData data for submission:", updateData);
+        console.log('exam.slug', exam.slug);
+        console.log('route("update.single.exam", { slug: exam.slug }),', route("update.single.exam", { slug: exam.slug }));
 
         try {
             await axios.put(
@@ -187,7 +189,7 @@ const EditExamModal = ({
                         ></button>
                     </div>
                     <div className="modal-body">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmitForUpdate}>
                             {errors.general && (
                                 <div className="alert alert-danger">
                                     {errors.general}
