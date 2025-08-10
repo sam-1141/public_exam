@@ -30,8 +30,8 @@ const ExamTimer = ({ duration, onTimeUp }) => {
   }
 
   const getTimerColor = () => {
-    if (timeLeft <= 300) return "text-danger" // Last 5 minutes
-    if (timeLeft <= 600) return "text-warning" // Last 10 minutes
+    if (timeLeft <= 120) return "text-danger" // Last 5 minutes
+    if (timeLeft <= 300) return "text-warning" // Last 10 minutes
     return "text-success"
   }
 
