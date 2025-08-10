@@ -22,7 +22,9 @@ class LiveExam extends Model
         'start_time',
         'end_time',
         'exam_url',
-        'created_by'
+        'created_by',
+        'exam_type',
+        'status',
     ];
 
     protected $casts = [
