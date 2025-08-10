@@ -3,7 +3,6 @@ import React from "react";
 import { route } from "ziggy-js";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
-    console.log("exam", exam);
 
     const isPracticeExam = examType === "practice";
 
@@ -52,7 +51,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                     </span>
                                 )}
                             </div>
-                            {exam.status === 1 ? (
+                            {exam.publishInstant === 1 ? (
                                 <>
                                     <span className="badge bg-success">
                                         Published
