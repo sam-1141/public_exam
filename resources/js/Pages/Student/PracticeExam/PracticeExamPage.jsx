@@ -6,13 +6,18 @@ import ExamTimer from "../LiveExam/ExamTimer"
 import QuestionCard from "../LiveExam/QuestionCard"
 import { router, usePage } from "@inertiajs/react"
 
-const PracticeExamPage = () => {
-  const { examId } = usePage().props;
-  const [exam, setExam] = useState(null)
+const PracticeExamPage = ({exam, questions}) => {
+  // const { examId } = usePage().props;
+  const [exam, setExam] = useState(null);
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState({})
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+
+    useEffect(() => {
+        console.log('exam', exam);
+        console.log('questions', questions);
+    }, [exam, questions]);
 
   useEffect(() => {
     // Simulate loading exam data (replace with actual API call if needed)
