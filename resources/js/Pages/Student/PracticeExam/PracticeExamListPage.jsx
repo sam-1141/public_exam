@@ -3,9 +3,14 @@ import Layout from "../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import { courses, subjectsByCourse } from "../../../utils/ExamQuestion/PracticeExamQuestions"
 
-const PracticeExamListPage = () => {
+const PracticeExamListPage = ({allExam}) => {
     const [currentPage, setCurrentPage] = useState(1)
     const examsPerPage = 9
+
+
+    useEffect(() => {
+        console.log('allExam', allExam)
+    }, [allExam]);
 
     const allPracticeExams = {
         physics: [
@@ -85,10 +90,10 @@ const PracticeExamListPage = () => {
 
     // Flatten all exams from different subjects into one array
     const allExams = Object.values(allPracticeExams).flat()
-    
+
     // Sort exams from newest to oldest (assuming newer exams have higher IDs)
     const sortedExams = [...allExams].sort((a, b) => b.id.localeCompare(a.id))
-    
+
     // Get current exams for pagination
     const indexOfLastExam = currentPage * examsPerPage
     const indexOfFirstExam = indexOfLastExam - examsPerPage
@@ -172,29 +177,29 @@ const PracticeExamListPage = () => {
                                         <nav className="mt-4">
                                             <ul className="pagination justify-content-center">
                                                 <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                                    <button 
-                                                        className="page-link" 
+                                                    <button
+                                                        className="page-link"
                                                         onClick={() => setCurrentPage(currentPage - 1)}
                                                         disabled={currentPage === 1}
                                                     >
                                                         পূর্ববর্তী
                                                     </button>
                                                 </li>
-                                                
+
                                                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                                                     <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
-                                                        <button 
-                                                            className="page-link" 
+                                                        <button
+                                                            className="page-link"
                                                             onClick={() => setCurrentPage(number)}
                                                         >
                                                             {number}
                                                         </button>
                                                     </li>
                                                 ))}
-                                                
+
                                                 <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                                                    <button 
-                                                        className="page-link" 
+                                                    <button
+                                                        className="page-link"
                                                         onClick={() => setCurrentPage(currentPage + 1)}
                                                         disabled={currentPage === totalPages}
                                                     >

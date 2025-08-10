@@ -14,19 +14,32 @@ class LiveExamController extends Controller
 {
     public function loadExamNoticePage()
     {
-        return Inertia::render('Student/LiveExam/ExamNoticePage');
+        $exam = DB::table('live_exams')->where('exam_type', 0)->get();
+        return Inertia::render('Student/LiveExam/ExamNoticePage', [
+            'allExam' => $exam,
+        ]);
     }
 
     public function loadExamMainPage(Request $request)
     {
-        $examId = $request->query('examId');
+        $examSlug = $request->query('examSlug');
+        $exam = DB::table('live_exams')
+            ->where('slug', $examSlug)
+            ->firstOrFail();
 
-        if (!$examId) {
+        if (!$exam) {
             return redirect()->route('student.live.exam.notice');
         }
 
+        $questions = DB::table('questions')
+            ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+            ->where('exam_question.exam_id', $exam->id)
+            ->select('questions.*')
+            ->get();
+
         return Inertia::render('Student/LiveExam/ExamMainPage', [
-            'examId' => $examId
+            'exam' => $exam,
+            'questions' => $questions,
         ]);
     }
 
@@ -63,17 +76,6 @@ class LiveExamController extends Controller
         return Inertia::render('Admin/Exam/PracticeExam/PracticeExam');
     }
 
-
-//    public function loadViewExamDetails($type, $examSlug)
-//    {
-////        dd($type);
-//        return Inertia::render('Admin/Exam/ViewDetails',[
-//            'exam' => $examSlug,
-//            'examType' => $type
-//
-//        ]);
-//    }
-
     public function loadViewExamDetails($type, $examSlug)
     {
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
@@ -89,7 +91,6 @@ class LiveExamController extends Controller
                 'id' => $exam->id,
                 'name' => $exam->name,
                 'slug' => $exam->slug,
-                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks,
@@ -98,7 +99,7 @@ class LiveExamController extends Controller
                 'duration' => $exam->duration,
                 'questionType' => $exam->question_type,
                 'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish_instant,
+                'publishInstant' => $exam->publish,
                 'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                 'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
                 'examUrl' => $exam->exam_url,
@@ -113,14 +114,13 @@ class LiveExamController extends Controller
     public function store(Request $request)
     {
         if (!Auth::check()) {
-            return response()->json([
-                'message' => 'You must be logged in to create an exam.'
-            ], 401);
+            return back()->with('error', 'You must be logged in to create an exam.');
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',
+            'subject_id' => 'required',
+            'course_id' => 'required',
             'description' => 'nullable|string',
             'total_questions' => 'required|integer|min:1',
             'has_negative_marks' => 'boolean',
@@ -138,30 +138,47 @@ class LiveExamController extends Controller
         $slug = Str::slug($validated['name']);
         $examUrl = "https://demo.com/exams/{$slug}";
 
-        $exam = new LiveExam();
-        $exam->name = $request->name;
-        $exam->slug = $slug;
-        $exam->subject_id = 1;
-        $exam->course_id = 1;
-        $exam->description = $request->description;
-        $exam->total_questions = $request->total_questions;
-        $exam->has_negative_marks = $request->has_negative_marks ?? false;
-        $exam->negative_marks_value = $request->negative_marks_value;
-        $exam->total_marks = $request->total_marks;
-        $exam->duration = $request->duration;
-        $exam->question_type = $request->question_type;
-        $exam->privacy = $request->privacy;
-        $exam->publish_instant = $request->publish_instant ?? false;
-        $exam->start_time = $request->start_time;
-        $exam->end_time = $request->end_time;
-        $exam->exam_url = $examUrl;
-        $exam->created_by = Auth::id();
-        $exam->save();
+        DB::beginTransaction();
 
-        return response()->json([
-            'message' => 'Exam created successfully',
-            'exam' => $exam
-        ], 201);
+        try {
+            $examId = DB::table('live_exams')->insertGetId([
+                'exam_type'           => 0, // for live exam
+                'name'                => $request->name,
+                'slug'                => $slug,
+                'description'         => $request->description,
+                'total_questions'     => $request->total_questions,
+                'has_negative_marks'  => $request->has_negative_marks ?? false,
+                'negative_marks_value'=> $request->negative_marks_value,
+                'total_marks'         => $request->total_marks,
+                'duration'            => $request->duration,
+                'question_type'       => $request->question_type,
+                'privacy'             => $request->privacy,
+                'publish'             => $request->publish_instant ?? true,
+                'start_time'          => $request->start_time,
+                'end_time'            => $request->end_time,
+                'exam_url'            => $examUrl,
+                'created_by'          => Auth::id(),
+                'created_at'          => now(),
+                'updated_at'          => now(),
+            ]);
+
+            DB::table('course_exam')->insert([
+                'course_id' => $request->course_id,
+                'exam_id'   => $examId
+            ]);
+
+            DB::table('exam_subject')->insert([
+                'exam_id'    => $examId,
+                'subject_id' => $request->subject_id
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Exam created successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to create exam.');
+        }
     }
 
     public function showAllExam()
@@ -171,7 +188,6 @@ class LiveExamController extends Controller
                 'id' => $exam->id,
                 'name' => $exam->name,
                 'slug' => $exam->slug,
-                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks, // boolean
@@ -180,7 +196,7 @@ class LiveExamController extends Controller
                 'duration' => $exam->duration,
                 'questionType' => $exam->question_type,
                 'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish_instant,
+                'publishInstant' => $exam->publish,
                 'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d H:i') : null,
                 'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d H:i') : null,
                 'examUrl' => $exam->exam_url,
@@ -200,7 +216,6 @@ class LiveExamController extends Controller
                 'id' => $exam->id,
                 'slug' => $exam->slug,
                 'name' => $exam->name,
-                'subject' => $exam->subject_id,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks,
@@ -209,7 +224,7 @@ class LiveExamController extends Controller
                 'duration' => $exam->duration,
                 'questionType' => $exam->question_type,
                 'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish_instant,
+                'publishInstant' => $exam->publish,
                 'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d\TH:i') : null,
                 'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d\TH:i') : null,
                 'examUrl' => $exam->exam_url,
@@ -221,43 +236,111 @@ class LiveExamController extends Controller
 
     public function updateExam(Request $request, $slug)
     {
-        $exam = LiveExam::where('slug', $slug)->firstOrFail();
+        $examId = DB::table('live_exams')
+            ->where('slug', $slug)
+            ->value('id');
+
+        if (!$examId) {
+            return back()->with('error', 'Exam not found.');
+        }
+
+//        dd($request->all());
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'subject' => 'required|string|max:255',
+            'subject_id' => 'required',
+            'course_id' => 'required',
             'description' => 'nullable|string',
-            'totalQuestions' => 'required|integer|min:1',
-            'hasNegativeMarks' => 'boolean',
-            'negativeMarksValue' => 'nullable|numeric|min:0',
-            'totalMarks' => 'required|integer|min:1',
+            'total_questions' => 'required|integer|min:1',
+            'has_negative_marks' => 'boolean',
+            'negative_marks_value' => 'nullable|numeric|min:0',
+            'total_marks' => 'required|integer|min:1',
             'duration' => 'required|integer|min:1',
-            'questionType' => 'nullable|in:random,shuffle',
+            'question_type' => 'nullable|in:random,shuffle',
             'privacy' => 'nullable|in:everyone,link',
-            'publishInstant' => 'nullable|boolean',
-            'startTime' => 'required|date',
-            'endTime' => 'required|date|after:startTime',
+            'publish_instant' => 'nullable|boolean',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
         ]);
 
-        $exam->name = $validated['name'];
-        $exam->slug = Str::slug($validated['name']);
-        $exam->subject_id = 1;
-        $exam->course_id = 1;
-        $exam->description = $validated['description'];
-        $exam->total_questions = $validated['totalQuestions'];
-        $exam->has_negative_marks = $validated['hasNegativeMarks'];
-        $exam->negative_marks_value = $validated['negativeMarksValue'];
-        $exam->total_marks = $validated['totalMarks'];
-        $exam->duration = $validated['duration'];
-        $exam->question_type = $validated['questionType'];
-        $exam->privacy = $validated['privacy'];
-        $exam->publish_instant = $validated['publishInstant'];
-        $exam->start_time = $validated['startTime'];
-        $exam->end_time = $validated['endTime'];
-        $exam->exam_url = "https://demo.com/exams/{$exam->slug}";
-        $exam->save();
+        $updateSlug = Str::slug($validated['name']);
+        $examUrl = "https://demo.com/exams/{$slug}";
 
-        return response()->json(['message' => 'Exam updated successfully']);
+        $existingSlug = DB::table('live_exams')
+            ->where('slug', $updateSlug)
+            ->where('id', '!=', $examId)
+            ->first();
+
+        if (!$existingSlug) {
+            return back()->with('error', 'change the exam name');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $examId = DB::table('live_exams')
+                ->where('id', $examId)
+                ->update([
+                'exam_type'           => 0,
+                'name'                => $request->name,
+                'slug'                => $updateSlug,
+                'description'         => $request->description,
+                'total_questions'     => $request->total_questions,
+                'has_negative_marks'  => $request->has_negative_marks ?? false,
+                'negative_marks_value'=> $request->negative_marks_value,
+                'total_marks'         => $request->total_marks,
+                'duration'            => $request->duration,
+                'question_type'       => $request->question_type,
+                'privacy'             => $request->privacy,
+                'publish'             => $request->publish_instant ?? true,
+                'start_time'          => $request->start_time,
+                'end_time'            => $request->end_time,
+                'exam_url'            => $examUrl,
+                'created_by'          => Auth::id(),
+                'created_at'          => now(),
+                'updated_at'          => now(),
+            ]);
+
+            DB::table('course_exam')->where('exam_id', $examId)->delete();
+
+            DB::table('course_exam')->insert([
+                'course_id' => $request->course_id,
+                'exam_id'   => $examId
+            ]);
+
+            DB::table('exam_subject')->where('exam_id', $examId)->delete();
+
+            DB::table('exam_subject')->insert([
+                'exam_id'    => $examId,
+                'subject_id' => $request->subject_id
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'Exam update successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update exam.');
+        }
+
+//        $exam->name = $validated['name'];
+//        $exam->slug = Str::slug($validated['name']);
+//        $exam->course_id = 1;
+//        $exam->description = $validated['description'];
+//        $exam->total_questions = $validated['totalQuestions'];
+//        $exam->has_negative_marks = $validated['hasNegativeMarks'];
+//        $exam->negative_marks_value = $validated['negativeMarksValue'];
+//        $exam->total_marks = $validated['totalMarks'];
+//        $exam->duration = $validated['duration'];
+//        $exam->question_type = $validated['questionType'];
+//        $exam->privacy = $validated['privacy'];
+//        $exam->publish = $validated['publishInstant'];
+//        $exam->start_time = $validated['startTime'];
+//        $exam->end_time = $validated['endTime'];
+//        $exam->exam_url = "https://demo.com/exams/{$exam->slug}";
+//        $exam->save();
+//
+//        return response()->json(['message' => 'Exam updated successfully']);
     }
 
     public function storeExamQuestion(Request $request)
