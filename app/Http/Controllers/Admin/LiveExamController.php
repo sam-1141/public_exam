@@ -103,6 +103,8 @@ class LiveExamController extends Controller
                 'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                 'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
                 'examUrl' => $exam->exam_url,
+                'status' => $exam->status,
+                'exam_type' => $exam->exam_type,
             ],
             'examType' => $type,
             'questions' => $questions,
@@ -165,7 +167,7 @@ class LiveExamController extends Controller
 
     public function showAllExam()
     {
-        $exams = LiveExam::orderBy('created_at', 'desc')->get()->map(function ($exam) {
+        $exams = LiveExam::orderBy('created_at', 'desc')->where('exam_type', 0)->get()->map(function ($exam) {
             return [
                 'id' => $exam->id,
                 'name' => $exam->name,
@@ -183,6 +185,8 @@ class LiveExamController extends Controller
                 'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d H:i') : null,
                 'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d H:i') : null,
                 'examUrl' => $exam->exam_url,
+                'status' => $exam->status,
+                'exam_type' => $exam->exam_type,
             ];
         });
 
@@ -210,6 +214,8 @@ class LiveExamController extends Controller
                 'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d\TH:i') : null,
                 'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d\TH:i') : null,
                 'examUrl' => $exam->exam_url,
+                'status' => $exam->status,
+                'exam_type' => $exam->exam_type,
             ]
         ]);
     }
@@ -294,6 +300,24 @@ class LiveExamController extends Controller
         DB::table('questions')->where('id', $id)->delete();
 
         return response()->json(['success' => true, 'message' => 'Question deleted successfully']);
+    }
+
+    public function toggleExamStatus(Request $request, $id)
+    {
+        DB::table('live_exams')
+            ->where('id', $id)
+            ->update(['status' => $request->status]);
+
+        return back()->with('success', "Exam status updated .");
+    }
+
+    public function toggleExamType(Request $request, $id)
+    {
+        DB::table('live_exams')
+            ->where('id', $id)
+            ->update(['exam_type' => $request->examType]);
+
+        return back()->with('success', "Exam status updated .");
     }
 
 }

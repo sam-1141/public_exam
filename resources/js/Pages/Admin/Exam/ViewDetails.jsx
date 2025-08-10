@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Link, usePage } from "@inertiajs/react";
+import {Link, router, usePage} from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import AddQuestionModal from "./AddQuestion";
@@ -14,6 +14,22 @@ const ExamDetails = ({ examType, exam, questions }) => {
         navigator.clipboard.writeText(text);
         alert("Exam link copied to clipboard!");
     };
+
+    const toggleStatus = (id, currentStatus) => {
+        router.put(route("exams.status.toggle", id), {
+            status: currentStatus ? 0 : 1
+        });
+    };
+
+    const toggleExamType = (id, currentExamType) => {
+        router.put(route("exams.type.toggle", id), {
+            examType: currentExamType ? 0 : 1
+        });
+    };
+
+    useEffect(() => {
+        console.log('single exam', exam);
+    }, [exam]);
 
     return (
         <div className="container py-4">
@@ -49,7 +65,16 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     {exam.description}
                                 </p>
                             </div>
-                            <span className="badge bg-success">Published</span>
+
+                            {exam.status === 1 ? (
+                                <>
+                                    <span className="badge bg-success">Published</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="badge bg-success">Unpublished</span>
+                                </>
+                            )}
                         </div>
                     </div>
                     {/* Course and Subject display */}
@@ -186,32 +211,55 @@ const ExamDetails = ({ examType, exam, questions }) => {
 
             {/* Action Buttons */}
             <div className="d-flex flex-wrap gap-2 mb-4">
-                <button className="btn btn-warning btn-sm">
-                    <i className="fas fa-eye-slash me-1"></i>Unpublish
+                <button
+                    className={`btn btn-${exam.status ? "warning" : "success"} btn-sm`}
+                    onClick={() => toggleStatus(exam.id, exam.status)}
+                >
+                    {exam.status === 1 ? (
+                        <>
+                            <i className="fas fa-eye-slash me-1"></i>Unpublish
+                        </>
+                    ) : (
+                        <>
+                            <i className="fas fa-eye me-1"></i>Publish
+                        </>
+                    )}
                 </button>
                 {!isPracticeExam && (
                     <>
-                        <button className="btn btn-info btn-sm">
-                            <i className="fas fa-sync-alt me-1"></i>Update
-                            Results
-                        </button>
-                        <button className="btn btn-secondary btn-sm">
-                            <i className="fas fa-copy me-1"></i>Copy to Practice
+                        {/*<button className="btn btn-info btn-sm">*/}
+                        {/*    <i className="fas fa-sync-alt me-1"></i>Update*/}
+                        {/*    Results*/}
+                        {/*</button>*/}
+
+                        <button
+                            className={`btn btn-success btn-sm`}
+                            onClick={() => toggleExamType(exam.id, exam.exam_type)}
+                        >
+                            {exam.exam_type === 1 ? (
+                                <>
+                                    <i className="fas fa-copy me-1"></i>Make it Live Exam
+                                </>
+                            ) : (
+                                <>
+                                    <i className="fas fa-copy me-1"></i>Make it Practise Exam
+                                </>
+                            )}
                         </button>
                         <button
                             className="btn btn-outline-primary btn-sm"
                             onClick={() =>
                                 copyToClipboard(
                                     exam.examUrl ??
-                                        `${window.location.origin}/exams/${exam.id}`
+                                        ``
                                 )
                             }
                         >
                             <i className="fas fa-link me-1"></i>Copy Link
                         </button>
-                        <button className="btn btn-outline-warning btn-sm">
-                            <i className="fas fa-trophy me-1"></i>Leaderboard
-                        </button>
+                        {/*<button className="btn btn-outline-warning btn-sm">*/}
+                        {/*    <i className="fas fa-trophy me-1"></i>Leaderboard*/}
+                        {/*</button>*/}
                         <button
                             onClick={() => setShowAddQuestionModal(true)}
                             className="btn btn-warning btn-sm"

@@ -80,6 +80,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::put('/admin/live-exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
     Route::post('/admin/live-exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
     Route::delete('/admin/live-exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
+    Route::put('/exams/{id}/toggle-status', [LiveExamController::class, 'toggleExamStatus'])->name('exams.status.toggle');
+    Route::put('/exams/{id}/toggle-exam-type', [LiveExamController::class, 'toggleExamType'])->name('exams.type.toggle');
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
