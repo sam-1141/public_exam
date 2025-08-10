@@ -23,25 +23,22 @@ class LiveExamController extends Controller
     public function loadExamMainPage(Request $request)
     {
         $examSlug = $request->query('examSlug');
-
-        $examId = DB::table('live_exams')
+        $exam = DB::table('live_exams')
             ->where('slug', $examSlug)
-            ->value('id');
+            ->firstOrFail();
 
-        if (!$examId) {
+        if (!$exam) {
             return redirect()->route('student.live.exam.notice');
         }
 
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
-            ->where('exam_question.exam_id', $examId)
+            ->where('exam_question.exam_id', $exam->id)
             ->select('questions.*')
             ->get();
 
-
-
         return Inertia::render('Student/LiveExam/ExamMainPage', [
-            'examId' => $examId,
+            'exam' => $exam,
             'questions' => $questions,
         ]);
     }

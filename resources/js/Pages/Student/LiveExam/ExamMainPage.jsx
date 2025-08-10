@@ -8,7 +8,7 @@ import Layout from "../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import FocusWarning from "../../../components/FocusWarning"
 
-const ExamMainPage = ({ examId, questions }) => {
+const ExamMainPage = ({ exam, questions }) => {
   const [answers, setAnswers] = useState({})
 
   const [showSubmitModal, setShowSubmitModal] = useState(false)
