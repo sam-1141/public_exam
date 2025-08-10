@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { route } from "ziggy-js";
-import { courses } from "./LiveExam/courses";
 
 const EditExamModal = ({
     show,
@@ -18,21 +17,26 @@ const EditExamModal = ({
 
     useEffect(() => {
         if (exam) {
+            // console.log("Exam data received:", exam);
             setFormData({
                 name: exam.name || "",
-                course_id: exam.course_id || "",
-                subject_id: exam.subject_id || "",
+                course_id: exam.course_id ? String(exam.course_id) : "",
+                subject_id: exam.subject_id ? String(exam.subject_id) : "",
                 description: exam.description || "",
-                totalQuestions: exam.totalQuestions || "",
-                hasNegativeMarks: exam.hasNegativeMarks || false,
-                negativeMarksValue: exam.negativeMarksValue || "",
-                totalMarks: exam.totalMarks || "",
-                duration: exam.duration || "",
-                questionType: exam.questionType || "random",
+                total_questions: exam.totalQuestions
+                    ? String(exam.totalQuestions)
+                    : "",
+                has_negative_marks: exam.hasNegativeMarks === 1 ? true : false,
+                negative_marks_value: exam.negativeMarksValue
+                    ? String(exam.negativeMarksValue)
+                    : "",
+                total_marks: exam.totalMarks ? String(exam.totalMarks) : "",
+                question_type: exam.questionType || "random",
+                publish_instant: exam.publishInstant === 1 ? true : false,
                 privacy: exam.privacy || "everyone",
-                publishInstant: exam.publishInstant || "1",
-                startTime: exam.startTime || "",
-                endTime: exam.endTime || "",
+                duration: exam.duration ? String(exam.duration) : "",
+                start_time: exam.startTime || "",
+                end_time: exam.endTime || "",
             });
             setErrors({});
         }
@@ -46,16 +50,56 @@ const EditExamModal = ({
         }));
     };
 
+    const updateFormData = (data) => {
+        const updateData = {
+            name: data.name,
+            description: data.description,
+            question_type: data.question_type,
+            privacy: data.privacy,
+            course_id: data.course_id ? parseInt(data.course_id, 10) : null,
+            subject_id: data.subject_id ? parseInt(data.subject_id, 10) : null,
+            total_questions: data.total_questions
+                ? parseInt(data.total_questions, 10)
+                : null,
+            total_marks: data.total_marks
+                ? parseInt(data.total_marks, 10)
+                : null,
+            duration: data.duration ? parseInt(data.duration, 10) : null,
+            // Convert boolean to 1/0 for API
+            has_negative_marks: data.has_negative_marks ? 1 : 0,
+            publish_instant: data.publish_instant ? 1 : 0,
+            negative_marks_value: data.negative_marks_value
+                ? parseFloat(data.negative_marks_value)
+                : 0,
+        };
+
+        // Handle datetime fields
+        if (data.start_time && data.start_time.trim() !== "") {
+            updateData.start_time = data.start_time;
+        }
+
+        if (data.end_time && data.end_time.trim() !== "") {
+            updateData.end_time = data.end_time;
+        }
+
+        return updateData;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData) return;
+
         setSubmitting(true);
         setErrors({});
+
+        // Prepare data with correct types
+        const updateData = updateFormData(formData);
+        console.log("updateData data for submission:", updateData);
 
         try {
             await axios.put(
                 route("update.single.exam", { slug: exam.slug }),
-                formData,
+                updateData,
                 {
                     headers: {
                         "X-Requested-With": "XMLHttpRequest",
@@ -65,10 +109,11 @@ const EditExamModal = ({
                     },
                 }
             );
-            setSubmitting(false);
+
             onClose();
             if (onSuccess) onSuccess();
         } catch (err) {
+            console.error("Submission error:", err);
             if (err.response) {
                 if (err.response.status === 422) {
                     setErrors(err.response.data.errors);
@@ -77,14 +122,21 @@ const EditExamModal = ({
                         general: "You must be logged in to update the exam.",
                     });
                 } else {
-                    setErrors({ general: "Something went wrong!" });
+                    setErrors({
+                        general:
+                            err.response.data.message ||
+                            "Something went wrong!",
+                    });
                 }
             } else {
-                setErrors({ general: "Network error." });
+                setErrors({ general: "Network error. Please try again." });
             }
+        } finally {
             setSubmitting(false);
         }
     };
+
+    if (!show || !exam || !formData) return null;
 
     if (!show || !exam || !formData) return null;
 
@@ -145,7 +197,7 @@ const EditExamModal = ({
                                 <div className="col-md-6">
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Name:
+                                            Name:{" "}
                                         </label>
                                         <input
                                             type="text"
@@ -155,6 +207,7 @@ const EditExamModal = ({
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
+                                            required
                                         />
                                         {errors.name && (
                                             <div className="invalid-feedback">
@@ -165,7 +218,7 @@ const EditExamModal = ({
 
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Course:
+                                            Course:{" "}
                                         </label>
                                         <select
                                             className={`form-select ${
@@ -176,6 +229,7 @@ const EditExamModal = ({
                                             name="course_id"
                                             value={formData.course_id}
                                             onChange={handleChange}
+                                            required
                                         >
                                             <option value="">
                                                 Select a course
@@ -198,7 +252,7 @@ const EditExamModal = ({
 
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Subject:
+                                            Subject:{" "}
                                         </label>
                                         <select
                                             className={`form-select ${
@@ -209,6 +263,7 @@ const EditExamModal = ({
                                             name="subject_id"
                                             value={formData.subject_id}
                                             onChange={handleChange}
+                                            required
                                         >
                                             <option value="">
                                                 Select a subject
@@ -254,49 +309,53 @@ const EditExamModal = ({
                                 <div className="col-md-6">
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Total Questions:
+                                            Total Questions:{" "}
                                         </label>
                                         <input
                                             type="number"
                                             className={`form-control ${
-                                                errors.totalQuestions
+                                                errors.total_questions
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="totalQuestions"
-                                            value={formData.totalQuestions}
+                                            name="total_questions"
+                                            value={formData.total_questions}
                                             onChange={handleChange}
+                                            min="1"
+                                            required
                                         />
-                                        {errors.totalQuestions && (
+                                        {errors.total_questions && (
                                             <div className="invalid-feedback">
-                                                {errors.totalQuestions[0]}
+                                                {errors.total_questions[0]}
                                             </div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Total Marks:
+                                            Total Marks:{" "}
                                         </label>
                                         <input
                                             type="number"
                                             className={`form-control ${
-                                                errors.totalMarks
+                                                errors.total_marks
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="totalMarks"
-                                            value={formData.totalMarks}
+                                            name="total_marks"
+                                            value={formData.total_marks}
                                             onChange={handleChange}
+                                            min="1"
+                                            required
                                         />
-                                        {errors.totalMarks && (
+                                        {errors.total_marks && (
                                             <div className="invalid-feedback">
-                                                {errors.totalMarks[0]}
+                                                {errors.total_marks[0]}
                                             </div>
                                         )}
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Duration (min):
+                                            Duration (minutes):{" "}
                                         </label>
                                         <input
                                             type="number"
@@ -308,6 +367,8 @@ const EditExamModal = ({
                                             name="duration"
                                             value={formData.duration}
                                             onChange={handleChange}
+                                            min="1"
+                                            required
                                         />
                                         {errors.duration && (
                                             <div className="invalid-feedback">
@@ -321,12 +382,12 @@ const EditExamModal = ({
                                         </label>
                                         <select
                                             className={`form-select ${
-                                                errors.questionType
+                                                errors.question_type
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="questionType"
-                                            value={formData.questionType}
+                                            name="question_type"
+                                            value={formData.question_type}
                                             onChange={handleChange}
                                         >
                                             <option value="random">
@@ -336,9 +397,9 @@ const EditExamModal = ({
                                                 Shuffle
                                             </option>
                                         </select>
-                                        {errors.questionType && (
+                                        {errors.question_type && (
                                             <div className="invalid-feedback">
-                                                {errors.questionType[0]}
+                                                {errors.question_type[0]}
                                             </div>
                                         )}
                                     </div>
@@ -353,22 +414,22 @@ const EditExamModal = ({
                                                     type="checkbox"
                                                     id="negativeMarksSwitch"
                                                     checked={
-                                                        formData.hasNegativeMarks
+                                                        formData.has_negative_marks
                                                     }
                                                     onChange={(e) => {
                                                         setFormData({
                                                             ...formData,
-                                                            hasNegativeMarks:
+                                                            has_negative_marks:
                                                                 e.target
                                                                     .checked,
-                                                            negativeMarksValue:
+                                                            negative_marks_value:
                                                                 e.target.checked
-                                                                    ? formData.negativeMarksValue ||
+                                                                    ? formData.negative_marks_value ||
                                                                       "0.25"
-                                                                    : "0",
+                                                                    : "",
                                                         });
                                                     }}
-                                                    name="hasNegativeMarks"
+                                                    name="has_negative_marks"
                                                     style={{
                                                         width: "3em",
                                                         height: "1.5em",
@@ -378,44 +439,44 @@ const EditExamModal = ({
                                                     className="form-check-label ml-2"
                                                     htmlFor="negativeMarksSwitch"
                                                 >
-                                                    {formData.hasNegativeMarks
+                                                    {formData.has_negative_marks
                                                         ? "Yes"
                                                         : "No"}
                                                 </label>
                                             </div>
-                                            {formData.hasNegativeMarks && (
+                                            {formData.has_negative_marks && (
                                                 <div style={{ width: "200px" }}>
                                                     <input
                                                         type="number"
                                                         className={`form-control ${
-                                                            errors.negativeMarksValue
+                                                            errors.negative_marks_value
                                                                 ? "is-invalid"
                                                                 : ""
                                                         }`}
-                                                        min="0.0"
+                                                        min="0"
                                                         step="0.25"
                                                         value={
-                                                            formData.negativeMarksValue
+                                                            formData.negative_marks_value
                                                         }
                                                         onChange={(e) =>
                                                             setFormData({
                                                                 ...formData,
-                                                                negativeMarksValue:
+                                                                negative_marks_value:
                                                                     e.target
                                                                         .value,
                                                             })
                                                         }
-                                                        placeholder="Enter marks"
-                                                        name="negativeMarksValue"
+                                                        placeholder="0.25"
+                                                        name="negative_marks_value"
                                                     />
-                                                    <span className="text-sm text-gray-500">
+                                                    <small className="text-muted">
                                                         marks per wrong answer
-                                                    </span>
-                                                    {errors.negativeMarksValue && (
+                                                    </small>
+                                                    {errors.negative_marks_value && (
                                                         <div className="invalid-feedback">
                                                             {
                                                                 errors
-                                                                    .negativeMarksValue[0]
+                                                                    .negative_marks_value[0]
                                                             }
                                                         </div>
                                                     )}
@@ -458,30 +519,37 @@ const EditExamModal = ({
                                             </div>
                                         )}
                                     </div>
+
                                     <div className="mb-3">
                                         <label className="form-label">
                                             Publish Instant?
                                         </label>
                                         <select
                                             className={`form-select ${
-                                                errors.publishInstant
+                                                errors.publish_instant
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="publishInstant"
+                                            name="publish_instant"
                                             value={
-                                                formData.publishInstant === 1
-                                                    ? 1
-                                                    : 0
+                                                formData.publish_instant
+                                                    ? "1"
+                                                    : "0"
                                             }
-                                            onChange={handleChange}
+                                            onChange={(e) => {
+                                                setFormData({
+                                                    ...formData,
+                                                    publish_instant:
+                                                        e.target.value === "1",
+                                                });
+                                            }}
                                         >
-                                            <option value={0}>NO</option>
-                                            <option value={1}>YES</option>
+                                            <option value="0">NO</option>
+                                            <option value="1">YES</option>
                                         </select>
-                                        {errors.publishInstant && (
+                                        {errors.publish_instant && (
                                             <div className="invalid-feedback">
-                                                {errors.publishInstant[0]}
+                                                {errors.publish_instant[0]}
                                             </div>
                                         )}
                                     </div>
@@ -494,17 +562,18 @@ const EditExamModal = ({
                                         <input
                                             type="datetime-local"
                                             className={`form-control ${
-                                                errors.startTime
+                                                errors.start_time
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="startTime"
-                                            value={formData.startTime}
+                                            name="start_time"
+                                            value={formData.start_time}
                                             onChange={handleChange}
                                         />
-                                        {errors.startTime && (
+
+                                        {errors.start_time && (
                                             <div className="invalid-feedback">
-                                                {errors.startTime[0]}
+                                                {errors.start_time[0]}
                                             </div>
                                         )}
                                     </div>
@@ -515,17 +584,18 @@ const EditExamModal = ({
                                         <input
                                             type="datetime-local"
                                             className={`form-control ${
-                                                errors.endTime
+                                                errors.end_time
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
-                                            name="endTime"
-                                            value={formData.endTime}
+                                            name="end_time"
+                                            value={formData.end_time}
                                             onChange={handleChange}
                                         />
-                                        {errors.endTime && (
+
+                                        {errors.end_time && (
                                             <div className="invalid-feedback">
-                                                {errors.endTime[0]}
+                                                {errors.end_time[0]}
                                             </div>
                                         )}
                                     </div>
@@ -545,7 +615,7 @@ const EditExamModal = ({
                                     className="btn btn-primary"
                                     disabled={submitting}
                                 >
-                                    {submitting ? "Saving..." : "Save Changes"}
+                                    {submitting ? "Updating..." : "Update Exam"}
                                 </button>
                             </div>
                         </form>
