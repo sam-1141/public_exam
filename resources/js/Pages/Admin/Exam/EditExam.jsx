@@ -347,81 +347,78 @@ const EditExamModal = ({
                                             Negative Marks:
                                         </label>
                                         <div className="d-flex align-items-center gap-3">
-                                            {formData.hasNegativeMarks ? (
-                                                <>
-                                                    <div className="form-check">
-                                                        <input
-                                                            className="form-check-input"
-                                                            type="checkbox"
-                                                            id="negativeMarksCheckbox"
-                                                            checked={true}
-                                                            onChange={(e) => {
-                                                                setFormData({
-                                                                    ...formData,
-                                                                    hasNegativeMarks:
-                                                                        e.target
-                                                                            .checked,
-                                                                    negativeMarksValue:
-                                                                        e.target
-                                                                            .checked
-                                                                            ? formData.negativeMarksValue
-                                                                            : "0",
-                                                                });
-                                                            }}
-                                                            name="hasNegativeMarks"
-                                                        />
-                                                        <label
-                                                            className="form-check-label"
-                                                            htmlFor="negativeMarksCheckbox"
-                                                        >
-                                                            Yes
-                                                        </label>
-                                                    </div>
-                                                    <div
-                                                        style={{
-                                                            width: "200px",
-                                                        }}
-                                                    >
-                                                        <input
-                                                            type="number"
-                                                            className={`form-control ${
-                                                                errors.negativeMarksValue
-                                                                    ? "is-invalid"
-                                                                    : ""
-                                                            }`}
-                                                            min="0.0"
-                                                            step="0.25"
-                                                            value={
-                                                                formData.negativeMarksValue
+                                            <div className="form-check form-switch">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id="negativeMarksSwitch"
+                                                    checked={
+                                                        formData.hasNegativeMarks
+                                                    }
+                                                    onChange={(e) => {
+                                                        setFormData({
+                                                            ...formData,
+                                                            hasNegativeMarks:
+                                                                e.target
+                                                                    .checked,
+                                                            negativeMarksValue:
+                                                                e.target.checked
+                                                                    ? formData.negativeMarksValue ||
+                                                                      "0.25"
+                                                                    : "0",
+                                                        });
+                                                    }}
+                                                    name="hasNegativeMarks"
+                                                    style={{
+                                                        width: "3em",
+                                                        height: "1.5em",
+                                                    }}
+                                                />
+                                                <label
+                                                    className="form-check-label ml-2"
+                                                    htmlFor="negativeMarksSwitch"
+                                                >
+                                                    {formData.hasNegativeMarks
+                                                        ? "Yes"
+                                                        : "No"}
+                                                </label>
+                                            </div>
+                                            {formData.hasNegativeMarks && (
+                                                <div style={{ width: "200px" }}>
+                                                    <input
+                                                        type="number"
+                                                        className={`form-control ${
+                                                            errors.negativeMarksValue
+                                                                ? "is-invalid"
+                                                                : ""
+                                                        }`}
+                                                        min="0.0"
+                                                        step="0.25"
+                                                        value={
+                                                            formData.negativeMarksValue
+                                                        }
+                                                        onChange={(e) =>
+                                                            setFormData({
+                                                                ...formData,
+                                                                negativeMarksValue:
+                                                                    e.target
+                                                                        .value,
+                                                            })
+                                                        }
+                                                        placeholder="Enter marks"
+                                                        name="negativeMarksValue"
+                                                    />
+                                                    <span className="text-sm text-gray-500">
+                                                        marks per wrong answer
+                                                    </span>
+                                                    {errors.negativeMarksValue && (
+                                                        <div className="invalid-feedback">
+                                                            {
+                                                                errors
+                                                                    .negativeMarksValue[0]
                                                             }
-                                                            onChange={(e) =>
-                                                                setFormData({
-                                                                    ...formData,
-                                                                    negativeMarksValue:
-                                                                        e.target
-                                                                            .value,
-                                                                })
-                                                            }
-                                                            placeholder="Enter marks"
-                                                            name="negativeMarksValue"
-                                                        />
-                                                        <span className="text-sm text-gray-500">
-                                                            marks per wrong
-                                                            answer
-                                                        </span>
-                                                        {errors.negativeMarksValue && (
-                                                            <div className="invalid-feedback">
-                                                                {
-                                                                    errors
-                                                                        .negativeMarksValue[0]
-                                                                }
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <div className="text-gray-600">
-                                                    No
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

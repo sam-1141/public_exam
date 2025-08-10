@@ -313,23 +313,52 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         <label className="form-label">
                                             Negative Marks:
                                         </label>
-                                        <div className="d-flex align-items-center gap-5">
-                                            <div className="form-check">
+                                        <div className="d-flex align-items-center gap-3">
+                                            <div className="form-check form-switch">
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
-                                                    id="negativeMarksCheckbox"
+                                                    id="negativeMarksSwitch"
                                                     checked={
                                                         formData.has_negative_marks
                                                     }
-                                                    onChange={handleChange}
+                                                    onChange={(e) => {
+                                                        handleChange({
+                                                            target: {
+                                                                name: "has_negative_marks",
+                                                                type: "checkbox",
+                                                                checked:
+                                                                    e.target
+                                                                        .checked,
+                                                            },
+                                                        });
+                                                        // Only set default value when enabling
+                                                        if (
+                                                            e.target.checked &&
+                                                            !formData.negative_marks_value
+                                                        ) {
+                                                            setFormData(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    negative_marks_value:
+                                                                        "0.25",
+                                                                })
+                                                            );
+                                                        }
+                                                    }}
                                                     name="has_negative_marks"
+                                                    style={{
+                                                        width: "3em",
+                                                        height: "1.5em",
+                                                    }}
                                                 />
                                                 <label
-                                                    className="form-check-label"
-                                                    htmlFor="negativeMarksCheckbox"
+                                                    className="form-check-label ml-2"
+                                                    htmlFor="negativeMarksSwitch"
                                                 >
-                                                    Yes
+                                                    {formData.has_negative_marks
+                                                        ? "Yes"
+                                                        : "No"}
                                                 </label>
                                             </div>
                                             {formData.has_negative_marks && (
@@ -346,18 +375,11 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                         value={
                                                             formData.negative_marks_value
                                                         }
-                                                        onChange={(e) =>
-                                                            setFormData({
-                                                                ...formData,
-                                                                negative_marks_value:
-                                                                    e.target
-                                                                        .value,
-                                                            })
-                                                        }
+                                                        onChange={handleChange}
                                                         placeholder="Enter marks"
                                                         name="negative_marks_value"
                                                     />
-                                                    <span>
+                                                    <span className="text-sm text-gray-500">
                                                         marks per wrong answer
                                                     </span>
                                                     {errors.negative_marks_value && (
