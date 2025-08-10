@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
-import Layout from "../../../layouts/Layout"
+import { liveExams } from "../../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../../layouts/Layout"
 
 const ExamSuccessPage = () => {
   const [exam, setExam] = useState(null)
@@ -19,7 +19,7 @@ const ExamSuccessPage = () => {
   // }, [examId])
 
   const handleBackToHome = () => {
-    window.location.href = '/student/live-exam/notice'
+    window.location.href = '/student/live-exam/list'
   }
 
   if (!exam) {

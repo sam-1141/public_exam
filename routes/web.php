@@ -5,6 +5,8 @@ use App\Http\Controllers\admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
+use App\Http\Controllers\Student\PracticeExamController;
+use App\Http\Controllers\Student\StudentLiveExamController;
 use App\Http\Controllers\TrialExamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
@@ -14,7 +16,6 @@ use App\Http\Controllers\HardnessController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\MaterialsController;
-use App\Http\Controllers\PracticeExamController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
@@ -89,8 +90,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/admin/practise-exam/list', [PractiseExamController::class, 'showAllExam'])->name('show.practise.exam.list');
 
 
-    Route::controller(LiveExamController::class)->group(function () {
-        Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
+    Route::controller(StudentLiveExamController::class)->group(function () {
+        Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
         Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
         Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
             /* Admin */

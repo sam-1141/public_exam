@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import Layout from "../../../layouts/Layout"
+import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
-import { courses, subjectsByCourse } from "../../../utils/ExamQuestion/PracticeExamQuestions"
+import { courses, subjectsByCourse } from "../../../../utils/ExamQuestion/PracticeExamQuestions"
 
 const PracticeExamListPage = ({allExam}) => {
     const [currentPage, setCurrentPage] = useState(1)

@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
-import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
-import Layout from "../../../layouts/Layout"
+import { liveExams } from "../../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
-import FocusWarning from "../../../components/FocusWarning"
+import FocusWarning from "../../../../components/FocusWarning"
 
 const ExamMainPage = ({ exam, questions }) => {
   const [answers, setAnswers] = useState({})

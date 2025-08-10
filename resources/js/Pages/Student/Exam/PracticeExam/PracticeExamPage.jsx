@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Layout from "../../../layouts/Layout"
+import Layout from "../../../../layouts/Layout"
+import { router, usePage } from "@inertiajs/react"
 import ExamTimer from "../LiveExam/ExamTimer"
 import QuestionCard from "../LiveExam/QuestionCard"
-import { router, usePage } from "@inertiajs/react"
 
 const PracticeExamPage = ({exam, questions}) => {
   // const { examId } = usePage().props;

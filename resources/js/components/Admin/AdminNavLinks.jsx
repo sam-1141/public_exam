@@ -297,7 +297,7 @@ function AdminNavLinks() {
                         </li>
                         <li className="pc-item">
                             <Link
-                                href={route("student.live.exam.notice")}
+                                href={route("student.live.exam.list")}
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
