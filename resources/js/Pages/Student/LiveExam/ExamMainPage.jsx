@@ -12,7 +12,7 @@ const ExamMainPage = ({ exam, questions }) => {
   const [answers, setAnswers] = useState({})
 
   const [showSubmitModal, setShowSubmitModal] = useState(false)
-  const [exam, setExam] = useState(null)
+  // const [exam, setExam] = useState(null)
   // (Focus warning logic moved into FocusWarning component)
 
 
@@ -21,15 +21,15 @@ const ExamMainPage = ({ exam, questions }) => {
     }, [questions]);
 
   // Get exam data by ID
-  useEffect(() => {
-    const examData = liveExams.find(e => e.id == examId)
-    if (examData) {
-      setExam(examData)
-    } else {
-      // Redirect back to notice page if exam not found
-      window.location.href = '/student/live-exam'
-    }
-  }, [examId])
+  // useEffect(() => {
+  //   const examData = liveExams.find(e => e.id == examId)
+  //   if (examData) {
+  //     setExam(examData)
+  //   } else {
+  //     // Redirect back to notice page if exam not found
+  //     window.location.href = '/student/live-exam'
+  //   }
+  // }, [examId])
 
   // (Detection moved into FocusWarning component)
 
@@ -66,7 +66,7 @@ const ExamMainPage = ({ exam, questions }) => {
 
     // Send answer to server immediately
     try {
-      await fetch(`/api/exams/${examId}/answers`, {
+      await fetch(`/api/exams/answers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

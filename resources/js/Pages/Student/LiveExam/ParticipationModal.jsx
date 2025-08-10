@@ -32,7 +32,10 @@ const ParticipationModal = ({ show, onHide, exam, onConfirm }) => {
                   </button>
                 </div>
                 <div className="col-6">
-                  <button className="btn btn-success w-100 py-2 fw-semibold" onClick={() => onConfirm(exam)}>
+                  <button
+                    className="btn btn-success w-100 py-2 fw-semibold"
+                    onClick={() => onConfirm(exam)}
+                  >
                     হ্যাঁ
                   </button>
                 </div>

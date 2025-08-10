@@ -8,7 +8,7 @@ import { router, usePage } from "@inertiajs/react"
 
 const PracticeExamPage = ({exam, questions}) => {
   // const { examId } = usePage().props;
-  const [exam, setExam] = useState(null);
+  // const [exam, setExam] = useState(null);
   const [loading, setLoading] = useState(true)
   const [answers, setAnswers] = useState({})
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -19,25 +19,25 @@ const PracticeExamPage = ({exam, questions}) => {
         console.log('questions', questions);
     }, [exam, questions]);
 
-  useEffect(() => {
-    // Simulate loading exam data (replace with actual API call if needed)
-    const loadExamData = () => {
-      // Generate a practice exam based on examId
-      const practiceExam = {
-        id: examId,
-        name: "প্র্যাকটিস পরীক্ষা",
-        subject: "পদার্থবিজ্ঞান", // Default subject
-        totalQuestions: 10,
-        totalMarks: 50,
-        duration: 1800, // 30 minutes in seconds
-        questions: generateSampleQuestions(10, "পদার্থবিজ্ঞান")
-      }
-      setExam(practiceExam)
-      setLoading(false)
-    }
+  // useEffect(() => {
+  //   // Simulate loading exam data (replace with actual API call if needed)
+  //   const loadExamData = () => {
+  //     // Generate a practice exam based on examId
+  //     const practiceExam = {
+  //       id: examId,
+  //       name: "প্র্যাকটিস পরীক্ষা",
+  //       subject: "পদার্থবিজ্ঞান", // Default subject
+  //       totalQuestions: 10,
+  //       totalMarks: 50,
+  //       duration: 1800, // 30 minutes in seconds
+  //       questions: generateSampleQuestions(10, "পদার্থবিজ্ঞান")
+  //     }
+  //     setExam(practiceExam)
+  //     setLoading(false)
+  //   }
 
-    loadExamData()
-  }, [examId])
+  //   loadExamData()
+  // }, [examId])
 
   const generateSampleQuestions = (count, subject) => {
     const sampleQuestions = {
