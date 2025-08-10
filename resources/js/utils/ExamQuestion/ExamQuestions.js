@@ -3,10 +3,10 @@ export const liveExams = [
         id: 1,
         name: "পদার্থবিজ্ঞান মডেল টেস্ট",
         totalMarks: 100,
-        duration: 60,
+        duration: 1,
         totalQuestions: 30,
-        participants: 1247,
         status: "live",
+        startTime: "2025-08-04T23:00:00",
         questions: [
             {
                 id: 1,
@@ -156,10 +156,10 @@ export const liveExams = [
         id: 2,
         name: "রসায়ন লাইভ এক্সাম",
         totalMarks: 80,
-        duration: 45,
+        duration: 5,
         totalQuestions: 20,
-        participants: 892,
         status: "live",
+        startTime: "2025-08-10T23:00:00",
         questions: [
             {
                 id: 1,
@@ -287,11 +287,10 @@ export const liveExams = [
         id: 3,
         name: "গণিত প্র্যাকটিস টেস্ট",
         totalMarks: 120,
-        duration: 90,
+        duration: 5,
         totalQuestions: 30,
-        participants: 654,
         status: "starting-soon",
-        startTime: "2025-08-04T23:00:00",
+        startTime: "2025-08-10T23:00:00",
         questions: [
             {
                 id: 1,
