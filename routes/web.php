@@ -5,6 +5,7 @@ use App\Http\Controllers\admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
+use App\Http\Controllers\Student\PracticeExamController;
 use App\Http\Controllers\TrialExamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthMiddleware;
@@ -14,7 +15,6 @@ use App\Http\Controllers\HardnessController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\MaterialsController;
-use App\Http\Controllers\PracticeExamController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
