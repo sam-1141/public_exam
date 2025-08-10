@@ -13,7 +13,7 @@ class PracticeExamController extends Controller
     {
         $exam = DB::table('live_exams')->where('exam_type', 1)->get();
 
-        return Inertia::render('Student/PracticeExam/PracticeExamListPage', [
+        return Inertia::render('Student/Exam/PracticeExam/PracticeExamListPage', [
             'allExam' => $exam,
         ]);
     }
@@ -35,7 +35,7 @@ class PracticeExamController extends Controller
             ->select('questions.*')
             ->get();
 
-        return Inertia::render('Student/PracticeExam/PracticeExamPage', [
+        return Inertia::render('Student/Exam/PracticeExam/PracticeExamPage', [
             'exam' => $exam,
             'questions' => $questions,
         ]);
@@ -49,7 +49,7 @@ class PracticeExamController extends Controller
         $totalMarks = $request->input('totalMarks');
         $answers = $request->input('answers');
 
-        return Inertia::render('Student/PracticeExam/PracticeExamResult', [
+        return Inertia::render('Student/Exam/PracticeExam/PracticeExamResult', [
             'submission' => [
             'examId' => $exam,
             'examName' => $request->input('examName'),

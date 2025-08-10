@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { router, usePage } from '@inertiajs/react'
-import Layout from "../../../layouts/Layout"
+import Layout from "../../../../layouts/Layout"
 
 const PracticeExamResult = ({ examId, results, exam, answers }) => {
     const { submission } = usePage().props

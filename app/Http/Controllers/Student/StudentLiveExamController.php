@@ -12,7 +12,7 @@ class StudentLiveExamController extends Controller
     public function loadExamNoticePage()
     {
         $exam = DB::table('live_exams')->where('exam_type', 0)->get();
-        return Inertia::render('Student/LiveExam/ExamNoticePage', [
+        return Inertia::render('Student/Exam/LiveExam/ExamNoticePage', [
             'allExam' => $exam,
         ]);
     }
@@ -34,7 +34,7 @@ class StudentLiveExamController extends Controller
             ->select('questions.*')
             ->get();
 
-        return Inertia::render('Student/LiveExam/ExamMainPage', [
+        return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
             'exam' => $exam,
             'questions' => $questions,
         ]);
@@ -42,6 +42,6 @@ class StudentLiveExamController extends Controller
 
     public function loadExamSuccessPage()
     {
-        return Inertia::render('Student/LiveExam/ExamSuccessPage');
+        return Inertia::render('Student/Exam/LiveExam/ExamSuccessPage');
     }
 }

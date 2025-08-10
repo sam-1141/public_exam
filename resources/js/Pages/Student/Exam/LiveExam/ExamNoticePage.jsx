@@ -1,7 +1,7 @@
-import Layout from "../../../layouts/Layout"
+import Layout from "../../../../layouts/Layout"
 import LiveExamCard from "./LiveExamCard"
 import ParticipationModal from "./ParticipationModal"
-import PageHeader from "../../../components/Student/PageHeader/PageHeader"
+import PageHeader from "../../../../components/Student/PageHeader/PageHeader"
 import { useEffect, useState } from "react"
 import { router } from "@inertiajs/react"
 

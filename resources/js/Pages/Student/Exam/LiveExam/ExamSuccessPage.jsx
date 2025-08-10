@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
-import Layout from "../../../layouts/Layout"
+import { liveExams } from "../../../../utils/ExamQuestion/ExamQuestions"
+import Layout from "../../../../layouts/Layout"
 
 const ExamSuccessPage = () => {
   const [exam, setExam] = useState(null)
