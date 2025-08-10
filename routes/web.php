@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LiveExamController;
+use App\Http\Controllers\admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
@@ -74,12 +75,19 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
     });
 
+    // For live Exam
     Route::post('/admin/live-exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
     Route::get('/admin/live-exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
     Route::get('/admin/live-exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
     Route::put('/admin/live-exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
     Route::post('/admin/live-exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
     Route::delete('/admin/live-exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
+    Route::put('/exams/{id}/toggle-status', [LiveExamController::class, 'toggleExamStatus'])->name('exams.status.toggle');
+    Route::put('/exams/{id}/toggle-exam-type', [LiveExamController::class, 'toggleExamType'])->name('exams.type.toggle');
+
+    // For practise exam
+    Route::get('/admin/practise-exam/list', [PractiseExamController::class, 'showAllExam'])->name('show.practise.exam.list');
+
 
     Route::controller(LiveExamController::class)->group(function () {
         Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');

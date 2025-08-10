@@ -10,7 +10,7 @@ import FocusWarning from "../../../components/FocusWarning"
 
 const ExamMainPage = ({ examId }) => {
   const [answers, setAnswers] = useState({})
-  
+
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [exam, setExam] = useState(null)
   // (Focus warning logic moved into FocusWarning component)
@@ -52,14 +52,30 @@ const ExamMainPage = ({ examId }) => {
     }
   }, [])
 
-  const handleAnswerSelect = (questionId, answerIndex) => {
-    if (answers[questionId] !== undefined) return // Already answered
-
+  const handleAnswerSelect = async (questionId, answerIndex) => {
+    // Update local state immediately
     setAnswers((prev) => ({
       ...prev,
       [questionId]: answerIndex,
-    }))
-  }
+    }));
+
+    // Send answer to server immediately
+    try {
+      await fetch(`/api/exams/${examId}/answers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          questionId,
+          answerIndex,
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to save answer:", error);
+    }
+  };
+
 
   const handleTimeUp = () => {
     handleSubmit()

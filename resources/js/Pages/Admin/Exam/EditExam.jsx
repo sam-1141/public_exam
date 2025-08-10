@@ -25,6 +25,10 @@ const EditExamModal = ({
     const [subjectSearch, setSubjectSearch] = useState("");
 
     useEffect(() => {
+        console.log('exam', exam)
+    }, [exam]);
+
+    useEffect(() => {
         if (exam) {
             setFormData({
                 name: exam.name || "",

@@ -56,7 +56,6 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
                   selectedAnswer === index ? "btn-success text-white" : "btn-outline-secondary"
                 }`}
                 onClick={() => onAnswerSelect(question.id, index)}
-                disabled={isAnswered}
               >
                 <span className="fw-semibold me-2">{String.fromCharCode(65 + index)}.</span>
                 {option}
