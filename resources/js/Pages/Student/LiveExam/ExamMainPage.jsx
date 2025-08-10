@@ -82,6 +82,10 @@ const ExamMainPage = ({ examId }) => {
   }
 
   const handleSubmit = (isAuto = false) => {
+    // If a click event slipped in (onClick passed function reference), sanitize
+    if (typeof isAuto !== 'boolean') {
+      isAuto = false
+    }
     if (!exam) return
     router.get(route('student.live.exam.success'), {
       examId: exam.id,
@@ -197,7 +201,7 @@ const ExamMainPage = ({ examId }) => {
                       </button>
                     </div>
                     <div className="col-6">
-                      <button className="btn btn-success w-100 py-2 fw-semibold" onClick={handleSubmit}>
+                      <button className="btn btn-success w-100 py-2 fw-semibold" onClick={() => handleSubmit()}>
                         জমা দিন
                       </button>
                     </div>
