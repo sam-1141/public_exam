@@ -1,36 +1,38 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Link } from "@inertiajs/react";
 import Layout from "../../../../layouts/Layout";
 import { route } from "ziggy-js";
 import { exams, practiceExams } from "../exam";
 
 import ExamCard from "../../../../components/Exam/ExamCard";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 const PracticeExam = () => {
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        totalQuestions: "",
-        negativeMarks: "no",
-        totalMarks: "",
-        duration: "",
-        questionType: "random",
-        timerRestriction: "off",
-        privacy: "everyone",
-        publishInstant: "no",
-        batch: "all",
-        startTime: "",
-        endTime: "",
-    });
+    const [exams, setExams] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [refresh, setRefresh] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission here
-        console.log(formData);
-        setShowAddModal(false);
-        // Reset form or keep data as needed
-    };
+    const [editExamSlug, setEditExamSlug] = useState(null);
+    const [editExamData, setEditExamData] = useState(null);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [editLoading, setEditLoading] = useState(false);
+
+
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get(route("show.practise.exam.list"))
+            .then((res) => {
+                setExams(res.data.exams || []);
+            })
+            .catch(() => {
+                toast.error("Failed to load exams");
+                setExams([]);
+            })
+            .finally(() => setLoading(false));
+        // console.log("Fetching exam list...", exams);
+    }, [refresh]);
 
     return (
         <div className="container py-4">
@@ -48,18 +50,17 @@ const PracticeExam = () => {
                 <h2 className="mb-4 font-semibold text-2xl text-center">
                     Practice Exams
                 </h2>
-                {/* <button
-                    className="btn btn-primary"
-                    onClick={() => setShowAddModal(true)}
-                >
-                    <i className="fas fa-plus me-2"></i>Add Practice Exam
-                </button> */}
             </div>
 
             {/* Exams list */}
             <div className="row">
-                {practiceExams.map((exam) => (
-                    <ExamCard key={exam.id} exam={exam} examType="practice" />
+                {exams.map((exam) => (
+                    <ExamCard
+                        key={exam.id}
+                        exam={exam}
+                        examType="practice"
+                        setEditExamSlug={setEditExamSlug}
+                    />
                 ))}
             </div>
 
@@ -73,10 +74,6 @@ const PracticeExam = () => {
                     <p className="text-muted mb-4">
                         You haven't created any live exams yet
                     </p>
-                    <Link href="/exams/live/create" className="btn btn-primary">
-                        <i className="fas fa-plus me-2"></i>Create Your First
-                        Live Exam
-                    </Link>
                 </div>
             )}
         </div>

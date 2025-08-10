@@ -45,7 +45,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                     <i className="fas fa-arrow-left me-1"></i>Back
                 </Link>
                 <h2 className="mb-0 h4 font-semibold">Exam Details</h2>
-                {isPracticeExam && (
+                {exam.exam_type === 1 && (
                     <span className="badge bg-info text-dark">
                         Practice Exam
                     </span>
@@ -225,6 +225,20 @@ const ExamDetails = ({ examType, exam, questions }) => {
                         </>
                     )}
                 </button>
+                <button
+                    className={`btn btn-success btn-sm`}
+                    onClick={() => toggleExamType(exam.id, exam.exam_type)}
+                >
+                    {exam.exam_type === 1 ? (
+                        <>
+                            <i className="fas fa-copy me-1"></i>Make it Live Exam
+                        </>
+                    ) : (
+                        <>
+                            <i className="fas fa-copy me-1"></i>Make it Practise Exam
+                        </>
+                    )}
+                </button>
                 {!isPracticeExam && (
                     <>
                         {/*<button className="btn btn-info btn-sm">*/}
@@ -232,20 +246,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                         {/*    Results*/}
                         {/*</button>*/}
 
-                        <button
-                            className={`btn btn-success btn-sm`}
-                            onClick={() => toggleExamType(exam.id, exam.exam_type)}
-                        >
-                            {exam.exam_type === 1 ? (
-                                <>
-                                    <i className="fas fa-copy me-1"></i>Make it Live Exam
-                                </>
-                            ) : (
-                                <>
-                                    <i className="fas fa-copy me-1"></i>Make it Practise Exam
-                                </>
-                            )}
-                        </button>
+
                         <button
                             className="btn btn-outline-primary btn-sm"
                             onClick={() =>
