@@ -5,8 +5,8 @@ export const liveExams = [
         totalMarks: 100,
         duration: 1,
         totalQuestions: 30,
-        participants: 1247,
         status: "live",
+        startTime: "2025-08-04T23:00:00",
         questions: [
             {
                 id: 1,
@@ -158,8 +158,8 @@ export const liveExams = [
         totalMarks: 80,
         duration: 5,
         totalQuestions: 20,
-        participants: 892,
         status: "live",
+        startTime: "2025-08-10T23:00:00",
         questions: [
             {
                 id: 1,
@@ -289,9 +289,8 @@ export const liveExams = [
         totalMarks: 120,
         duration: 5,
         totalQuestions: 30,
-        participants: 654,
         status: "starting-soon",
-        startTime: "2025-08-04T23:00:00",
+        startTime: "2025-08-10T23:00:00",
         questions: [
             {
                 id: 1,
