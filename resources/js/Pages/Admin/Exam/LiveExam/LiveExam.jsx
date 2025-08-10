@@ -21,8 +21,8 @@ const LiveExam = ({ courses, subjects }) => {
     const [editLoading, setEditLoading] = useState(false);
 
     useEffect(() => {
-        console.log("Courses:", courses);
-        console.log("subjects:", subjects);
+        // console.log("Courses:", courses);
+        // console.log("subjects:", subjects);
     }, []);
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const LiveExam = ({ courses, subjects }) => {
                 setExams([]);
             })
             .finally(() => setLoading(false));
-        // console.log("Fetching exam list...", exams);
+        console.log("Fetching exam list...", exams);
     }, [refresh]);
 
     const onClose = () => {
