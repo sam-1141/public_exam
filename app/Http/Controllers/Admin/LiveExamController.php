@@ -244,7 +244,7 @@ class LiveExamController extends Controller
             return back()->with('error', 'Exam not found.');
         }
 
-//        dd($request->all());
+
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -271,9 +271,14 @@ class LiveExamController extends Controller
             ->where('id', '!=', $examId)
             ->first();
 
-        if (!$existingSlug) {
-            return back()->with('error', 'change the exam name');
+
+        if ($existingSlug !== null) {
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Failed to update exam.'
+            ]);
         }
+
 
         DB::beginTransaction();
 
@@ -316,31 +321,17 @@ class LiveExamController extends Controller
             ]);
 
             DB::commit();
-
-            return back()->with('success', 'Exam update successfully!');
+            return response()->json([
+                'type' => 'success',
+                'message' => 'Exam updated successfully.'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Failed to update exam.');
+            return response()->json([
+                'type' => 'error',
+                'message' => 'Failed to update exam.'
+            ]);
         }
-
-//        $exam->name = $validated['name'];
-//        $exam->slug = Str::slug($validated['name']);
-//        $exam->course_id = 1;
-//        $exam->description = $validated['description'];
-//        $exam->total_questions = $validated['totalQuestions'];
-//        $exam->has_negative_marks = $validated['hasNegativeMarks'];
-//        $exam->negative_marks_value = $validated['negativeMarksValue'];
-//        $exam->total_marks = $validated['totalMarks'];
-//        $exam->duration = $validated['duration'];
-//        $exam->question_type = $validated['questionType'];
-//        $exam->privacy = $validated['privacy'];
-//        $exam->publish = $validated['publishInstant'];
-//        $exam->start_time = $validated['startTime'];
-//        $exam->end_time = $validated['endTime'];
-//        $exam->exam_url = "https://demo.com/exams/{$exam->slug}";
-//        $exam->save();
-//
-//        return response()->json(['message' => 'Exam updated successfully']);
     }
 
     public function storeExamQuestion(Request $request)
