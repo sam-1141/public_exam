@@ -2,16 +2,17 @@ import Layout from "../../../layouts/Layout"
 import LiveExamCard from "./LiveExamCard"
 import ParticipationModal from "./ParticipationModal"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
 import { router } from "@inertiajs/react"
 
-const ExamNoticePage = ({ 
-  isMobile, 
-  showMobileSidebar, 
-  setShowMobileSidebar, 
-  isCollapsed, 
-  setIsCollapsed 
+const ExamNoticePage = ({
+  allExam,
+  isMobile,
+  showMobileSidebar,
+  setShowMobileSidebar,
+  isCollapsed,
+  setIsCollapsed
 }) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedExam, setSelectedExam] = useState(null)
@@ -23,9 +24,13 @@ const ExamNoticePage = ({
     setShowModal(true)
   }
 
+    useEffect(() => {
+        console.log('allExam', allExam)
+    }, [allExam]);
+
   const handleConfirmParticipation = (exam) => {
-    router.get(route('student.live.exam.main'), { 
-      examId: exam.id 
+    router.get(route('student.live.exam.main'), {
+      examId: exam.id
     }, {
       preserveState: true,
       onSuccess: () => {
@@ -71,10 +76,10 @@ const ExamNoticePage = ({
               {liveExams.length > 0 ? (
                 <div className="row">
                   {liveExams.map((exam) => (
-                    <LiveExamCard 
-                      key={exam.id} 
-                      exam={exam} 
-                      onClick={handleExamClick} 
+                    <LiveExamCard
+                      key={exam.id}
+                      exam={exam}
+                      onClick={handleExamClick}
                     />
                   ))}
                 </div>

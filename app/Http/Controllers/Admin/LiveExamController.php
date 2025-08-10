@@ -14,19 +14,35 @@ class LiveExamController extends Controller
 {
     public function loadExamNoticePage()
     {
-        return Inertia::render('Student/LiveExam/ExamNoticePage');
+        $exam = DB::table('live_exams')->where('exam_type', 0)->get();
+        return Inertia::render('Student/LiveExam/ExamNoticePage', [
+            'allExam' => $exam,
+        ]);
     }
 
     public function loadExamMainPage(Request $request)
     {
-        $examId = $request->query('examId');
+        $examSlug = $request->query('examSlug');
+
+        $examId = DB::table('live_exams')
+            ->where('slug', $examSlug)
+            ->value('id');
 
         if (!$examId) {
             return redirect()->route('student.live.exam.notice');
         }
 
+        $questions = DB::table('questions')
+            ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+            ->where('exam_question.exam_id', $examId)
+            ->select('questions.*')
+            ->get();
+
+
+
         return Inertia::render('Student/LiveExam/ExamMainPage', [
-            'examId' => $examId
+            'examId' => $examId,
+            'questions' => $questions,
         ]);
     }
 
@@ -62,17 +78,6 @@ class LiveExamController extends Controller
     {
         return Inertia::render('Admin/Exam/PracticeExam/PracticeExam');
     }
-
-
-//    public function loadViewExamDetails($type, $examSlug)
-//    {
-////        dd($type);
-//        return Inertia::render('Admin/Exam/ViewDetails',[
-//            'exam' => $examSlug,
-//            'examType' => $type
-//
-//        ]);
-//    }
 
     public function loadViewExamDetails($type, $examSlug)
     {
