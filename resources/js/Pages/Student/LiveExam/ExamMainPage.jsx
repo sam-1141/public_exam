@@ -8,12 +8,17 @@ import Layout from "../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import FocusWarning from "../../../components/FocusWarning"
 
-const ExamMainPage = ({ examId }) => {
+const ExamMainPage = ({ examId, questions }) => {
   const [answers, setAnswers] = useState({})
 
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [exam, setExam] = useState(null)
   // (Focus warning logic moved into FocusWarning component)
+
+
+    useEffect(() => {
+        console.log('questions', questions)
+    }, [questions]);
 
   // Get exam data by ID
   useEffect(() => {
