@@ -43,17 +43,9 @@ class LiveExamController extends Controller
         ]);
     }
 
-    public function loadExamSuccessPage(Request $request)
+    public function loadExamSuccessPage()
     {
-        $examId = $request->query('examId');
-
-        if (!$examId) {
-            return redirect()->route('student.live.exam.notice');
-        }
-
-        return Inertia::render('Student/LiveExam/ExamSuccessPage', [
-            'examId' => $examId
-        ]);
+        return Inertia::render('Student/LiveExam/ExamSuccessPage');
     }
 
     public function loadAddExamPage()

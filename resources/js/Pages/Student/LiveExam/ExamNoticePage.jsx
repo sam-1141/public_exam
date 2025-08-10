@@ -29,7 +29,7 @@ const ExamNoticePage = ({ allExam }) => {
   const handleConfirmParticipation = (exam) => {
     router.get(
       route("student.live.exam.main"),
-      { examId: exam.id },
+      { examSlug: exam.slug },
       {
         preserveState: true,
         onSuccess: () => {

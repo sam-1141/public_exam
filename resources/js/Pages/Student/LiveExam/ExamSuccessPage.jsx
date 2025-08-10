@@ -4,19 +4,19 @@ import { useState, useEffect } from "react"
 import { liveExams } from "../../../utils/ExamQuestion/ExamQuestions"
 import Layout from "../../../layouts/Layout"
 
-const ExamSuccessPage = ({ examId }) => {
+const ExamSuccessPage = () => {
   const [exam, setExam] = useState(null)
 
   // Get exam data by ID
-  useEffect(() => {
-    const examData = liveExams.find(e => e.id == examId)
-    if (examData) {
-      setExam(examData)
-    } else {
-      // Redirect back to notice page if exam not found
-      window.location.href = '/student/live-exam/notice'
-    }
-  }, [examId])
+  // useEffect(() => {
+  //   const examData = liveExams.find(e => e.id == examId)
+  //   if (examData) {
+  //     setExam(examData)
+  //   } else {
+  //     // Redirect back to notice page if exam not found
+  //     window.location.href = '/student/live-exam/notice'
+  //   }
+  // }, [examId])
 
   const handleBackToHome = () => {
     window.location.href = '/student/live-exam/notice'
@@ -49,7 +49,7 @@ const ExamSuccessPage = ({ examId }) => {
                   <h3 className="fw-bold text-success mb-3">অংশগ্রহণের জন্য ধন্যবাদ!</h3>
                   <p className="text-muted mb-4">আপনার উত্তরপত্র সফলভাবে জমা হয়েছে।</p>
                   <div className="bg-light rounded-3 p-3 mb-4">
-                    <h6 className="fw-semibold mb-2">{exam.name}</h6>
+                    {/* <h6 className="fw-semibold mb-2">{exam.name}</h6> */}
                     <small className="text-muted">ফলাফলের জন্য অপেক্ষা করুন</small>
                   </div>
                 </div>
