@@ -19,7 +19,7 @@ const ExamSuccessPage = () => {
   // }, [examId])
 
   const handleBackToHome = () => {
-    window.location.href = '/student/live-exam/notice'
+    window.location.href = '/student/live-exam/list'
   }
 
   if (!exam) {

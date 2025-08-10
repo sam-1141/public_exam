@@ -5,7 +5,7 @@ import PageHeader from "../../../../components/Student/PageHeader/PageHeader"
 import { useEffect, useState } from "react"
 import { router } from "@inertiajs/react"
 
-const ExamNoticePage = ({ allExam }) => {
+const ExamListPage = ({ allExam }) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedExam, setSelectedExam] = useState(null)
   const [currentExam, setCurrentExam] = useState(null)
@@ -92,5 +92,5 @@ const ExamNoticePage = ({ allExam }) => {
 }
 
 
-ExamNoticePage.layout = (page) => <Layout children={page} />
-export default ExamNoticePage
+ExamListPage.layout = (page) => <Layout children={page} />
+export default ExamListPage

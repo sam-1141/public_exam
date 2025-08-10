@@ -91,7 +91,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
 
     Route::controller(StudentLiveExamController::class)->group(function () {
-        Route::get('/student/live-exam/notice', 'loadExamNoticePage')->name('student.live.exam.notice');
+        Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
         Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
         Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
             /* Admin */

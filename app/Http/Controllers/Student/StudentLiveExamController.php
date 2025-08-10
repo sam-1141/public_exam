@@ -12,7 +12,7 @@ class StudentLiveExamController extends Controller
     public function loadExamNoticePage()
     {
         $exam = DB::table('live_exams')->where('exam_type', 0)->get();
-        return Inertia::render('Student/Exam/LiveExam/ExamNoticePage', [
+        return Inertia::render('Student/Exam/LiveExam/ExamListPage', [
             'allExam' => $exam,
         ]);
     }
@@ -25,7 +25,7 @@ class StudentLiveExamController extends Controller
             ->firstOrFail();
 
         if (!$exam) {
-            return redirect()->route('student.live.exam.notice');
+            return redirect()->route('student.live.exam.list');
         }
 
         $questions = DB::table('questions')

@@ -26,7 +26,7 @@ class PracticeExamController extends Controller
             ->firstOrFail();
 
         if (!$exam) {
-            return redirect()->route('student.live.exam.notice');
+            return redirect()->route('student.live.exam.list');
         }
 
         $questions = DB::table('questions')
