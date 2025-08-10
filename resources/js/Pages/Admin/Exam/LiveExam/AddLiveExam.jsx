@@ -5,150 +5,29 @@ import { route } from "ziggy-js";
 const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
     const [formData, setFormData] = useState({
         name: "",
-        courses: [],
-        subjects: [],
+        course_id: "",
+        subject_id: "",
         description: "",
-        totalQuestions: "",
-        hasNegativeMarks: false,
-        negativeMarksValue: "",
-        totalMarks: "",
+        total_questions: "",
+        has_negative_marks: false,
+        negative_marks_value: "",
+        total_marks: "",
         duration: "",
-        questionType: "random",
+        question_type: "random",
         privacy: null,
-        publishInstant: "1",
-        startTime: "",
-        endTime: "",
+        publish_instant: "1",
+        start_time: "",
+        end_time: "",
     });
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
-    const [selectionType, setSelectionType] = useState({
-        course: "single",
-        subject: "single",
-    });
-
-    // Dropdown states
-    const [courseDropdownOpen, setCourseDropdownOpen] = useState(false);
-    const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
-    const [courseSearch, setCourseSearch] = useState("");
-    const [subjectSearch, setSubjectSearch] = useState("");
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-
         setFormData((prev) => ({
             ...prev,
-            [name]:
-                name === "privacy" && value === ""
-                    ? null
-                    : type === "checkbox"
-                    ? checked
-                    : value,
+            [name]: type === "checkbox" ? checked : value,
         }));
-    };
-
-    const handleSelectionTypeChange = (type, field) => {
-        setSelectionType((prev) => ({
-            ...prev,
-            [field]: type,
-        }));
-        // Clear selection when changing type
-        setFormData((prev) => ({
-            ...prev,
-            [field === "course" ? "courses" : "subjects"]: [],
-        }));
-    };
-
-    // Handle single course selection
-    const handleSingleCourseChange = (e) => {
-        const courseId = e.target.value;
-        setFormData((prev) => ({
-            ...prev,
-            courses: courseId ? [courseId] : [],
-        }));
-    };
-
-    // Handle single subject selection
-    const handleSingleSubjectChange = (e) => {
-        const subjectId = e.target.value;
-        setFormData((prev) => ({
-            ...prev,
-            subjects: subjectId ? [subjectId] : [],
-        }));
-    };
-
-    // Input handlers for courses
-    const addCourse = (courseId) => {
-        const course = courses.find((c) => c.id == courseId);
-        if (course && !formData.courses.includes(String(courseId))) {
-            setFormData((prev) => ({
-                ...prev,
-                courses: [...prev.courses, String(courseId)],
-            }));
-        }
-        setCourseDropdownOpen(false);
-        setCourseSearch("");
-    };
-
-    const removeCourse = (courseId) => {
-        setFormData((prev) => ({
-            ...prev,
-            courses: prev.courses.filter((c) => c !== courseId),
-        }));
-    };
-
-    // Input handlers for subjects
-    const addSubject = (subjectId) => {
-        const subject = subjects.find((s) => s.id == subjectId);
-        if (subject && !formData.subjects.includes(String(subjectId))) {
-            setFormData((prev) => ({
-                ...prev,
-                subjects: [...prev.subjects, String(subjectId)],
-            }));
-        }
-        setSubjectDropdownOpen(false);
-        setSubjectSearch("");
-    };
-
-    const removeSubject = (subjectId) => {
-        setFormData((prev) => ({
-            ...prev,
-            subjects: prev.subjects.filter((s) => s !== subjectId),
-        }));
-    };
-
-    // Filter functions
-    const filteredCourses = courses.filter(
-        (course) =>
-            course.course_name
-                .toLowerCase()
-                .includes(courseSearch.toLowerCase()) &&
-            !formData.courses.includes(String(course.id))
-    );
-
-    const filteredSubjects = subjects.filter(
-        (subject) =>
-            subject.name.toLowerCase().includes(subjectSearch.toLowerCase()) &&
-            !formData.subjects.includes(String(subject.id))
-    );
-
-    // Get selected course names for display
-    const getSelectedCourseNames = () => {
-        return formData.courses
-            .map((courseId) => {
-                const course = courses.find((c) => c.id == courseId);
-                return course ? course.course_name : "";
-            })
-            .filter((name) => name);
-    };
-
-    // Get selected subject names for display
-    const getSelectedSubjectNames = () => {
-        return formData.subjects
-            .map((subjectId) => {
-                const subject = subjects.find((s) => s.id == subjectId);
-                return subject ? subject.name : "";
-            })
-            .filter((name) => name);
     };
 
     const handleSubmit = async (e) => {
@@ -156,24 +35,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         setSubmitting(true);
         setErrors({});
 
-        // Prepare data for submission
-        const submissionData = {
-            ...formData,
-            course_id:
-                selectionType.course === "single" && formData.courses.length > 0
-                    ? formData.courses[0]
-                    : null,
-            subject_id:
-                selectionType.subject === "single" &&
-                formData.subjects.length > 0
-                    ? formData.subjects[0]
-                    : null,
-            course_ids: formData.courses,
-            subject_ids: formData.subjects,
-        };
-
         try {
-            await axios.post(route("execute.store.exam"), submissionData, {
+            await axios.post(route("execute.store.exam"), formData, {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                     "X-CSRF-TOKEN": document
@@ -183,8 +46,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
             });
             setFormData({
                 name: "",
-                courses: [],
-                subjects: [],
+                course_id: "",
+                subject_id: "",
                 description: "",
                 total_questions: "",
                 has_negative_marks: false,
@@ -216,30 +79,6 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         }
         setSubmitting(false);
     };
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            // Close course dropdown if clicked outside
-            if (
-                courseDropdownOpen &&
-                !event.target.closest(".course-dropdown-container")
-            ) {
-                setCourseDropdownOpen(false);
-            }
-            // Close subject dropdown if clicked outside
-            if (
-                subjectDropdownOpen &&
-                !event.target.closest(".subject-dropdown-container")
-            ) {
-                setSubjectDropdownOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [courseDropdownOpen, subjectDropdownOpen]);
 
     if (!show) return null;
 
@@ -289,355 +128,71 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
 
-                                    {/* Course Selection */}
+                                    {/* Simplified Course Selection */}
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Courses:
+                                            Course:
                                         </label>
-                                        <div className="flex gap-4 mb-3">
-                                            <label className="flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="courseSelectionType"
-                                                    checked={
-                                                        selectionType.course ===
-                                                        "single"
-                                                    }
-                                                    onChange={() =>
-                                                        handleSelectionTypeChange(
-                                                            "single",
-                                                            "course"
-                                                        )
-                                                    }
-                                                    className="mr-2"
-                                                />
-                                                Single
-                                            </label>
-                                            <label className="flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="courseSelectionType"
-                                                    checked={
-                                                        selectionType.course ===
-                                                        "multiple"
-                                                    }
-                                                    onChange={() =>
-                                                        handleSelectionTypeChange(
-                                                            "multiple",
-                                                            "course"
-                                                        )
-                                                    }
-                                                    className="mr-2"
-                                                />
-                                                Multiple
-                                            </label>
-                                        </div>
-
-                                        {selectionType.course === "single" ? (
-                                            <select
-                                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                                                    errors.courses
-                                                        ? "border-red-500"
-                                                        : "border-gray-300"
-                                                }`}
-                                                value={
-                                                    formData.courses[0] || ""
-                                                }
-                                                onChange={
-                                                    handleSingleCourseChange
-                                                }
-                                            >
-                                                <option value="">
-                                                    Select a course
-                                                </option>
-                                                {courses.map((course) => (
-                                                    <option
-                                                        key={course.id}
-                                                        value={course.id}
-                                                    >
-                                                        {course.course_name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            <div className="relative course-dropdown-container">
-                                                <div
-                                                    className={`min-h-[42px] w-full px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-gray-500 ${
-                                                        errors.courses
-                                                            ? "border-red-500"
-                                                            : "border-gray-300"
-                                                    }`}
-                                                    onClick={() =>
-                                                        setCourseDropdownOpen(
-                                                            !courseDropdownOpen
-                                                        )
-                                                    }
+                                        <select
+                                            className={`form-select ${
+                                                errors.course_id
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
+                                            name="course_id"
+                                            value={formData.course_id}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="">
+                                                Select a course
+                                            </option>
+                                            {courses.map((course) => (
+                                                <option
+                                                    key={course.id}
+                                                    value={course.id}
                                                 >
-                                                    <div className="flex flex-wrap gap-2 mb-2">
-                                                        {getSelectedCourseNames().map(
-                                                            (name, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    className="inline-flex items-center px-3 py-1 rounded-md text-md bg-gray-200 text-gray-800"
-                                                                >
-                                                                    {name}
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
-                                                                            removeCourse(
-                                                                                formData
-                                                                                    .courses[
-                                                                                    index
-                                                                                ]
-                                                                            );
-                                                                        }}
-                                                                        className="ml-2 text-gray-600 hover:text-gray-800"
-                                                                    >
-                                                                        ×
-                                                                    </button>
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Search and select courses..."
-                                                        value={courseSearch}
-                                                        onChange={(e) =>
-                                                            setCourseSearch(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        onFocus={() =>
-                                                            setCourseDropdownOpen(
-                                                                true
-                                                            )
-                                                        }
-                                                        className="w-full outline-none"
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        }
-                                                    />
-                                                </div>
-                                                {courseDropdownOpen && (
-                                                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                                                        {filteredCourses.length >
-                                                        0 ? (
-                                                            filteredCourses.map(
-                                                                (course) => (
-                                                                    <button
-                                                                        key={
-                                                                            course.id
-                                                                        }
-                                                                        type="button"
-                                                                        onClick={() =>
-                                                                            addCourse(
-                                                                                course.id
-                                                                            )
-                                                                        }
-                                                                        className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
-                                                                    >
-                                                                        {
-                                                                            course.course_name
-                                                                        }
-                                                                    </button>
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <div className="px-4 py-2 text-gray-500">
-                                                                No courses found
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                    {course.course_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.course_id && (
+                                            <div className="invalid-feedback">
+                                                {errors.course_id[0]}
                                             </div>
-                                        )}
-                                        {errors.courses && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.courses[0]}
-                                            </p>
                                         )}
                                     </div>
 
-                                    {/* Subject Selection */}
+                                    {/* Simplified Subject Selection */}
                                     <div className="mb-3">
                                         <label className="form-label">
-                                            Subjects:
+                                            Subject:
                                         </label>
-                                        <div className="flex gap-4 mb-3">
-                                            <label className="flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="subjectSelectionType"
-                                                    checked={
-                                                        selectionType.subject ===
-                                                        "single"
-                                                    }
-                                                    onChange={() =>
-                                                        handleSelectionTypeChange(
-                                                            "single",
-                                                            "subject"
-                                                        )
-                                                    }
-                                                    className="mr-2"
-                                                />
-                                                Single
-                                            </label>
-                                            <label className="flex items-center">
-                                                <input
-                                                    type="radio"
-                                                    name="subjectSelectionType"
-                                                    checked={
-                                                        selectionType.subject ===
-                                                        "multiple"
-                                                    }
-                                                    onChange={() =>
-                                                        handleSelectionTypeChange(
-                                                            "multiple",
-                                                            "subject"
-                                                        )
-                                                    }
-                                                    className="mr-2"
-                                                />
-                                                Multiple
-                                            </label>
-                                        </div>
-
-                                        {selectionType.subject === "single" ? (
-                                            <select
-                                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                                                    errors.subjects
-                                                        ? "border-red-500"
-                                                        : "border-gray-300"
-                                                }`}
-                                                value={
-                                                    formData.subjects[0] || ""
-                                                }
-                                                onChange={
-                                                    handleSingleSubjectChange
-                                                }
-                                            >
-                                                <option value="">
-                                                    Select a subject
-                                                </option>
-                                                {subjects.map((subject) => (
-                                                    <option
-                                                        key={subject.id}
-                                                        value={subject.id}
-                                                    >
-                                                        {subject.name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        ) : (
-                                            <div className="relative subject-dropdown-container">
-                                                {" "}
-                                                {/* Add this class */}
-                                                <div
-                                                    className={`min-h-[42px] w-full px-3 py-2 border rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-gray-500 ${
-                                                        errors.subjects
-                                                            ? "border-red-500"
-                                                            : "border-gray-300"
-                                                    }`}
-                                                    onClick={() =>
-                                                        setSubjectDropdownOpen(
-                                                            !subjectDropdownOpen
-                                                        )
-                                                    } // Toggle on click
+                                        <select
+                                            className={`form-select ${
+                                                errors.subject_id
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
+                                            name="subject_id"
+                                            value={formData.subject_id}
+                                            onChange={handleChange}
+                                        >
+                                            <option value="">
+                                                Select a subject
+                                            </option>
+                                            {subjects.map((subject) => (
+                                                <option
+                                                    key={subject.id}
+                                                    value={subject.id}
                                                 >
-                                                    <div className="flex flex-wrap gap-2 mb-2">
-                                                        {getSelectedSubjectNames().map(
-                                                            (name, index) => (
-                                                                <span
-                                                                    key={index}
-                                                                    className="inline-flex items-center px-3 py-1 rounded-md text-md bg-gray-200 text-gray-800"
-                                                                >
-                                                                    {name}
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation(); // Prevent dropdown toggle when removing
-                                                                            removeSubject(
-                                                                                formData
-                                                                                    .subjects[
-                                                                                    index
-                                                                                ]
-                                                                            );
-                                                                        }}
-                                                                        className="ml-2 text-gray-600 hover:text-gray-800"
-                                                                    >
-                                                                        ×
-                                                                    </button>
-                                                                </span>
-                                                            )
-                                                        )}
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Search and select subjects..."
-                                                        value={subjectSearch}
-                                                        onChange={(e) =>
-                                                            setSubjectSearch(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        onFocus={() =>
-                                                            setSubjectDropdownOpen(
-                                                                true
-                                                            )
-                                                        }
-                                                        className="w-full outline-none"
-                                                        onClick={(e) =>
-                                                            e.stopPropagation()
-                                                        } // Prevent double toggle
-                                                    />
-                                                </div>
-                                                {subjectDropdownOpen && (
-                                                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                                                        {filteredSubjects.length >
-                                                        0 ? (
-                                                            filteredSubjects.map(
-                                                                (subject) => (
-                                                                    <button
-                                                                        key={
-                                                                            subject.id
-                                                                        }
-                                                                        type="button"
-                                                                        onClick={(
-                                                                            e
-                                                                        ) => {
-                                                                            e.stopPropagation();
-                                                                            addSubject(
-                                                                                subject.id
-                                                                            );
-                                                                        }}
-                                                                        className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100"
-                                                                    >
-                                                                        {
-                                                                            subject.name
-                                                                        }
-                                                                    </button>
-                                                                )
-                                                            )
-                                                        ) : (
-                                                            <div className="px-4 py-2 text-gray-500">
-                                                                No subjects
-                                                                found
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                    {subject.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {errors.subject_id && (
+                                            <div className="invalid-feedback">
+                                                {errors.subject_id[0]}
                                             </div>
-                                        )}
-                                        {errors.subjects && (
-                                            <p className="text-red-500 text-sm mt-1">
-                                                {errors.subjects[0]}
-                                            </p>
                                         )}
                                     </div>
 
@@ -786,8 +341,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                                 ? "is-invalid"
                                                                 : ""
                                                         }`}
-                                                        min="0"
-                                                        step="any"
+                                                        min="0.0"
+                                                        step="0.25"
                                                         value={
                                                             formData.negative_marks_value
                                                         }
@@ -818,7 +373,6 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Advanced Settings */}
                                 <div className="col-12">
                                     <hr />
                                     <h6 className="my-3 font-semibold text-lg">
@@ -840,9 +394,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                             value={formData.privacy}
                                             onChange={handleChange}
                                         >
-                                            <option value="everyone">
-                                                Select
-                                            </option>
+                                            <option value="">Select</option>
                                             <option value="everyone">
                                                 Everyone
                                             </option>

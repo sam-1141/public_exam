@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Link, router, usePage} from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
+import { Link, router, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import AddQuestionModal from "./AddQuestion";
@@ -17,18 +17,18 @@ const ExamDetails = ({ examType, exam, questions }) => {
 
     const toggleStatus = (id, currentStatus) => {
         router.put(route("exams.status.toggle", id), {
-            status: currentStatus ? 0 : 1
+            status: currentStatus ? 0 : 1,
         });
     };
 
     const toggleExamType = (id, currentExamType) => {
         router.put(route("exams.type.toggle", id), {
-            examType: currentExamType ? 0 : 1
+            examType: currentExamType ? 0 : 1,
         });
     };
 
     useEffect(() => {
-        console.log('single exam', exam);
+        console.log("single exam", exam);
     }, [exam]);
 
     return (
@@ -68,11 +68,15 @@ const ExamDetails = ({ examType, exam, questions }) => {
 
                             {exam.status === 1 ? (
                                 <>
-                                    <span className="badge bg-success">Published</span>
+                                    <span className="badge bg-success">
+                                        Published
+                                    </span>
                                 </>
                             ) : (
                                 <>
-                                    <span className="badge bg-success">Unpublished</span>
+                                    <span className="badge bg-danger">
+                                        Unpublished
+                                    </span>
                                 </>
                             )}
                         </div>
@@ -212,7 +216,9 @@ const ExamDetails = ({ examType, exam, questions }) => {
             {/* Action Buttons */}
             <div className="d-flex flex-wrap gap-2 mb-4">
                 <button
-                    className={`btn btn-${exam.status ? "warning" : "success"} btn-sm`}
+                    className={`btn btn-${
+                        exam.status ? "warning" : "success"
+                    } btn-sm`}
                     onClick={() => toggleStatus(exam.id, exam.status)}
                 >
                     {exam.status === 1 ? (
@@ -231,11 +237,13 @@ const ExamDetails = ({ examType, exam, questions }) => {
                 >
                     {exam.exam_type === 1 ? (
                         <>
-                            <i className="fas fa-copy me-1"></i>Make it Live Exam
+                            <i className="fas fa-copy me-1"></i>Make it Live
+                            Exam
                         </>
                     ) : (
                         <>
-                            <i className="fas fa-copy me-1"></i>Make it Practise Exam
+                            <i className="fas fa-copy me-1"></i>Make it Practise
+                            Exam
                         </>
                     )}
                 </button>
@@ -246,15 +254,9 @@ const ExamDetails = ({ examType, exam, questions }) => {
                         {/*    Results*/}
                         {/*</button>*/}
 
-
                         <button
                             className="btn btn-outline-primary btn-sm"
-                            onClick={() =>
-                                copyToClipboard(
-                                    exam.examUrl ??
-                                        ``
-                                )
-                            }
+                            onClick={() => copyToClipboard(exam.examUrl ?? ``)}
                         >
                             <i className="fas fa-link me-1"></i>Copy Link
                         </button>
@@ -272,10 +274,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                 )}
             </div>
 
-            <QuestionList
-                questions={questions}
-                examType={examType}
-            />
+            <QuestionList questions={questions} examType={examType} />
 
             <AddQuestionModal
                 show={showAddQuestionModal}

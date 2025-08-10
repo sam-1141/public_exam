@@ -14,27 +14,27 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
             : "Yes"
         : "No";
 
-    // Function to display course names
-    const displayCourses = () => {
-        if (!exam.courses) return "No courses";
-        if (Array.isArray(exam.courses)) {
-            return exam.courses.length > 0
-                ? exam.courses.map((c) => c.course_name || c.name).join(", ")
-                : "No courses";
-        }
-        return exam.courses;
-    };
+    // // Function to display course names
+    // const displayCourses = () => {
+    //     if (!exam.courses) return "No courses";
+    //     if (Array.isArray(exam.courses)) {
+    //         return exam.courses.length > 0
+    //             ? exam.courses.map((c) => c.course_name || c.name).join(", ")
+    //             : "No courses";
+    //     }
+    //     return exam.courses;
+    // };
 
-    // Function to display subject names
-    const displaySubjects = () => {
-        if (!exam.subjects) return "No subjects";
-        if (Array.isArray(exam.subjects)) {
-            return exam.subjects.length > 0
-                ? exam.subjects.map((s) => s.name).join(", ")
-                : "No subjects";
-        }
-        return exam.subjects;
-    };
+    // // Function to display subject names
+    // const displaySubjects = () => {
+    //     if (!exam.subjects) return "No subjects";
+    //     if (Array.isArray(exam.subjects)) {
+    //         return exam.subjects.length > 0
+    //             ? exam.subjects.map((s) => s.name).join(", ")
+    //             : "No subjects";
+    //     }
+    //     return exam.subjects;
+    // };
 
     return (
         <div className="col-md-6 mb-4">
@@ -52,7 +52,19 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                     </span>
                                 )}
                             </div>
-                            <span className="badge bg-success">Published</span>
+                            {exam.status === 1 ? (
+                                <>
+                                    <span className="badge bg-success">
+                                        Published
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="badge bg-danger">
+                                        Unpublished
+                                    </span>
+                                </>
+                            )}
                         </div>
                         {exam.description && (
                             <p className="card-text text-muted mt-2 text-truncate-2">
@@ -74,7 +86,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {displayCourses()}
+                                        {exam.course
+                                            ? exam.course.name
+                                            : "No courses"}
                                     </small>
                                 </div>
                             </div>
@@ -90,7 +104,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {displaySubjects()}
+                                        {exam.subject
+                                            ? exam.subject.name
+                                            : "No subjects"}
                                     </small>
                                 </div>
                             </div>

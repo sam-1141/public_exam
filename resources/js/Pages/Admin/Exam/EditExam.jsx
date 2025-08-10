@@ -389,8 +389,8 @@ const EditExamModal = ({
                                                                     ? "is-invalid"
                                                                     : ""
                                                             }`}
-                                                            min="0"
-                                                            step="any"
+                                                            min="0.0"
+                                                            step="0.25"
                                                             value={
                                                                 formData.negativeMarksValue
                                                             }
@@ -472,11 +472,15 @@ const EditExamModal = ({
                                                     : ""
                                             }`}
                                             name="publishInstant"
-                                            value={formData.publishInstant ?? 0} // Show NO for null/undefined
+                                            value={
+                                                formData.publishInstant === 1
+                                                    ? 1
+                                                    : 0
+                                            }
                                             onChange={handleChange}
                                         >
-                                            <option value={1}>YES</option>
                                             <option value={0}>NO</option>
+                                            <option value={1}>YES</option>
                                         </select>
                                         {errors.publishInstant && (
                                             <div className="invalid-feedback">
