@@ -17,7 +17,8 @@ const ExamMainPage = ({ exam, questions }) => {
 
 
     useEffect(() => {
-        console.log('questions', questions)
+      console.log('ExamMainPage props:', { exam, questions })
+        // console.log('questions', questions)
     }, [questions]);
 
   // Get exam data by ID
@@ -72,6 +73,7 @@ const ExamMainPage = ({ exam, questions }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          examId: exam.id,
           questionId,
           answerIndex,
         }),
@@ -91,10 +93,11 @@ const ExamMainPage = ({ exam, questions }) => {
     if (typeof isAuto !== 'boolean') {
       isAuto = false
     }
+    console.log("Typeof isAuto:", typeof isAuto, "Value:", isAuto)
     if (!exam) return
+    console.log("Submitting exam with answers:", answers)
     router.get(route('student.live.exam.success'), {
       examId: exam.id,
-      answers: answers,
       auto: isAuto
     }, {
       preserveState: true,
@@ -102,6 +105,8 @@ const ExamMainPage = ({ exam, questions }) => {
         // Could set a submitting state here
       }
     })
+
+    console.log("Route hitted")
   }
 
   if (!exam) {
@@ -115,7 +120,7 @@ const ExamMainPage = ({ exam, questions }) => {
   }
 
   const answeredCount = Object.keys(answers).length
-  const progressPercentage = (answeredCount / exam.questions.length) * 100
+  const progressPercentage = (answeredCount / questions.length) * 100
 
   return (
     <div className="position-relative min-vh-100 bg-light font-baloo">
@@ -133,7 +138,7 @@ const ExamMainPage = ({ exam, questions }) => {
             <div className="col-md-4 text-end">
               <div className="d-flex align-items-center justify-content-end">
                 <span className="me-3 small text-muted">
-                  উত্তর দেওয়া: {answeredCount}/{exam.questions.length}
+                  উত্তর দেওয়া: {answeredCount}/{questions.length}
                 </span>
                 <button className="btn btn-success fw-semibold" onClick={() => setShowSubmitModal(true)}>
                   জমা দিন
@@ -157,7 +162,7 @@ const ExamMainPage = ({ exam, questions }) => {
       <div className=" py-4">
         <div className=" justify-content-center">
           <div className="col-12 ">
-            {exam.questions.map((question, index) => (
+            {questions.map((question, index) => (
               <QuestionCard
                 key={question.id}
                 question={question}
@@ -191,7 +196,7 @@ const ExamMainPage = ({ exam, questions }) => {
                     </div>
                     <h5 className="fw-bold text-dark mb-2">আপনি কি নিশ্চিত?</h5>
                     <p className="text-muted mb-3">
-                      আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {exam.questions.length}টির মধ্যে।
+                      আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {questions.length}টির মধ্যে।
                     </p>
                     <p className="text-muted small">জমা দেওয়ার পর আর পরিবর্তন করা যাবে না।</p>
                   </div>
