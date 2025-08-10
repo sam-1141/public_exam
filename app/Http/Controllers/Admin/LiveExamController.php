@@ -84,7 +84,6 @@ class LiveExamController extends Controller
             ->select('questions.*')
             ->get();
 
-//        dd($questions);
         return Inertia::render('Admin/Exam/ViewDetails', [
             'exam' => [
                 'id' => $exam->id,
