@@ -4,22 +4,25 @@ import { useState, useEffect } from "react"
 
 const LiveExamCard = ({ exam, onClick }) => {
   const [timeLeft, setTimeLeft] = useState(null)
-  const [isLive, setIsLive] = useState(exam.status === "live")
+  const [isLive, setIsLive] = useState(false)
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "live": return "success"
-      case "starting-soon": return "warning"
-      default: return "secondary"
-    }
+  const getStatus = () => {
+    const now = new Date()
+    const startTime = new Date(exam.start_time)
+    const endTime = new Date(exam.end_time)
+
+    if (now >= startTime && now <= endTime) return "live"
+    if (now < startTime) return "starting-soon"
+    return "ended"
   }
 
-  // Countdown calculation
+  const status = getStatus()
+
   useEffect(() => {
-    if (exam.status === "starting-soon" && exam.startTime) {
+    if (status === "starting-soon") {
       const calculateTimeLeft = () => {
         const now = new Date()
-        const startTime = new Date(exam.startTime)
+        const startTime = new Date(exam.start_time)
         const difference = startTime - now
 
         if (difference <= 0) {
@@ -42,8 +45,14 @@ const LiveExamCard = ({ exam, onClick }) => {
       }, 1000)
 
       return () => clearInterval(timer)
+    } else if (status === "live") {
+      setIsLive(true)
+      setTimeLeft(null)
+    } else {
+      setIsLive(false)
+      setTimeLeft(null)
     }
-  }, [exam.startTime, exam.status])
+  }, [exam.start_time, status])
 
   const handleClick = () => {
     if (isLive) onClick(exam)
@@ -51,11 +60,26 @@ const LiveExamCard = ({ exam, onClick }) => {
 
   const formatTimeLeft = () => {
     if (!timeLeft) return "শীঘ্রই শুরু"
-    
+
     return [
       timeLeft.days > 0 && `${timeLeft.days} দিন`,
-      `${timeLeft.hours.toString().padStart(2, '0')}:${timeLeft.minutes.toString().padStart(2, '0')}:${timeLeft.seconds.toString().padStart(2, '0')}`
-    ].filter(Boolean).join(" ")
+      `${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+        .toString()
+        .padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`,
+    ]
+      .filter(Boolean)
+      .join(" ")
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "live":
+        return "success"
+      case "starting-soon":
+        return "warning"
+      default:
+        return "secondary"
+    }
   }
 
   return (
@@ -64,15 +88,15 @@ const LiveExamCard = ({ exam, onClick }) => {
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-start mb-3">
             <h5 className="card-title fw-bold mb-0">{exam.name}</h5>
-            <span className={`badge bg-${getStatusColor(isLive ? "live" : exam.status)} pulse`}>
-              {isLive ? "🔴 LIVE" : "⏰ শীঘ্রই"}
+            <span className={`badge bg-${getStatusColor(status)} pulse`}>
+              {isLive ? "🔴 LIVE" : status === "starting-soon" ? "⏰ শীঘ্রই" : ""}
             </span>
           </div>
 
           <div className="mb-3">
             <div className="d-flex justify-content-between mb-2">
               <span className="text-muted small">মোট নম্বর:</span>
-              <span className="fw-semibold">{exam.totalMarks}</span>
+              <span className="fw-semibold">{exam.total_marks}</span>
             </div>
             <div className="d-flex justify-content-between mb-2">
               <span className="text-muted small">সময়:</span>
@@ -80,18 +104,14 @@ const LiveExamCard = ({ exam, onClick }) => {
             </div>
             <div className="d-flex justify-content-between mb-2">
               <span className="text-muted small">প্রশ্ন:</span>
-              <span className="fw-semibold">{exam.totalQuestions} টি</span>
+              <span className="fw-semibold">{exam.total_questions} টি</span>
             </div>
-            {/* {!isLive && timeLeft && (
-              <div className="d-flex justify-content-between mb-2">
-                <span className="text-muted small">শুরু হতে বাকি:</span>
-                <span className="fw-semibold">{formatTimeLeft()}</span>
-              </div>
-            )} */}
           </div>
 
           <button
-            className={`btn w-100 fw-semibold ${isLive ? "btn-success" : "btn-warning"}`}
+            className={`btn w-100 fw-semibold ${
+              isLive ? "btn-success" : status === "starting-soon" ? "btn-warning" : "btn-secondary"
+            }`}
             onClick={handleClick}
             disabled={!isLive}
           >
