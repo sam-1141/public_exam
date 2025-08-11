@@ -10,12 +10,14 @@ const ExamListPage = ({ allExam }) => {
   const [selectedExam, setSelectedExam] = useState(null)
   const [currentExam, setCurrentExam] = useState(null)
   const [examState, setExamState] = useState("notice")
+  const [error, setError] = useState(null)
 
   console.log("ExamNoticePage props:", { allExam })
 
   const handleExamClick = (exam) => {
     setSelectedExam(exam)
     setShowModal(true)
+    setError(null)
   }
 
   // Filter out exams that have ended
@@ -39,6 +41,8 @@ const ExamListPage = ({ allExam }) => {
         },
         onError: (errors) => {
           console.error("Exam participation error:", errors)
+          setError(errors.error || "Failed to join exam") // Set error message
+          setShowModal(false) // Close the modal
         },
       }
     )
@@ -46,6 +50,17 @@ const ExamListPage = ({ allExam }) => {
 
   return (
     <div className="flex-grow-1 d-flex flex-column font-baloo">
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+          আপনি ইতিমধ্যে এই পরীক্ষাটি দিয়েছেন
+          <button 
+            type="button" 
+            className="btn-close" 
+            onClick={() => setError(null)}
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
       <main className="flex-grow-1 p-1 bg-light mt-2">
         <div>
           <div className="justify-content-center mb-4">
