@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use Illuminate\Support\Facades\Cookie;
 use Inertia\Inertia;
 use App\Models\TempUser;
 use App\Models\StudentClass;
@@ -22,25 +23,25 @@ class AuthController extends Controller
      */
     protected function send_sms($message, $numbers)
     {
-        $url = "http://bulksmsbd.net/api/smsapi"; 
+        $url = "http://bulksmsbd.net/api/smsapi";
         $api_key = "rhryMzfntEaLjNReS4t8";
-        $senderid = "8809617613099"; 
+        $senderid = "8809617613099";
 
-       
+
         $data = [
             "api_key" => $api_key,
             "senderid" => $senderid,
-            "number" => $numbers, 
-            "message" => $message 
+            "number" => $numbers,
+            "message" => $message
         ];
 
         // Initialize cURL
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url); 
-        curl_setopt($ch, CURLOPT_POST, 1); 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data); 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         // Execute the API call
         $response = curl_exec($ch);
@@ -62,7 +63,7 @@ class AuthController extends Controller
 
 
 
-  
+
     // function for load login form
     public function loadLoginForm() {
         if(Auth::check()){
@@ -118,7 +119,7 @@ class AuthController extends Controller
         ]);
 
        try {
-        
+
         // generate otp
         $otp = rand(1111,9999);
         $otp_expires_at = Carbon::now()->addMinutes(5);
@@ -134,18 +135,18 @@ class AuthController extends Controller
         $numbers = [$req->mobile];
         // send otp
         $this->send_sms($message, $numbers);
- 
+
 
         $user = TempUser::create($validated);
 
-       
+
         // after send otp redirect to route
 
         return to_route('load.otp.form')->with([
             'user_id' => $user->id,
             'message' => "We have sent a 4-digit OTP to your mobile number " . $validated['mobile'] . ". Please enter the OTP below to verify your account and set your password."
         ]);
-        
+
        } catch (\Exception $e) {
         return $e;
         return to_route("auth.registration.form")->with('error', 'An error occurred while registration.');
@@ -232,11 +233,11 @@ class AuthController extends Controller
         $req->validate([
             'otp' => 'string|required|numeric',
         ]);
-        
+
         try {
-            
-            $user = TempUser::where('id',$req->user_id)->first();  
-           
+
+            $user = TempUser::where('id',$req->user_id)->first();
+
             // return $this->isOtpValid($user, $req->otp);
             if ($this->isOtpValid($user, $req->otp)) {
                 return to_route("load.set.password.form")
@@ -248,9 +249,9 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'error_message' => "Invalid or expired OTP"
                 ]);
-              
+
             }
-    
+
         } catch (\Exception $e) {
             return $e;
             return to_route("auth.registration.form")->with('error', 'An error occurred while verify otp.');
@@ -262,17 +263,17 @@ class AuthController extends Controller
     public function signUp(Request $req) {
         $validated = $req->validate([
             'password' => 'required|string|min:4',
-            'confirm_password' => 'required|string|min:4', 
+            'confirm_password' => 'required|string|min:4',
         ]);
-        
+
         if($req->user_id == "timeout"){
             return to_route("auth.registration.form")->with('error', 'Session Expired! Try again');
         }
 
         try {
             // fetch the temp user
-            $temp_user = TempUser::where('id',$req->user_id)->first(); 
-            
+            $temp_user = TempUser::where('id',$req->user_id)->first();
+
              // check if email or mobile already exists in User table
             $existing_user = User::where('email', $temp_user->email)
             ->orWhere('mobile', $temp_user->mobile)
@@ -301,12 +302,12 @@ class AuthController extends Controller
 
             // Redirect to dashboard
             return to_route("dashboard");
-    
+
         } catch (\Exception $e) {
             return $e;
             return to_route("load.set.password.form")->with('error', 'An error occurred while signup.');
         }
-         
+
     }
 
     // method for change user password
@@ -317,25 +318,25 @@ class AuthController extends Controller
             'newPassword' => 'required|string',
         ]);
         try {
-            
-    
+
+
             // Get the currently authenticated user
             $user = User::where('id',$req->user_id)->first();
-    
+
             // Check if the old password matches the one in the database
             if (!Hash::check($req->oldPassword, $user->password)) {
 
                 return to_route("student.profile")->with("error", "The provided old password is incorrect.");
             }
-    
+
             // update the password
-            $user->password = Hash::make($req->newPassword); 
-            $user->save(); 
-    
+            $user->password = Hash::make($req->newPassword);
+            $user->save();
+
             return to_route("student.profile")->with("success", "Password changed successfully.");
-            
+
         } catch (\Exception $e) {
-            
+
             return to_route("student.profile")->with("error", "An error occurred: " . $e->getMessage());
         }
     }
@@ -346,18 +347,18 @@ class AuthController extends Controller
             'mobile' => [
             'required',
             'numeric',
-            'regex:/^01[0-9]{9}$/', 
+            'regex:/^01[0-9]{9}$/',
         ]
         ]);
 
         try {
-            
+
             // find user using mobile number
             $user = User::where("mobile",$validated['mobile'])->first();
 
             if(!$user) {
                 return to_route("auth.forgot.password")->with('error', 'No account found with this number. Try another.');
-       
+
             }
 
             // generate otp
@@ -372,15 +373,15 @@ class AuthController extends Controller
             $numbers = [$req->mobile];
             // send otp
             $this->send_sms($message, $numbers);
-            
-        
+
+
 
             // update user table and set otp and expire time
             $user->update([
                 'otp' => $otp,
                 'otp_expires_at' => $otp_expires_at,
             ]);
-            
+
            // after send otp redirect to route
 
             return to_route('load.forgot.verify.otp')->with([
@@ -389,7 +390,7 @@ class AuthController extends Controller
             ]);
 
         } catch (\Exception $e) {
-             
+
             return to_route("auth.forgot.password")->with("error", "An error occurred: " . $e->getMessage());
         }
     }
@@ -400,11 +401,11 @@ class AuthController extends Controller
         $req->validate([
             'otp' => 'string|required|numeric',
         ]);
-        
+
         try {
-            
-            $user = User::where('id',$req->user_id)->first();  
-           
+
+            $user = User::where('id',$req->user_id)->first();
+
             // return $this->isOtpValid($user, $req->otp);
             if ($this->isOtpValid($user, $req->otp)) {
                 return to_route("load.new.password.form")
@@ -416,9 +417,9 @@ class AuthController extends Controller
                     'user_id' => $user->id,
                     'error_message' => "Invalid or expired OTP"
                 ]);
-              
+
             }
-    
+
         } catch (\Exception $e) {
             return $e;
             return to_route("auth.registration.form")->with('error', 'An error occurred while verify otp.');
@@ -430,30 +431,30 @@ class AuthController extends Controller
     public function setNewPassword(Request $req) {
         $validated = $req->validate([
             'password' => 'required|string|min:4',
-            'confirm_password' => 'required|string|min:4', 
+            'confirm_password' => 'required|string|min:4',
         ]);
-        
+
         if($req->user_id == "timeout"){
             return to_route("auth.forgot.password")->with('error', 'Session Expired! Try again');
         }
 
         try {
-        
+
             $user = User::where("id",$req->user_id)->first();
 
             if(!$user) {
                 return to_route("auth.forgot.password")->with('error', 'No account found with this number. Try another.');
-       
+
             }
-            
+
             // update the password
-            $user->password = Hash::make($req->password); 
-            $user->save(); 
+            $user->password = Hash::make($req->password);
+            $user->save();
 
             return to_route("auth.login")->with('success', 'Your password has been changed successfully!');
-       
 
-    
+
+
         } catch (\Exception $e) {
             return $e;
             return to_route("load.new.password.form")->with('error', 'An error occurred while reset password.');
