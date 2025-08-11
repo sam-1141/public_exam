@@ -2,29 +2,36 @@ import { useEffect, useState } from "react"
 import { router, usePage } from '@inertiajs/react'
 import Layout from "../../../../layouts/Layout"
 
-const PracticeExamResult = ({ examId, results, exam, answers }) => {
+const PracticeExamResult = ({ examSlug }) => {
     const { submission } = usePage().props
-    console.log('Submission props', submission)
+    console.log('Submission', submission)
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-    if (submission) {
-      setResult({
-        ...submission,
-        submittedAt: submission.submittedAt || new Date().toISOString(),
-      })
-    }
-    setLoading(false)
-  }, [submission])
-
+        if (submission) {
+            setResult({
+                examName: submission.examName,
+                subject: submission.subject,
+                totalMarks: submission.totalMarks,
+                correctAnswers: submission.results.correctAnswers,
+                wrongAnswers: submission.results.wrongAnswers,
+                skippedQuestions: submission.results.skippedQuestions,
+                obtainedMarks: submission.results.obtainedMarks,
+                percentage: submission.results.percentage,
+                grade: submission.results.grade,
+                submittedAt: submission.submittedAt || new Date().toISOString(),
+            })
+        }
+        setLoading(false)
+    }, [submission])
 
     const handleBackToPracticeList = () => {
-        router.visit(route('student.practice.list'))
+        router.visit(route('student.practice.exam.list'))
     }
 
     const handleTryAgain = () => {
-        router.visit(route('student.practice.exam', { exam: examId }))
+        router.visit(route('student.practice.exam', { exam: examSlug }))
     }
 
     if (loading) {
