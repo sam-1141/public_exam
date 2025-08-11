@@ -2,41 +2,42 @@
 
 import { useState, useEffect } from "react"
 import Layout from "../../../../layouts/Layout"
-import { router, usePage } from "@inertiajs/react"
-// import ExamTimer from "../LiveExam/ExamTimer"
+import { router } from "@inertiajs/react"
 import QuestionCard from "./QuestionCard"
 import ExamTimer from "./ExamTimer"
 
 const PracticeExamPage = ({ exam, questions }) => {
   const [loading, setLoading] = useState(false)
   const [answers, setAnswers] = useState({})
-  const [currentQuestion, setCurrentQuestion] = useState(0)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+  const [spentTime, setSpentTime] = useState(0)
 
   useEffect(() => {
-    console.log('exam', exam);
-    console.log('questions', questions);
-  }, [exam, questions]);
+    console.log('Exam data:', exam)
+    console.log('Questions data:', questions)
+  }, [exam, questions])
 
   // Parse questions and prepare data for QuestionCard
   const parsedQuestions = questions.map(question => {
-    const options = JSON.parse(question.options || "[]");
+    const options = JSON.parse(question.options || "[]")
     return {
       id: question.id,
-      text: question.question, // This will be used as question.text in QuestionCard
-      options: options,       // Array of {option: string, ans: boolean}
+      text: question.question,
+      options: options,
       correctAnswer: options.findIndex(option => option.ans === true),
-      marks: 5                // Default marks per question
-    };
-  });
+      marks: question.marks || 1 // Default to 1 mark if not specified
+    }
+  })
 
   // Format exam data with parsed questions
   const formattedExam = {
     ...exam,
     questions: parsedQuestions,
-    totalMarks: exam.total_marks || parsedQuestions.length * 5,
-    totalQuestions: exam.total_questions || parsedQuestions.length
-  };
+    totalMarks: exam.total_marks || parsedQuestions.length, // Use exam's total_marks or default to number of questions
+    totalQuestions: exam.total_questions || parsedQuestions.length,
+    hasNegativeMarks: exam.has_negative_marks || false,
+    negativeMarksValue: exam.negative_marks_value || 0
+  }
 
   // Prevent page reload
   useEffect(() => {
@@ -62,33 +63,28 @@ const PracticeExamPage = ({ exam, questions }) => {
 
   const handleExamSubmit = (answers) => {
     if (!exam || !exam.id) {
-      console.error("Exam ID is missing!");
-      return;
+      console.error("Exam ID is missing!")
+      return
     }
 
-    const results = calculateResults(formattedExam, answers);
+    const results = calculateResults(formattedExam, answers)
 
-
-      console.log("Submitting practise exam results:", {
-          examName: exam.name,
-          totalMarks: formattedExam.totalMarks,
-          answers: answers,
-          results: results,
-      })
-
-    // router.post(route('student.practice.exam.result', { exam: exam.id }), {
-    //   examName: exam.name,
-    //   totalMarks: formattedExam.totalMarks,
-    //   answers: answers,
-    //   results: results,
-    // }, {
-    //   preserveScroll: true,
-    //   preserveState: false,
-    //   onSuccess: () => { },
-    //   onError: (errors) => {
-    //     console.error('Submission failed:', errors);
-    //   }
-    // });
+    router.post(route('student.practice.exam.result', { exam: exam.id }), {
+      examData: exam,
+      questions: questions,
+      examName: exam.name,
+      totalMarks: formattedExam.totalMarks,
+      answers: answers,
+      results: results,
+      spentTime: spentTime,
+    }, {
+      preserveScroll: true,
+      preserveState: false,
+      onSuccess: () => { },
+      onError: (errors) => {
+        console.error('Submission failed:', errors)
+      }
+    })
   }
 
   const calculateResults = (exam, answers) => {
@@ -96,10 +92,9 @@ const PracticeExamPage = ({ exam, questions }) => {
     let wrongAnswers = 0
     let skippedQuestions = 0
     let obtainedMarks = 0
-    let totalMarks = 0
+    let totalMarks = exam.totalMarks
 
     exam.questions.forEach((question) => {
-      totalMarks += question.marks // Calculate total marks first
       const userAnswer = answers[question.id]
 
       if (userAnswer === undefined || userAnswer === null) {
@@ -109,8 +104,15 @@ const PracticeExamPage = ({ exam, questions }) => {
         obtainedMarks += question.marks
       } else {
         wrongAnswers++
+        // Apply negative marking if enabled
+        if (exam.hasNegativeMarks) {
+          obtainedMarks -= exam.negativeMarksValue
+        }
       }
     })
+
+    // Ensure obtained marks don't go below zero
+    obtainedMarks = Math.max(0, obtainedMarks)
 
     const percentage = totalMarks > 0 ? (obtainedMarks / totalMarks) * 100 : 0
 
@@ -125,7 +127,6 @@ const PracticeExamPage = ({ exam, questions }) => {
     }
   }
 
-  // Helper function to calculate grade based on percentage
   const calculateGrade = (percentage) => {
     if (percentage >= 90) return 'A+'
     if (percentage >= 80) return 'A'
@@ -175,15 +176,22 @@ const PracticeExamPage = ({ exam, questions }) => {
   return (
     <div className="position-relative min-vh-100 bg-light">
       {/* Exam Header */}
-      <div className=" bg-white border-bottom top-0 custom-sticky-top rounded">
-        <div className="container-fluid py-3 ">
+      <div className="bg-white border-bottom top-0 custom-sticky-top rounded">
+        <div className="container-fluid py-3">
           <div className="row align-items-center">
             <div className="col-md-4">
               <h4 className="mb-0 fw-bold">{formattedExam.name}</h4>
               <small className="text-muted">মোট নম্বর: {formattedExam.totalMarks}</small>
+              {formattedExam.hasNegativeMarks && (
+                <small className="text-danger ms-2">(নেগেটিভ মার্কিং: -{formattedExam.negativeMarksValue})</small>
+              )}
             </div>
             <div className="col-md-4 text-center">
-              <ExamTimer duration={formattedExam.duration} onTimeUp={handleTimeUp} />
+              <ExamTimer
+                duration={formattedExam.duration}
+                onTimeUp={handleTimeUp}
+                onTimeChange={(secondsSpent) => setSpentTime(secondsSpent)}
+              />
             </div>
             <div className="col-md-4 text-end">
               <div className="d-flex align-items-center justify-content-end">
@@ -216,9 +224,9 @@ const PracticeExamPage = ({ exam, questions }) => {
       </div>
 
       {/* Questions */}
-      <div className=" py-4">
-        <div className=" justify-content-center">
-          <div className="col-12 ">
+      <div className="py-4">
+        <div className="justify-content-center">
+          <div className="col-12">
             {formattedExam.questions.map((question, index) => (
               <QuestionCard
                 key={question.id}
@@ -248,15 +256,21 @@ const PracticeExamPage = ({ exam, questions }) => {
               </div>
               <div className="modal-body text-center py-4">
                 <div className="mb-4">
-                  <div className="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                    style={{ width: "80px", height: "80px" }}>
+                  <div
+                    className="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                    style={{ width: "80px", height: "80px" }}
+                  >
                     <span className="fs-1">⚠️</span>
                   </div>
                   <h5 className="fw-bold text-dark mb-2">আপনি কি নিশ্চিত?</h5>
                   <p className="text-muted mb-3">
                     আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {formattedExam.questions.length}টির মধ্যে।
                   </p>
-                  <p className="text-muted small">জমা দেওয়ার পর আর পরিবর্তন করা যাবে না।</p>
+                  {formattedExam.hasNegativeMarks && (
+                    <p className="text-danger small mb-0">
+                      মনে রাখবেন: ভুল উত্তরের জন্য {formattedExam.negativeMarksValue} নম্বর কাটা যাবে
+                    </p>
+                  )}
                 </div>
 
                 <div className="row g-2">
