@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class LiveExamController extends Controller
 {
-    
+
 
     public function loadAddExamPage()
     {
@@ -169,10 +169,20 @@ class LiveExamController extends Controller
     public function getSingleExam($slug)
     {
         $exam = LiveExam::where('slug', $slug)->firstOrFail();
+        $course_id = DB::table('course_exam')
+            ->where('exam_id', $exam->id)
+            ->first();
+
+        $subject_id = DB::table('exam_subject')
+            ->where('exam_id', $exam->id)
+            ->first();
+
         return response()->json([
             'exam' => [
                 'id' => $exam->id,
                 'slug' => $exam->slug,
+                'course_id' => $course_id->course_id ?? null,
+                'subject_id' => $subject_id->subject_id ?? null,
                 'name' => $exam->name,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
