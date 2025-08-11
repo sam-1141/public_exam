@@ -68,19 +68,27 @@ const PracticeExamPage = ({ exam, questions }) => {
 
     const results = calculateResults(formattedExam, answers);
 
-    router.post(route('student.practice.exam.result', { exam: exam.id }), {
-      examName: exam.name,
-      totalMarks: formattedExam.totalMarks,
-      answers: answers,
-      results: results,
-    }, {
-      preserveScroll: true,
-      preserveState: false,
-      onSuccess: () => { },
-      onError: (errors) => {
-        console.error('Submission failed:', errors);
-      }
-    });
+
+      console.log("Submitting practise exam results:", {
+          examName: exam.name,
+          totalMarks: formattedExam.totalMarks,
+          answers: answers,
+          results: results,
+      })
+
+    // router.post(route('student.practice.exam.result', { exam: exam.id }), {
+    //   examName: exam.name,
+    //   totalMarks: formattedExam.totalMarks,
+    //   answers: answers,
+    //   results: results,
+    // }, {
+    //   preserveScroll: true,
+    //   preserveState: false,
+    //   onSuccess: () => { },
+    //   onError: (errors) => {
+    //     console.error('Submission failed:', errors);
+    //   }
+    // });
   }
 
   const calculateResults = (exam, answers) => {
