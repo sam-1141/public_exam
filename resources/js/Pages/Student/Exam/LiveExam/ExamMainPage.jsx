@@ -3,38 +3,22 @@
 import { useState, useEffect } from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
-import { liveExams } from "../../../../utils/ExamQuestion/ExamQuestions"
 import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import FocusWarning from "../../../../components/FocusWarning"
+import {route} from "ziggy-js";
 
 const ExamMainPage = ({ exam, questions }) => {
   const [answers, setAnswers] = useState({})
 
   const [showSubmitModal, setShowSubmitModal] = useState(false)
-  // const [exam, setExam] = useState(null)
-  // (Focus warning logic moved into FocusWarning component)
 
 
     useEffect(() => {
       console.log('ExamMainPage props:', { exam, questions })
-        // console.log('questions', questions)
     }, [questions]);
 
-  // Get exam data by ID
-  // useEffect(() => {
-  //   const examData = liveExams.find(e => e.id == examId)
-  //   if (examData) {
-  //     setExam(examData)
-  //   } else {
-  //     // Redirect back to notice page if exam not found
-  //     window.location.href = '/student/live-exam'
-  //   }
-  // }, [examId])
 
-  // (Detection moved into FocusWarning component)
-
-  // Prevent page reload and navigation
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault()
@@ -65,26 +49,27 @@ const ExamMainPage = ({ exam, questions }) => {
       [questionId]: answerIndex,
     }));
 
-    // Send answer to server immediately
-    try {
-      await fetch(`/api/exams/answers`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      console.log("Answer selected:", {
           examId: exam.id,
           questionId,
           answerIndex,
-        }),
-      });
-    } catch (error) {
-      console.error("Failed to save answer:", error);
-    }
+      })
+
+      try {
+          await axios.post(route('student.exam.answer.store'), {
+              exam_id: exam.id,
+              question_id: questionId,
+              ans_given: String(answerIndex),
+          })
+      } catch (err) {
+          console.error('Answer save failed:', err)
+      }
+
   };
 
 
   const handleTimeUp = () => {
+
     handleSubmit()
   }
 
