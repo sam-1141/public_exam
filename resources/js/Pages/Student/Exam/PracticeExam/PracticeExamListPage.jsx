@@ -7,92 +7,12 @@ const PracticeExamListPage = ({allExam}) => {
     const [currentPage, setCurrentPage] = useState(1)
     const examsPerPage = 9
 
-
     useEffect(() => {
         console.log('allExam', allExam)
     }, [allExam]);
 
-    const allPracticeExams = {
-        physics: [
-            {
-                id: "phy_practice_1",
-                name: "নিউটনের সূত্র - প্র্যাকটিস টেস্ট",
-                subject: "পদার্থবিজ্ঞান",
-                totalMarks: 50,
-                duration: 30,
-                totalQuestions: 10,
-                difficulty: "সহজ",
-                questions: [
-                    {
-                        id: 1,
-                        text: "নিউটনের প্রথম সূত্র কী?",
-                        options: ["বস্তু স্থির থাকলে স্থির থাকবে", "ক্রিয়া ও প্রতিক্রিয়া সমান", "বল = ভর × ত্বরণ", "উপরের সবগুলো"],
-                        correctAnswer: 0,
-                        marks: 5,
-                    },
-                    {
-                        id: 2,
-                        text: "আলোর বেগ কত?",
-                        options: ["৩×১০⁸ মিটার/সেকেন্ড", "৩×১০⁶ মিটার/সেকেন্ড", "৩×১০¹⁰ মিটার/সেকেন্ড", "৩×১০⁴ মিটার/সেকেন্ড"],
-                        correctAnswer: 0,
-                        marks: 5,
-                    },
-                ],
-            },
-            {
-                id: "phy_practice_2",
-                name: "তাপ ও তাপগতিবিদ্যা",
-                subject: "পদার্থবিজ্ঞান",
-                totalMarks: 75,
-                duration: 45,
-                totalQuestions: 15,
-                difficulty: "মধ্যম",
-                questions: [],
-            },
-        ],
-        chemistry: [
-            {
-                id: "chem_practice_1",
-                name: "জৈব রসায়ন মৌলিক",
-                subject: "রসায়ন",
-                totalMarks: 60,
-                duration: 40,
-                totalQuestions: 12,
-                difficulty: "সহজ",
-                questions: [],
-            },
-        ],
-        math: [
-            {
-                id: "math_practice_1",
-                name: "ক্যালকুলাস প্রাথমিক",
-                subject: "উচ্চতর গণিত",
-                totalMarks: 80,
-                duration: 60,
-                totalQuestions: 16,
-                difficulty: "কঠিন",
-                questions: [],
-            },
-        ],
-        bangla: [
-            {
-                id: "bangla_practice_1",
-                name: "বাংলা সাহিত্য পরিচিতি",
-                subject: "বাংলা",
-                totalMarks: 40,
-                duration: 30,
-                totalQuestions: 8,
-                difficulty: "সহজ",
-                questions: [],
-            },
-        ],
-    }
-
-    // Flatten all exams from different subjects into one array
-    const allExams = Object.values(allPracticeExams).flat()
-
     // Sort exams from newest to oldest (assuming newer exams have higher IDs)
-    const sortedExams = [...allExams].sort((a, b) => b.id.localeCompare(a.id))
+    const sortedExams = [...allExam].sort((a, b) => b.id - a.id)
 
     // Get current exams for pagination
     const indexOfLastExam = currentPage * examsPerPage
@@ -101,7 +21,7 @@ const PracticeExamListPage = ({allExam}) => {
     const totalPages = Math.ceil(sortedExams.length / examsPerPage)
 
     const handleExamClick = (exam) => {
-        router.get(route('student.practice.exam', { exam: exam.id}))
+        router.get(route('student.practice.exam', { exam: exam.slug}))
     }
 
     const getDifficultyColor = (difficulty) => {
@@ -146,12 +66,12 @@ const PracticeExamListPage = ({allExam}) => {
 
                                                         <div className="mb-3">
                                                             <div className="d-flex justify-content-between mb-2">
-                                                                <span className="text-muted small">বিষয়:</span>
-                                                                <span className="fw-semibold">{exam.subject}</span>
+                                                                <span className="text-muted small">বর্ণনা:</span>
+                                                                <span className="fw-semibold">{exam.description}</span>
                                                             </div>
                                                             <div className="d-flex justify-content-between mb-2">
                                                                 <span className="text-muted small">মোট নম্বর:</span>
-                                                                <span className="fw-semibold">{exam.totalMarks}</span>
+                                                                <span className="fw-semibold">{exam.total_marks}</span>
                                                             </div>
                                                             <div className="d-flex justify-content-between mb-2">
                                                                 <span className="text-muted small">সময়:</span>
@@ -159,7 +79,7 @@ const PracticeExamListPage = ({allExam}) => {
                                                             </div>
                                                             <div className="d-flex justify-content-between mb-2">
                                                                 <span className="text-muted small">প্রশ্ন:</span>
-                                                                <span className="fw-semibold">{exam.totalQuestions} টি</span>
+                                                                <span className="fw-semibold">{exam.total_questions} টি</span>
                                                             </div>
                                                         </div>
 

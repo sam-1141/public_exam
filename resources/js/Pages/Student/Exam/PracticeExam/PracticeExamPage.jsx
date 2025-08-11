@@ -4,93 +4,38 @@ import { useState, useEffect } from "react"
 import Layout from "../../../../layouts/Layout"
 import { router, usePage } from "@inertiajs/react"
 import ExamTimer from "../LiveExam/ExamTimer"
-import QuestionCard from "../LiveExam/QuestionCard"
+import QuestionCard from "./QuestionCard"
 
-const PracticeExamPage = ({exam, questions}) => {
-  // const { examId } = usePage().props;
-  // const [exam, setExam] = useState(null);
-  const [loading, setLoading] = useState(true)
+const PracticeExamPage = ({ exam, questions }) => {
+  const [loading, setLoading] = useState(false)
   const [answers, setAnswers] = useState({})
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
 
-    useEffect(() => {
-        console.log('exam', exam);
-        console.log('questions', questions);
-    }, [exam, questions]);
+  useEffect(() => {
+    console.log('exam', exam);
+    console.log('questions', questions);
+  }, [exam, questions]);
 
-  // useEffect(() => {
-  //   // Simulate loading exam data (replace with actual API call if needed)
-  //   const loadExamData = () => {
-  //     // Generate a practice exam based on examId
-  //     const practiceExam = {
-  //       id: examId,
-  //       name: "প্র্যাকটিস পরীক্ষা",
-  //       subject: "পদার্থবিজ্ঞান", // Default subject
-  //       totalQuestions: 10,
-  //       totalMarks: 50,
-  //       duration: 1800, // 30 minutes in seconds
-  //       questions: generateSampleQuestions(10, "পদার্থবিজ্ঞান")
-  //     }
-  //     setExam(practiceExam)
-  //     setLoading(false)
-  //   }
+  // Parse questions and prepare data for QuestionCard
+  const parsedQuestions = questions.map(question => {
+    const options = JSON.parse(question.options || "[]");
+    return {
+      id: question.id,
+      text: question.question, // This will be used as question.text in QuestionCard
+      options: options,       // Array of {option: string, ans: boolean}
+      correctAnswer: options.findIndex(option => option.ans === true),
+      marks: 5                // Default marks per question
+    };
+  });
 
-  //   loadExamData()
-  // }, [examId])
-
-  const generateSampleQuestions = (count, subject) => {
-    const sampleQuestions = {
-      পদার্থবিজ্ঞান: [
-        {
-          id: 1,
-          text: "নিউটনের প্রথম সূত্র কী?",
-          options: ["বস্তু স্থির থাকলে স্থির থাকবে", "ক্রিয়া ও প্রতিক্রিয়া সমান", "বল = ভর × ত্বরণ", "উপরের সবগুলো"],
-          correctAnswer: 0,
-          marks: 5,
-        },
-        {
-          id: 2,
-          text: "আলোর বেগ কত?",
-          options: ["৩×১০⁸ মিটার/সেকেন্ড", "৩×১০⁶ মিটার/সেকেন্ড", "৩×১০¹⁰ মিটার/সেকেন্ড", "৩×১০⁴ মিটার/সেকেন্ড"],
-          correctAnswer: 0,
-          marks: 5,
-        },
-      ],
-      রসায়ন: [
-        {
-          id: 1,
-          text: "পানির রাসায়নিক সংকেত কী?",
-          options: ["H2O", "H2O2", "HO2", "H3O"],
-          correctAnswer: 0,
-          marks: 5,
-        },
-      ],
-      বাংলা: [
-        {
-          id: 1,
-          text: "রবীন্দ্রনাথ ঠাকুর কত সালে নোবেল পুরস্কার পান?",
-          options: ["১৯১২", "১৯১৩", "১৯১৪", "১৯১৫"],
-          correctAnswer: 1,
-          marks: 5,
-        },
-      ],
-    }
-
-    const questions = sampleQuestions[subject] || sampleQuestions["পদার্থবিজ্ঞান"]
-
-    // Generate enough questions to meet the count requirement
-    const generatedQuestions = []
-    for (let i = 0; i < count; i++) {
-      const baseQuestion = questions[i % questions.length]
-      generatedQuestions.push({
-        ...baseQuestion,
-        id: i + 1 // Ensure unique IDs
-      })
-    }
-
-    return generatedQuestions
-  }
+  // Format exam data with parsed questions
+  const formattedExam = {
+    ...exam,
+    questions: parsedQuestions,
+    totalMarks: exam.total_marks || parsedQuestions.length * 5,
+    totalQuestions: exam.total_questions || parsedQuestions.length
+  };
 
   // Prevent page reload
   useEffect(() => {
@@ -120,63 +65,66 @@ const PracticeExamPage = ({exam, questions}) => {
       return;
     }
 
-    const results = calculateResults(exam, answers);
-    console.log("Exam ID:", exam?.id);
+    const results = calculateResults(formattedExam, answers);
 
     router.post(route('student.practice.exam.result', { exam: exam.id }), {
       examName: exam.name,
-      subject: exam.subject,
-      totalMarks: exam.totalMarks,
+      totalMarks: formattedExam.totalMarks,
       answers: answers,
       results: results,
     }, {
       preserveScroll: true,
-      preserveState: false, // Important to reset component state
-      onSuccess: () => {
-        // No need to navigate manually
-      },
+      preserveState: false,
+      onSuccess: () => { },
       onError: (errors) => {
         console.error('Submission failed:', errors);
       }
     });
   }
 
-
   const calculateResults = (exam, answers) => {
     let correctAnswers = 0
     let wrongAnswers = 0
     let skippedQuestions = 0
     let obtainedMarks = 0
+    let totalMarks = 0
 
     exam.questions.forEach((question) => {
+      totalMarks += question.marks // Calculate total marks first
       const userAnswer = answers[question.id]
+
       if (userAnswer === undefined || userAnswer === null) {
         skippedQuestions++
       } else if (userAnswer === question.correctAnswer) {
         correctAnswers++
-        obtainedMarks += question.marks || 5
+        obtainedMarks += question.marks
       } else {
         wrongAnswers++
       }
     })
 
-    const percentage = Math.round((obtainedMarks / exam.totalMarks) * 100)
-    let grade = "F"
-    if (percentage >= 80) grade = "A+"
-    else if (percentage >= 70) grade = "A"
-    else if (percentage >= 60) grade = "A-"
-    else if (percentage >= 50) grade = "B"
-    else if (percentage >= 40) grade = "C"
-    else if (percentage >= 33) grade = "D"
+    const percentage = totalMarks > 0 ? (obtainedMarks / totalMarks) * 100 : 0
 
     return {
       correctAnswers,
       wrongAnswers,
       skippedQuestions,
       obtainedMarks,
+      totalMarks,
       percentage,
-      grade,
+      grade: calculateGrade(percentage)
     }
+  }
+
+  // Helper function to calculate grade based on percentage
+  const calculateGrade = (percentage) => {
+    if (percentage >= 90) return 'A+'
+    if (percentage >= 80) return 'A'
+    if (percentage >= 70) return 'A-'
+    if (percentage >= 60) return 'B'
+    if (percentage >= 50) return 'C'
+    if (percentage >= 40) return 'D'
+    return 'F'
   }
 
   if (loading) {
@@ -213,7 +161,7 @@ const PracticeExamPage = ({exam, questions}) => {
   }
 
   const answeredCount = Object.keys(answers).length
-  const progressPercentage = (answeredCount / exam.questions.length) * 100
+  const progressPercentage = (answeredCount / formattedExam.questions.length) * 100
 
   return (
     <div className="position-relative min-vh-100 bg-light">
@@ -222,16 +170,16 @@ const PracticeExamPage = ({exam, questions}) => {
         <div className="container-fluid py-3 ">
           <div className="row align-items-center">
             <div className="col-md-4">
-              <h4 className="mb-0 fw-bold">{exam.name}</h4>
-              <small className="text-muted">মোট নম্বর: {exam.totalMarks}</small>
+              <h4 className="mb-0 fw-bold">{formattedExam.name}</h4>
+              <small className="text-muted">মোট নম্বর: {formattedExam.totalMarks}</small>
             </div>
             <div className="col-md-4 text-center">
-              <ExamTimer duration={exam.duration} onTimeUp={handleTimeUp} />
+              <ExamTimer duration={formattedExam.duration} onTimeUp={handleTimeUp} />
             </div>
             <div className="col-md-4 text-end">
               <div className="d-flex align-items-center justify-content-end">
                 <span className="me-3 small text-muted">
-                  উত্তর দেওয়া: {answeredCount}/{exam.questions.length}
+                  উত্তর দেওয়া: {answeredCount}/{formattedExam.questions.length}
                 </span>
                 <button
                   className="btn btn-success fw-semibold"
@@ -262,7 +210,7 @@ const PracticeExamPage = ({exam, questions}) => {
       <div className=" py-4">
         <div className=" justify-content-center">
           <div className="col-12 ">
-            {exam.questions.map((question, index) => (
+            {formattedExam.questions.map((question, index) => (
               <QuestionCard
                 key={question.id}
                 question={question}
@@ -297,7 +245,7 @@ const PracticeExamPage = ({exam, questions}) => {
                   </div>
                   <h5 className="fw-bold text-dark mb-2">আপনি কি নিশ্চিত?</h5>
                   <p className="text-muted mb-3">
-                    আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {exam.questions.length}টির মধ্যে।
+                    আপনি {answeredCount}টি প্রশ্নের উত্তর দিয়েছেন {formattedExam.questions.length}টির মধ্যে।
                   </p>
                   <p className="text-muted small">জমা দেওয়ার পর আর পরিবর্তন করা যাবে না।</p>
                 </div>
