@@ -67,10 +67,14 @@ const ExamMainPage = ({ exam, questions }) => {
 
   };
 
+  const handleSubmitByStudent = (submitStatus) => {
+    if (!exam) return
+    router.get(route('student.live.exam.success'), {
+      examId: exam.id,
+      submit_status: submitStatus,
+    })
 
-  const handleTimeUp = () => {
-
-    handleSubmit()
+    console.log("Route hitted by student", submitStatus)
   }
 
   const handleSubmit = (isAuto = false) => {
@@ -118,7 +122,7 @@ const ExamMainPage = ({ exam, questions }) => {
               <small className="text-muted">মোট নম্বর: {exam.totalMarks}</small>
             </div>
             <div className="col-md-4 text-center">
-              <ExamTimer duration={exam.duration} onTimeUp={handleTimeUp} />
+              <ExamTimer duration={exam.duration} onTimeUp={handleSubmitByStudent} />
             </div>
             <div className="col-md-4 text-end">
               <div className="d-flex align-items-center justify-content-end">
@@ -196,7 +200,7 @@ const ExamMainPage = ({ exam, questions }) => {
                       </button>
                     </div>
                     <div className="col-6">
-                      <button className="btn btn-success w-100 py-2 fw-semibold" onClick={() => handleSubmit()}>
+                      <button className="btn btn-success w-100 py-2 fw-semibold" onClick={() => handleSubmitByStudent(1)}>
                         জমা দিন
                       </button>
                     </div>

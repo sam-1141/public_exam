@@ -7,7 +7,7 @@ const ExamTimer = ({ duration, onTimeUp }) => {
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      onTimeUp(2)
+      onTimeUp()
       return
     }
 
