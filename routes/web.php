@@ -85,6 +85,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::delete('/admin/live-exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
     Route::put('/exams/{id}/toggle-status', [LiveExamController::class, 'toggleExamStatus'])->name('exams.status.toggle');
     Route::put('/exams/{id}/toggle-exam-type', [LiveExamController::class, 'toggleExamType'])->name('exams.type.toggle');
+    Route::get('/add-exam', [LiveExamController::class, 'loadAddExamPage'])->name('admin.add.exam');
+    Route::get('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
+    Route::post('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
+    Route::get('/add-exam/practice-exam', [LiveExamController::class, 'loadAddPracticeExamPage'])->name('admin.add.practice.exam');
+    Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
 
     // For practise exam
     Route::get('/admin/practise-exam/list', [PractiseExamController::class, 'showAllExam'])->name('show.practise.exam.list');
@@ -94,15 +99,6 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
         Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
         Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
-            /* Admin */
-        // exam management
-        Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
-        Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
-        Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
-        Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
-
-        Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
-
     });
 
     Route::controller(PracticeExamController::class)->group(function () {
