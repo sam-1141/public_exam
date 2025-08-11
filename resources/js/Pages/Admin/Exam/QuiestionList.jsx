@@ -6,7 +6,7 @@ const QuestionList = ({ questions }) => {
     const [expandedQuestion, setExpandedQuestion] = useState(null);
 
     useEffect(() => {
-        console.log("Exam Details:", questions);
+        // console.log("Exam Details:", questions);
     }, [questions]);
 
     const handleDelete = async (questionId) => {

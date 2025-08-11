@@ -49,28 +49,44 @@ const PracticeExam = () => {
             </div>
 
             {/* Exams list */}
-            <div className="row">
-                {exams.map((exam) => (
-                    <ExamCard
-                        key={exam.id}
-                        exam={exam}
-                        examType="practice"
-                        setEditExamSlug={setEditExamSlug}
-                    />
-                ))}
-            </div>
-
-            {/* Empty state */}
-            {exams.length === 0 && (
-                <div className="text-center py-5">
-                    <div className="mb-3">
-                        <i className="fas fa-calendar-times fa-3x text-muted"></i>
+            {loading ? (
+                <div
+                    className="d-flex justify-content-center align-items-center"
+                    style={{ minHeight: 200 }}
+                >
+                    <div
+                        className="spinner-border text-primary"
+                        style={{ width: "3rem", height: "3rem" }}
+                        role="status"
+                    >
+                        <span className="visually-hidden">Loading...</span>
                     </div>
-                    <h4 className="mb-2">No Live Exams Found</h4>
-                    <p className="text-muted mb-4">
-                        You haven't created any live exams yet
-                    </p>
                 </div>
+            ) : (
+                <>
+                    <div className="row">
+                        {exams.map((exam) => (
+                            <ExamCard
+                                key={exam.id}
+                                exam={exam}
+                                examType="practice"
+                                setEditExamSlug={setEditExamSlug}
+                            />
+                        ))}
+                    </div>
+                    {/* Empty state */}
+                    {exams.length === 0 && (
+                        <div className="text-center py-5">
+                            <div className="mb-3">
+                                <i className="fas fa-calendar-times fa-3x text-muted"></i>
+                            </div>
+                            <h4 className="mb-2">No Live Exams Found</h4>
+                            <p className="text-muted mb-4">
+                                You haven't created any live exams yet
+                            </p>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

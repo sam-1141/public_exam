@@ -94,9 +94,6 @@ const EditExamModal = ({
 
         // Prepare data with correct types
         const updateData = updateFormData(formData);
-        console.log("updateData data for submission:", updateData);
-        console.log('exam.slug', exam.slug);
-        console.log('route("update.single.exam", { slug: exam.slug }),', route("update.single.exam", { slug: exam.slug }));
 
         try {
             await axios.put(

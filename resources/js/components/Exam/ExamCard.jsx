@@ -3,8 +3,6 @@ import React from "react";
 import { route } from "ziggy-js";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
-    console.log("Exam card", exam);
-
     const isPracticeExam = examType === "practice";
 
     const negativeMarksDisplay = exam.hasNegativeMarks

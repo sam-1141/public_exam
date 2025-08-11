@@ -18,10 +18,10 @@ function Navbar() {
     const role = auth?.user?.role;
 
     const routes = {
-        // admin: "admin.profile",
+        admin: "admin.profile",
         // moderator: "moderator.profile",
     };
-    // let profileRoute = routes[role] || "student.profile";
+    let profileRoute = routes[role] || "student.profile";
     // use ziggy routes
     const route = useRoute();
 
@@ -130,10 +130,10 @@ function Navbar() {
                                     </div>
                                     <div className="flex-grow-1 ms-3 me-2">
                                         <h6 className="h6 font-semibold mb-0">
-                                            Rabbi
+                                            {name}
                                         </h6>
                                         <small className="h6 font-normal">
-                                            admin
+                                            {role}
                                         </small>
                                     </div>
                                 </div>
