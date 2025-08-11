@@ -34,14 +34,92 @@ class StudentLiveExamController extends Controller
             ->select('questions.*')
             ->get();
 
-        return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
-            'exam' => $exam,
-            'questions' => $questions,
+
+        $studentId = auth()->user()->id;
+
+//        dd($exam);
+
+        $exists = DB::table('student_exam_attendance')
+            ->where('student_id', $studentId)
+            ->where('exam_id', $exam->id)
+            ->exists();
+
+        if($exists) {
+            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'Already give this exam.']);
+        }
+
+        $inserted = DB::table('student_exam_attendance')->insert([
+            'student_id' => $studentId,
+            'exam_id' => $exam->id,
+            'exam_start_time' => $exam->start_time,
+            'exam_end_time' => $exam->end_time,
+            'student_exam_start_time' => now(),
+            'student_exam_end_time' => now()->addMinutes($exam->duration),
+            'submit_time' => null,
+            'submit_status' => null,
+            'exam_total_mark' => $exam->total_marks,
+            'student_total_mark' => null,
+            'total_correct_answers' => null,
+            'total_skipped_answers' => null,
+            'tab_switch_count' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
+
+//        dd($inserted);
+
+        if($inserted){
+            return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
+                'exam' => $exam,
+                'questions' => $questions,
+            ]);
+        } else {
+            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'Failed to start the exam.']);
+        }
+
+
     }
 
     public function loadExamSuccessPage()
     {
         return Inertia::render('Student/Exam/LiveExam/ExamSuccessPage');
+    }
+
+    public function answerStore(Request $request)
+    {
+        $data = $request->validate([
+            'exam_id'     => ['required','integer'],
+            'question_id' => ['required','integer'],
+            'ans_given'   => ['required','string'],
+        ]);
+
+        $studentId  = auth()->id();
+        $examId     = (int) $data['exam_id'];
+        $questionId = (int) $data['question_id'];
+        $ansGiven   = (string) $data['ans_given'];
+
+        $seaId = DB::table('student_exam_attendance')
+            ->where('student_id', $studentId)
+            ->where('exam_id', $examId)
+            ->value('id');
+
+        $correctAns = null;
+        $isCorrect  = null;
+
+        DB::table('sea_answer')->updateOrInsert(
+            [
+                'student_id'  => $studentId,
+                'exam_id'     => $examId,
+                'question_id' => $questionId,
+            ],
+            [
+                'sea_id'      => $seaId,
+                'ans_given'   => $ansGiven,
+                'correct_ans' => $correctAns,
+                'is_correct'  => $isCorrect,
+            ]
+        );
+
+        return response()->json(['ok' => true]);
     }
 }
