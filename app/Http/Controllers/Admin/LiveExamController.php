@@ -93,7 +93,8 @@ class LiveExamController extends Controller
 
 
         $slug = Str::slug($validated['name']);
-        $examUrl = "https://demo.com/exams/{$slug}";
+        $baseUrl = rtrim(env('APP_URL'), '/');
+        $examUrl = "{$baseUrl}/student/live-exam/exam?examSlug={$slug}";
 
         DB::beginTransaction();
 
@@ -231,7 +232,8 @@ class LiveExamController extends Controller
         ]);
 
         $updateSlug = Str::slug($validated['name']);
-        $examUrl = "https://demo.com/exams/{$slug}";
+        $baseUrl = rtrim(env('APP_URL'), '/');
+        $examUrl = "{$baseUrl}/student/live-exam/exam?examSlug={$slug}";
 
         $existingSlug = DB::table('live_exams')
             ->where('slug', $updateSlug)

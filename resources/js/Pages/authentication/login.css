@@ -1,0 +1,275 @@
+/* Container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  font-family: 'Baloo Da 2', sans-serif;
+}
+
+/* Wrapper */
+.login-wrapper {
+  background: white;
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 1000px;
+  overflow: hidden;
+}
+
+.login-btn.text-bold {
+    font-weight: 700;
+}
+
+.forgot-password{
+    font-weight: 600;
+}
+/* Left Panel */
+.login-left {
+  flex: 1;
+  padding: 40px;
+  text-align: center;
+  background-color: white;
+}
+
+.login-left h2 {
+  font-size: 22px;
+  color: #2e3f8d;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.login-left img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+/* Right Panel (Form) */
+.login-form {
+  flex: 1;
+  padding: 40px;
+  background-color: white;
+}
+
+.login-form h2 {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-form label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.login-form .forgot-password {
+  text-align: right;
+  font-size: 14px;
+  color: #2e3f8d;
+  margin-bottom: 18px;
+}
+
+.login-btn {
+  width: 100%;
+  background-color: #4361ee;
+  color: white;
+  border: none;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #334fd1;
+}
+
+.error-message {
+  font-size: 14px;
+  color: red;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+.signup-link {
+  margin-top: 24px;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.signup-link a {
+  color: #4b67e0;
+  /* text-decoration: underline;  */
+  cursor: pointer;
+}
+
+.name-fields {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 8px;
+}
+
+.name-fields > div {
+    flex: 1;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-direction: row;
+}
+
+/* OTP Input Styling */
+.otp-input {
+    width: 60px !important;
+    height: 60px !important;
+    font-size: 24px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin: 0 5px;
+}
+
+.otp-input:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+.position-relative {
+    position: relative;
+}
+
+.position-absolute {
+    position: absolute;
+}
+
+.end-0 {
+    right: 0;
+}
+
+.top-50 {
+    top: 50%;
+}
+
+.translate-middle-y {
+    transform: translateY(-50%);
+}
+
+.me-2 {
+    margin-right: 0.5rem;
+}
+
+.btn-link {
+    color: #495057;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.btn-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Responsive OTP */
+@media (max-width: 576px) {
+    .otp-input {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 20px;
+    }
+}
+
+/* Button container for responsive buttons */
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column-reverse;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .name-fields {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+/* Make it responsive */
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-left,
+  .login-form {
+    padding: 30px 20px;
+  }
+
+  .login-left h2 {
+    font-size: 20px;
+  }
+
+  .login-form h2 {
+    font-size: 18px;
+  }
+
+  .login-form input {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .login-btn {
+    font-size: 15px;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .button-container {
+        flex-direction: column-reverse;
+    }
+
+  .signup-link {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .login-left {
+    display: none;
+  }
+
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-form {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}

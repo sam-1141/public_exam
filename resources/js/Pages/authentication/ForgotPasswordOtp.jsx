@@ -3,6 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import { route } from "ziggy-js";
+import "./login.css"; // Reusing the same CSS file
+import { router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 
 function ForgotPasswordOtp({ props, flash, errors }) {
     // destruct props
@@ -12,17 +15,13 @@ function ForgotPasswordOtp({ props, flash, errors }) {
     useEffect(() => {
         const userId = props?.user_id;
         if (userId) {
-            // save user_id in a cookie for 5 minutes
             Cookies.set("user_id", userId, { expires: 1 / 288 });
         }
     }, [props.session]);
 
     // Retrieve user_id from the cookie
     let user_id = Cookies.get("user_id");
-
-    if (!user_id) {
-        user_id = "timeout";
-    }
+    if (!user_id) user_id = "timeout";
 
     const [otp, setOtp] = useState(["", "", "", ""]);
     const { data, setData, post, processing } = useForm({
@@ -56,106 +55,101 @@ function ForgotPasswordOtp({ props, flash, errors }) {
     };
 
     useEffect(() => {
-        // show success message
-        if (flash.success) {
-            toast.success(flash.success);
-            flash.success = null;
-        }
-
-        // Show error message
-        if (flash.error) {
-            toast.error(flash.error);
-            flash.error = null;
-        }
-
-        if (errors) {
-            Object.values(errors).forEach((error) => {
-                toast.error(error);
-            });
-            errors = null;
-        }
+        if (flash.success) toast.success(flash.success);
+        if (flash.error) toast.error(flash.error);
+        if (errors) Object.values(errors).forEach((error) => toast.error(error));
     }, [flash, errors]);
 
     return (
-        <div className="auth-main">
+        <div className="login-container">
             <ToastContainer />
-            <div className="auth-wrapper v1">
-                <div className="auth-form">
-                    <div className="card my-5">
-                        <div className="card-body">
-                            <div className="mb-4">
-                                <div className="d-flex flex-column align-items-center mb-3">
-                                    <a href="#">
-                                        <img
-                                            src="/assets/images/ftlogo.png"
-                                            className="mb-4"
-                                            alt="img"
-                                        />
-                                    </a>
-                                    <h3>
-                                        <b>Enter Verification Code</b>
-                                    </h3>
-                                </div>
-                                {message && (
-                                    <p className="alert alert-success">
-                                        {message}
-                                    </p>
-                                )}
-                                {error_message && (
-                                    <p className="alert alert-danger">
-                                        {error_message}
-                                    </p>
-                                )}
+
+            <div className="login-wrapper">
+                <div className="login-left">
+                    <h2>ফাহাদ'স টিউটোরিয়াল-এ তোমাকে স্বাগতম</h2>
+                    <img src="/assets/images/auth.7b116a16.png" alt="Welcome" />
+                </div>
+
+                <div className="login-form">
+                    <div className="border border-primary p-4 rounded shadow">
+                        <div className="text-center mb-4">
+
+                            <h2 className="fw-bold">ওটিপি ভেরিফিকেশন</h2>
+                        </div>
+
+                        {/* {message && (
+                            <div className="alert alert-success text-center">
+                                {message}
                             </div>
-                            <form
-                                ref={otpForm}
-                                onSubmit={handleSubmit}
-                                className="d-flex justify-content-center my-4"
-                            >
+                        )} */}
+                        {message && (
+                            <div
+                                className="alert alert-success mb-4"
+                                dangerouslySetInnerHTML={{ __html: message }}
+                            />
+                        )}
+                        {error_message && (
+                            <div className="alert alert-danger text-center">
+                                {error_message}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="mb-4">
+                            <div className="d-flex justify-content-center gap-2 mb-4">
                                 {otp.map((digit, index) => (
                                     <input
                                         key={index}
                                         id={`otp-input-${index}`}
                                         type="text"
-                                        className="form-control text-center code-input mx-1"
+                                        className="form-control text-center otp-input"
                                         maxLength={1}
                                         value={digit}
-                                        onChange={(e) =>
-                                            handleChange(e.target.value, index)
-                                        }
-                                        onKeyDown={(e) =>
-                                            handleKeyDown(e, index)
-                                        }
-                                        style={{
-                                            width: "50px",
-                                            height: "50px",
-                                            fontSize: "20px",
-                                            textAlign: "center",
-                                            border: "1px solid #ccc",
-                                            borderRadius: "5px",
-                                        }}
+                                        onChange={(e) => handleChange(e.target.value, index)}
+                                        onKeyDown={(e) => handleKeyDown(e, index)}
                                     />
                                 ))}
-                            </form>
-                            <div className="d-grid mt-4">
+                            </div>
+
+
+
+                            <div className="button-container">
                                 <button
-                                    type="button" // Ensure it's not type="submit" to avoid duplicate form submission
-                                    className="btn btn-primary"
-                                    onClick={handleSubmit}
+                                    type="button"
+                                    className="login-btn text-bold"
+                                    onClick={() => router.get(route('auth.login'))}
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        color: '#495057',
+                                        border: '1px solid #ced4da'
+                                    }}
+                                >
+                                    বাতিল করো
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="login-btn text-bold"
                                     disabled={processing}
                                 >
-                                    {processing ? "Processing..." : "Proceed"}
+                                    {processing ? "প্রসেসিং..." : "যাচাই করুন"}
                                 </button>
                             </div>
-                            <div className="d-flex justify-content-start align-items-end mt-3">
-                                <p className="mb-0">
-                                    Did not receive the code?
-                                </p>
-                                <a href="#" className="link-primary ms-2">
-                                    Resend code
-                                </a>
-                            </div>
+                        </form>
+
+                        <hr />
+                        <div>
+                            <p className="fw-bold text-center text-lg">কোন OTP পাওনি?</p>
+                            <p className="text-center"><Link href={route('auth.forgot.password')} className="text-primary">আবার ফোন নাম্বারটি দাও</Link></p>
                         </div>
+
+                        {/* <div className="text-center mt-3">
+                            <p className="mb-1">কোড পাইনি?</p>
+                            <button
+                                className="btn btn-link p-0"
+                                style={{ color: '#4361ee' }}
+                            >
+                                আবার কোড পাঠাও
+                            </button>
+                        </div> */}
                     </div>
                 </div>
             </div>

@@ -1,14 +1,18 @@
 import { Link, router } from "@inertiajs/react";
-import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import React, { useState } from "react";
 import { useRoute } from "ziggy-js";
+import "./login.css";
 
-const Login = ({ flash, errors }) => {
+const Login = ({ flash, errors, core_app_registration_url }) => {
     const route = useRoute();
     const [values, setValues] = useState({
         login: "",
         password: "",
     });
+
+    const [error, setError] = useState(""); // for login validation (phone/email)
+    const [showPassword, setShowPassword] = useState(false);
+
     function handleChange(e) {
         const key = e.target.name;
         const value = e.target.value;
@@ -18,116 +22,149 @@ const Login = ({ flash, errors }) => {
         }));
     }
 
-    function handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        router.post(route("execute.auth.login"), values);
-    }
+        setError("");
 
-    useEffect(() => {
-        // show success message
-        if (flash.success) {
-            toast.success(flash.success);
-            flash.success = null;
+        const { login } = values;
+
+        let formattedLogin = login.trim();
+
+        // Email validation
+        if (formattedLogin.includes("@")) {
+            if (
+                !formattedLogin.includes(".") ||
+                formattedLogin.split("@")[0].length < 1
+            ) {
+                setError("ইমেইল ঠিকানা সঠিক নয়");
+                return;
+            }
+        } else {
+            // Phone validation
+            const digits = formattedLogin.replace(/\D/g, "");
+            if (!/^01[3-9]\d{8}$/.test(digits)) {
+                setError("সঠিক ফোন নাম্বার দিন (01XXXXXXXXX)");
+                return;
+            }
+            formattedLogin = digits.startsWith("88") ? digits : "88" + digits;
         }
 
-        // Show error message
-        if (flash.error) {
-            toast.error(flash.error);
-            flash.error = null;
-        }
+        const submitValues = {
+            ...values,
+            login: formattedLogin,
+        };
 
-        if (errors) {
-            Object.values(errors).forEach((error) => {
-                toast.error(error);
-            });
-            errors = null;
-        }
-    }, [flash, errors]);
+        router.post(route("execute.auth.login"), submitValues);
+    };
 
     return (
-        <div className="auth-main">
-            <ToastContainer />
-            <div className="auth-wrapper v1">
-                <div className="auth-form">
-                    <div className="card my-5">
-                        <div className="card-body">
-                            <form onSubmit={handleSubmit}>
-                                <div className="text-center">
-                                    <a href="#">
-                                        <img
-                                            src="/assets/images/logo/ftlogo.png"
-                                            alt="Logo"
-                                        />
-                                    </a>
-                                </div>
-                                <div className="saprator my-3"></div>
-                                <h4 className="text-center f-w-500 mb-3">
-                                    Login in to your account
-                                </h4>
-                                <div className="mb-3">
-                                    <input
-                                        type="text"
-                                        name="login"
-                                        className="form-control"
-                                        placeholder="Enter Mobile Number or Email"
-                                        value={values.login}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        className="form-control"
-                                        placeholder="Password"
-                                        value={values.password}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div class="d-flex mt-1 justify-content-between align-items-center">
-                                    <div class="form-check">
-                                        <input
-                                            class="form-check-input input-primary"
-                                            type="checkbox"
-                                            id="customCheckc1"
-                                        />
-                                        <label
-                                            class="form-check-label text-muted"
-                                            for="customCheckc1"
-                                        >
-                                            Remember me?
-                                        </label>
-                                    </div>
-                                    <h6 class="text-secondary f-w-400 mb-0">
-                                        <Link
-                                            href={route("auth.forgot.password")}
-                                        >
-                                            {" "}
-                                            Forgot Password?{" "}
-                                        </Link>
-                                    </h6>
-                                </div>
-                                <div className="d-grid mt-4">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-primary"
-                                    >
-                                        Login
-                                    </button>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-end mt-4">
-                                    <h6 class="f-w-500 mb-0">
-                                        Don't have an Account?
-                                    </h6>
-                                    <Link
-                                        href={route("auth.registration.form")}
-                                        class="link-primary"
-                                    >
-                                        Create Account
+        <div className="login-container">
+            <div className="login-wrapper">
+                <div className="login-left">
+                    <h2>ফাহাদ'স টিউটোরিয়াল-এ তোমাকে স্বাগতম</h2>
+                    <img src="/assets/images/auth.7b116a16.png" alt="Welcome" />
+                </div>
+
+                <div className="login-form">
+                    <div className="border border-primary p-4 rounded shadow">
+                        <form onSubmit={handleSubmit}>
+                            <h2>লগ ইন করো</h2>
+
+                            <label>
+                                ফোন নাম্বার বা ইমেইল
+                                <span className="text-danger"> *</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="login"
+                                placeholder="01234567890 বা your@email.com"
+                                value={values.login}
+                                onChange={handleChange}
+                            />
+                            {error && (
+                                <small className="text-danger d-block mb-2">{error}</small>
+                            )}
+
+                            <label>
+                                পাসওয়ার্ড
+                                <span className="text-danger"> *</span>
+                            </label>
+                            <div style={{ position: "relative" }}>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="তোমার পাসওয়ার্ড"
+                                    value={values.password}
+                                    onChange={handleChange}
+                                    style={{ paddingRight: "2.5rem" }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{
+                                        position: "absolute",
+                                        right: "0.5rem",
+                                        top: "40%",
+                                        transform: "translateY(-50%)",
+                                        background: "none",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        padding: 0,
+                                        margin: 0,
+                                        color: "#555",
+                                    }}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? (
+                                        <i className="fas fa-eye-slash" style={{ fontSize: "18px" }}></i>
+                                    ) : (
+                                        <i className="fas fa-eye" style={{ fontSize: "18px" }}></i>
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Show backend validation errors and flash error under password */}
+                            <div className="text-danger">
+                                {/* Backend validation errors (Laravel) */}
+                                {errors &&
+                                    Object.values(errors).map((errMsg, idx) => (
+                                        <div key={idx}>{errMsg}</div>
+                                    ))}
+
+                                {/* Flash error (like wrong password) */}
+                                {flash?.error && <div>{flash.error}</div>}
+                            </div>
+
+                            <div className="forgot-password text-start mt-3">
+                                <Link href={route("auth.forgot.password")}>
+                                    পাসওয়ার্ড ভুলে গিয়েছো?
+                                </Link>
+                            </div>
+
+                            <button type="submit" className="login-btn fw-bold mt-3">
+                                লগ ইন
+                            </button>
+
+                            <p className="error-message fst-italic mt-3">
+                                পূনঃস্মরণ: তুমি যদি কখনো পাসওয়ার্ড সেট না করে
+                                থাকো, তাহলে তোমার পাসওয়ার্ড সেট করতে{" "}
+                                <span className="forgot-password">
+                                    <Link href={route("auth.forgot.password")}>
+                                        পাসওয়ার্ড ভুলে গিয়েছো?
                                     </Link>
-                                </div>
-                            </form>
-                        </div>
+                                </span>{" "}
+                                -তে ক্লিক করো
+                            </p>
+
+                            <hr />
+
+                            <div className="signup-link">
+                                <span>ফাহাদ'স টিউটোরিয়াল-এ নতুন?</span>
+                                <Link href={route("auth.registration.form")} className="fw-bold">
+                                    সাইন আপ করো
+                                </Link>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
