@@ -6,18 +6,16 @@ import QuestionCard from "./QuestionCard"
 import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import FocusWarning from "../../../../components/FocusWarning"
-import {route} from "ziggy-js";
+import { route } from "ziggy-js";
 
 const ExamMainPage = ({ exam, questions }) => {
   const [answers, setAnswers] = useState({})
-
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+  const [showErrorModal, setShowErrorModal] = useState(false)
 
-
-    useEffect(() => {
-      console.log('ExamMainPage props:', { exam, questions })
-    }, [questions]);
-
+  useEffect(() => {
+    console.log('ExamMainPage props:', { exam, questions })
+  }, [questions]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -46,40 +44,44 @@ const ExamMainPage = ({ exam, questions }) => {
       [questionId]: answerIndex,
     }));
 
-      try {
-          await axios.post(route('student.exam.answer.store'), {
-              exam_id: exam.id,
-              question_id: questionId,
-              ans_given: String(answerIndex),
-          })
-      } catch (err) {
-          console.error('Answer save failed:', err)
-      }
-
+    try {
+      await axios.post(route('student.exam.answer.store'), {
+        exam_id: exam.id,
+        question_id: questionId,
+        ans_given: String(answerIndex),
+      })
+    } catch (err) {
+      console.error('Answer save failed:', err)
+    }
   };
 
   const handleSubmitByStudent = async (submitStatus) => {
-      console.log("Submitting exam with status:", submitStatus)
-      try {
-          const response = await axios.post(route('student.live.exam.main.submit'), {
-              examId: exam.id,
-              submit_status: submitStatus,
-          });
-          console.log("Submit response:", response);
+    console.log("Submitting exam with status:", submitStatus)
+    try {
+      const response = await axios.post(route('student.live.exam.main.submit'), {
+        examId: exam.id,
+        submit_status: submitStatus,
+      });
+      console.log("Submit response:", response);
 
-          if (response.data.type === 'success') {
-              // Redirect to success page
-              console.log(response.data.message);
-          }
-
-      } catch (error) {
-          if (error.response) {
-              // give general error message in modal (static text)
-              console.error('Error status:', error.response.status);
-              console.error('Error data:', error.response.data);
-          }
+      if (response.data.type === 'success') {
+        // Use Inertia's router to redirect
+        router.visit(route('student.live.exam.success'), {
+          method: 'get',
+          preserveState: false,
+          replace: true
+        });
       }
+      console.log("response.data.type", response.data.type)
 
+    } catch (error) {
+      if (error.response) {
+        setShowSubmitModal(false);
+        setShowErrorModal(true);
+        console.error('Error status:', error.response.status);
+        console.error('Error data:', error.response.data);
+      }
+    }
   }
 
   const handleSubmit = (isAuto = false) => {
@@ -90,23 +92,18 @@ const ExamMainPage = ({ exam, questions }) => {
     if (!exam) return
     console.log("Submitting exam with answers:", answers)
     router.get(route('student.live.exam.success'), {
-      examId: exam.id,
-      auto: isAuto
-    }, {
       preserveState: true,
       onBefore: async () => {
-          const response = await axios.post(route('student.live.exam.main.submit'), {
-              examId: exam.id,
-              submit_status: 3,
-          });
+        const response = await axios.post(route('student.live.exam.main.submit'), {
+          examId: exam.id,
+          submit_status: 3,
+        });
 
-          if (response.data.type === 'success') {
-              // Redirect to success page (with warning message);
-              console.log(response.data.message);
-          }
+        if (response.data.type === 'success') {
+          console.log(response.data.message);
+        }
       }
     })
-
     console.log("Route hitted")
   }
 
@@ -223,6 +220,49 @@ const ExamMainPage = ({ exam, questions }) => {
           </div>
         </>
       )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <>
+          <div className="modal-backdrop fade show"></div>
+          <div className="modal fade show d-block" tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header border-0">
+                  <h5 className="modal-title fw-bold">ত্রুটি</h5>
+                </div>
+                <div className="modal-body text-center py-4">
+                  <div className="mb-4">
+                    <div
+                      className="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                      style={{ width: "80px", height: "80px" }}
+                    >
+                      <span className="fs-1 text-danger">⚠️</span>
+                    </div>
+                    <h5 className="fw-bold text-dark mb-2">জমা দেওয়া যায়নি</h5>
+                    <p className="text-muted mb-3">
+                      পরীক্ষা জমা দেওয়ার সময় একটি সমস্যা হয়েছে।
+                    </p>
+                    <p className="text-muted small">দয়া করে আবার চেষ্টা করুন।</p>
+                  </div>
+
+                  <div className="row g-2">
+                    <div className="col-12">
+                      <button
+                        className="btn btn-danger w-100 py-2"
+                        onClick={() => setShowErrorModal(false)}
+                      >
+                        ঠিক আছে
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       <FocusWarning
         maxWarnings={3}
         active={!!exam}
