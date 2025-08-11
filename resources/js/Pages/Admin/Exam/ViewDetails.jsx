@@ -15,9 +15,13 @@ const ExamDetails = ({ examType, exam, questions }) => {
         alert("Exam link copied to clipboard!");
     };
 
+    useEffect(() => {
+        console.log('exam', exam)
+    }, [exam]);
+
     const toggleStatus = (id, currentStatus) => {
         router.put(route("exams.status.toggle", id), {
-            status: currentStatus ? 0 : 1,
+            publish: currentStatus ? 0 : 1,
         });
     };
 
@@ -26,10 +30,6 @@ const ExamDetails = ({ examType, exam, questions }) => {
             examType: currentExamType ? 0 : 1,
         });
     };
-
-    useEffect(() => {
-        console.log("single exam", exam);
-    }, [exam]);
 
     return (
         <div className="container py-4">
@@ -66,7 +66,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                 </p>
                             </div>
 
-                            {exam.status === 1 ? (
+                            {exam.publishInstant === 1 ? (
                                 <>
                                     <span className="badge bg-success">
                                         Published
@@ -217,11 +217,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
             <div className="d-flex flex-wrap gap-2 mb-4">
                 <button
                     className={`btn btn-${
-                        exam.status ? "warning" : "success"
+                        exam.publishInstant ? "warning" : "success"
                     } btn-sm`}
-                    onClick={() => toggleStatus(exam.id, exam.status)}
+                    onClick={() => toggleStatus(exam.id, exam.publishInstant)}
                 >
-                    {exam.status === 1 ? (
+                    {exam.publishInstant === 1 ? (
                         <>
                             <i className="fas fa-eye-slash me-1"></i>Unpublish
                         </>

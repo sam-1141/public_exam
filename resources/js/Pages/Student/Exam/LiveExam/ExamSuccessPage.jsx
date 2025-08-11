@@ -3,34 +3,17 @@
 import { useState, useEffect } from "react"
 import { liveExams } from "../../../../utils/ExamQuestion/ExamQuestions"
 import Layout from "../../../../layouts/Layout"
+import { router } from "@inertiajs/react"
 
 const ExamSuccessPage = () => {
-  const [exam, setExam] = useState(null)
-
-  // Get exam data by ID
-  // useEffect(() => {
-  //   const examData = liveExams.find(e => e.id == examId)
-  //   if (examData) {
-  //     setExam(examData)
-  //   } else {
-  //     // Redirect back to notice page if exam not found
-  //     window.location.href = '/student/live-exam/notice'
-  //   }
-  // }, [examId])
 
   const handleBackToHome = () => {
-    window.location.href = '/student/live-exam/list'
-  }
-
-  if (!exam) {
-    return (
-      <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    )
-  }
+  router.visit(route('student.live.exam.list'), {
+    method: 'get',
+    preserveState: false,
+    replace: true
+  });
+}
 
   return (
     <div className=" bg-light d-flex align-items-center justify-content-center font-baloo">
