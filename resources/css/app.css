@@ -26,7 +26,7 @@ body.modal-open .pc-sidebar {
 }
 
 .custom-sticky-top {
-  position: sticky;
-  top: 0;
-  z-index: 1050; /* higher than Bootstrap default 1020 */
+    position: sticky;
+    top: 0;
+    z-index: 1050; /* higher than Bootstrap default 1020 */
 }

@@ -8,7 +8,7 @@ const AddExam = () => {
         <div className="container py-4">
             <h1 className="h3 font-semibold mb-4">Exam Management</h1>
 
-            <div className="row sm:gap-4">
+            <div className="row g-3">
                 {/* Live Exam Card */}
                 <div className="col-md-6">
                     <Link

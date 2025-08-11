@@ -25,13 +25,16 @@ const Leaderboard = () => {
         currentPage * itemsPerPage
     );
 
-    // Placeholder download functions
-    const downloadAsDoc = () => {
-        console.log("Download as DOC");
-    };
+    const downloadAsCSV = () => {
+        const csvUrl = "/leaderboard.xlsx";
 
-    const downloadAsExcel = () => {
-        console.log("Download as Excel");
+        const link = document.createElement("a");
+        link.href = csvUrl;
+        link.download = "leaderboard.xlsx";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     return (
@@ -71,7 +74,7 @@ const Leaderboard = () => {
                         <div className="d-flex justify-content-end mb-3 gap-2">
                             <button
                                 className="btn btn-success d-flex align-items-center gap-2"
-                                onClick={downloadAsExcel}
+                                onClick={downloadAsCSV}
                             >
                                 <Icon icon="vscode-icons:file-type-excel" />
                                 Export to CSV
