@@ -1,187 +1,328 @@
-import { useEffect, useState } from "react"
-import { router, usePage } from '@inertiajs/react'
 import Layout from "../../../../layouts/Layout"
+import { usePage } from '@inertiajs/react'
+import { useEffect, useState } from "react"
+import { router } from "@inertiajs/react"
 
-const PracticeExamResult = ({ examSlug }) => {
+const PracticeExamResult = () => {
     const { submission } = usePage().props
-    console.log('Submission', submission)
-    const [result, setResult] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [examData, setExamData] = useState(null)
+    const [questions, setQuestions] = useState([])
+
+    console.log(submission)
 
     useEffect(() => {
         if (submission) {
-            setResult({
+            // Format exam data
+            const formattedExam = {
                 examName: submission.examName,
-                subject: submission.subject,
-                totalMarks: submission.totalMarks,
+                totalGivenTime: submission.exam?.duration || 60, // minutes
+                submissionTime: Math.floor(submission.exam?.duration * 0.75), // dummy calculation
+                totalQuestions: submission.questions?.length || 0,
+                answeredQuestions: submission.results.correctAnswers + submission.results.wrongAnswers,
+                skippedQuestions: submission.results.skippedQuestions,
                 correctAnswers: submission.results.correctAnswers,
                 wrongAnswers: submission.results.wrongAnswers,
-                skippedQuestions: submission.results.skippedQuestions,
-                obtainedMarks: submission.results.obtainedMarks,
-                percentage: submission.results.percentage,
+                totalScore: submission.totalMarks,
+                obtainedScore: submission.results.obtainedMarks,
                 grade: submission.results.grade,
-                submittedAt: submission.submittedAt || new Date().toISOString(),
+                percentage: submission.results.percentage,
+                timeSpent: submission.spentTime,
+                timeSpentFormatted: submission.timeSpentFormatted,
+            }
+
+            // Format questions with user answers
+            const formattedQuestions = submission.questions?.map(question => {
+                const options = JSON.parse(question.options || "[]")
+                return {
+                    id: question.id,
+                    text: question.question,
+                    options: options.map(opt => opt.option),
+                    correctAnswer: options.findIndex(opt => opt.ans === true),
+                    userAnswer: submission.answers[question.id],
+                    marks: 5, // Default marks per question
+                    explanation: question.explanation
+                }
             })
+
+            setExamData(formattedExam)
+            setQuestions(formattedQuestions)
         }
-        setLoading(false)
     }, [submission])
 
-    const handleBackToPracticeList = () => {
+    const handleBackClick = () => {
         router.visit(route('student.practice.exam.list'))
     }
 
-    const handleTryAgain = () => {
-        router.visit(route('student.practice.exam', { exam: examSlug }))
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${minutes} মিনিট ${secs} সেকেন্ড`
     }
 
-    if (loading) {
+    if (!submission || !examData) {
         return (
             <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center">
                 <div className="text-center">
                     <div className="spinner-border text-primary mb-3" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
-                    <h5 className="text-muted">ফলাফল লোড হচ্ছে...</h5>
-                </div>
-            </div>
-        )
-    }
-
-    if (!result) {
-        return (
-            <div className="min-vh-100 bg-light d-flex align-items-center justify-content-center font-baloo">
-                <div className="text-center">
-                    <div
-                        className="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                        style={{ width: "80px", height: "80px" }}
-                    >
-                        <span className="fs-1 text-danger">⚠️</span>
-                    </div>
-                    <h4 className="fw-bold text-danger mb-2">ফলাফল পাওয়া যায়নি</h4>
-                    <p className="text-muted mb-3">দুঃখিত, পরীক্ষার ফলাফল প্রদর্শন করা যাচ্ছে না।</p>
-                    <button
-                        className="btn btn-primary"
-                        onClick={handleBackToPracticeList}
-                    >
-                        প্র্যাকটিস লিস্টে ফিরে যান
-                    </button>
+                    <h5 className="text-muted">উত্তরপত্র লোড হচ্ছে...</h5>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="min-vh-100 bg-light">
-            <div className="container py-5">
-                <div className="row justify-content-center">
-                    <div className="col-lg-8">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-header bg-white border-0 text-center py-4">
-                                <h3 className="fw-bold text-primary mb-2">{result.examName}</h3>
-                                <p className="text-muted mb-0">{result.subject}</p>
-                            </div>
-                            <div className="card-body p-4">
-                                {/* Result Summary */}
-                                <div className="text-center mb-5">
-                                    <div className="d-inline-flex align-items-center justify-content-center mb-3">
-                                        <div className="position-relative">
-                                            <svg width="120" height="120" viewBox="0 0 36 36" className="circular-chart">
-                                                <path
-                                                    className="circle-bg"
-                                                    d="M18 2.0845
-                            a 15.9155 15.9155 0 0 1 0 31.831
-                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                    fill="none"
-                                                    stroke="#eee"
-                                                    strokeWidth="3"
-                                                />
-                                                <path
-                                                    className="circle"
-                                                    strokeDasharray={`${result.percentage}, 100`}
-                                                    d="M18 2.0845
-                            a 15.9155 15.9155 0 0 1 0 31.831
-                            a 15.9155 15.9155 0 0 1 0 -31.831"
-                                                    fill="none"
-                                                    stroke="#4CAF50"
-                                                    strokeWidth="3"
-                                                />
-                                            </svg>
-                                            <div className="position-absolute top-50 start-50 translate-middle text-center">
-                                                <span className="fs-1 fw-bold d-block">{result.percentage}%</span>
-                                                <span className="text-muted small">স্কোর</span>
+        <div className="flex-grow-1 d-flex flex-column font-baloo">
+            {/* Header */}
+            <div className="bg-white border-bottom py-3">
+                <div className="container">
+                    <div className="d-flex align-items-center justify-content-between">
+                        <h3 className="fw-bold text-dark mb-0">উত্তরপত্র</h3>
+                        <div className="d-flex align-items-center gap-2">
+                            <span className="badge bg-primary">
+                                {examData.obtainedScore}/{examData.totalScore}
+                            </span>
+                            <span className="badge bg-success">
+                                {examData.grade} ({examData.percentage.toFixed(2)}%)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main className="flex-grow-1 px-0 py-2 bg-light">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-12">
+                            {/* Exam Summary */}
+                            <div className="card border-0 shadow-sm mb-4">
+                                <div className="card-body p-4">
+                                    <div className="row">
+                                        <div className="col-12 mb-4">
+                                            <h3 className="fw-bold text-dark mb-2">{examData.examName}</h3>
+                                            <div className="d-flex flex-wrap gap-4 text-muted">
+                                                {/* <div className="d-flex align-items-center">
+                          <span className="me-2">⏰</span>
+                          <span>মোট সময়: {examData.totalGivenTime} মিনিট</span>
+                        </div> */}
+                                                <div className="d-flex align-items-center">
+                                                    <span className="me-2">⏰</span>
+                                                    <span>সময় লেগেছে: {formatTime(examData.timeSpent)}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <h2 className={`fw-bold mb-3 ${getGradeColor(result.grade)}`}>
-                                        {result.grade}
-                                    </h2>
-                                    <p className="lead">
-                                        আপনি পেয়েছেন <strong>{result.obtainedMarks}</strong> নম্বর {result.totalMarks} এর মধ্যে
-                                    </p>
-                                </div>
 
-                                {/* Detailed Stats */}
-                                <div className="row g-3 mb-4">
-                                    <div className="col-md-4">
-                                        <div className="p-3 bg-success bg-opacity-10 rounded text-center">
-                                            <h5 className="fw-bold text-success">{result.correctAnswers}</h5>
-                                            <p className="mb-0 small text-muted">সঠিক উত্তর</p>
+                                    <div className="row g-3">
+                                        <div className="col-6 col-md-3">
+                                            <div className="text-center px-2 py-3 bg-primary bg-opacity-10 rounded-3">
+                                                <div className="fw-bold fs-4 text-primary">{examData.totalQuestions}</div>
+                                                <div className="small text-muted">মোট প্রশ্ন</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-md-3">
+                                            <div className="text-center px-2 py-3 bg-success bg-opacity-10 rounded-3">
+                                                <div className="fw-bold fs-4 text-success">{examData.correctAnswers}</div>
+                                                <div className="small text-muted">সঠিক উত্তর</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-md-3">
+                                            <div className="text-center px-2 py-3 bg-danger bg-opacity-10 rounded-3">
+                                                <div className="fw-bold fs-4 text-danger">{examData.wrongAnswers}</div>
+                                                <div className="small text-muted">ভুল উত্তর</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-6 col-md-3">
+                                            <div className="text-center px-2 py-3 bg-warning bg-opacity-10 rounded-3">
+                                                <div className="fw-bold fs-4 text-warning">{examData.skippedQuestions}</div>
+                                                <div className="small text-muted">স্কিপ</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-4">
-                                        <div className="p-3 bg-danger bg-opacity-10 rounded text-center">
-                                            <h5 className="fw-bold text-danger">{result.wrongAnswers}</h5>
-                                            <p className="mb-0 small text-muted">ভুল উত্তর</p>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className="p-3 bg-warning bg-opacity-10 rounded text-center">
-                                            <h5 className="fw-bold text-warning">{result.skippedQuestions}</h5>
-                                            <p className="mb-0 small text-muted">উত্তর দেওয়া হয়নি</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="d-grid gap-3 d-md-flex justify-content-md-center mt-4">
-                                    <button
-                                        className="btn btn-outline-primary"
-                                        onClick={handleBackToPracticeList}
-                                    >
-                                        প্র্যাকটিস লিস্টে ফিরে যান
-                                    </button>
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={handleTryAgain}
-                                    >
-                                        আবার চেষ্টা করুন
-                                    </button>
                                 </div>
                             </div>
-                            <div className="card-footer bg-white border-0 text-center py-3">
-                                <small className="text-muted">
-                                    জমা দেওয়ার সময়: {new Date(result.submittedAt).toLocaleString()}
-                                </small>
+
+                            {/* Questions Review */}
+                            <div className="d-flex align-items-center justify-content-between mb-4">
+                                <h4 className="fw-bold text-dark mb-0">প্রশ্ন পর্যালোচনা</h4>
+                                <div className="d-flex align-items-center gap-3 small">
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-success rounded me-2" style={{ width: "12px", height: "12px" }}></div>
+                                        <span>সঠিক</span>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-danger rounded me-2" style={{ width: "12px", height: "12px" }}></div>
+                                        <span>ভুল</span>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                        <div className="bg-warning rounded me-2" style={{ width: "12px", height: "12px" }}></div>
+                                        <span>স্কিপ</span>
+                                    </div>
+                                </div>
                             </div>
+
+                            {questions.map((question, index) => (
+                                <QuestionReview
+                                    key={question.id}
+                                    question={question}
+                                    questionNumber={index + 1}
+                                />
+                            ))}
+
+                            {/* Action Buttons */}
+                            <div className="d-flex justify-content-center gap-3 mt-4">
+                                <button
+                                    className="btn btn-outline-primary px-4 py-2"
+                                    onClick={handleBackClick}
+                                >
+                                    প্র্যাকটিস লিস্টে ফিরে যান
+                                </button>
+                                <button
+                                    className="btn btn-primary px-4 py-2"
+                                    onClick={() => router.visit(route('student.practice.exam', { exam: submission.examId }))}
+                                >
+                                    আবার চেষ্টা করুন
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    )
+}
+
+// Question Review Component
+const QuestionReview = ({ question, questionNumber }) => {
+    const getQuestionBgColor = () => {
+        if (question.userAnswer === undefined || question.userAnswer === null) return "border-warning" // Skipped
+        if (question.userAnswer === question.correctAnswer) return "border-success" // Correct
+        return "border-danger" // Wrong
+    }
+
+    const getStatusIcon = () => {
+        if (question.userAnswer === undefined || question.userAnswer === null) return "⏭️" // Skipped
+        if (question.userAnswer === question.correctAnswer) return "✅" // Correct
+        return "❌" // Wrong
+    }
+
+    const getStatusText = () => {
+        if (question.userAnswer === undefined || question.userAnswer === null) return "স্কিপ করা হয়েছে"
+        if (question.userAnswer === question.correctAnswer) return "সঠিক উত্তর"
+        return "ভুল উত্তর"
+    }
+
+    const getStatusColor = () => {
+        if (question.userAnswer === undefined || question.userAnswer === null) return "text-warning"
+        if (question.userAnswer === question.correctAnswer) return "text-success"
+        return "text-danger"
+    }
+
+    return (
+        <div className={`card mb-4 border-2 ${getQuestionBgColor()}`}>
+            <div className="card-body p-2 p-md-4">
+                {/* Question Header */}
+                <div className="d-flex align-items-start justify-content-between mb-3">
+                    <div className="d-flex align-items-start">
+                        <span className="badge bg-primary me-3 fs-6">{questionNumber}</span>
+                        <div>
+                            <h6 className="mb-2 fw-semibold" dangerouslySetInnerHTML={{ __html: question.text }}></h6>
+                            <div className="d-flex align-items-center">
+                                <span className="me-2">{getStatusIcon()}</span>
+                                <span className={`small fw-semibold ${getStatusColor()}`}>{getStatusText()}</span>
+                                <span className="ms-3 small text-muted">নম্বর: {question.marks}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Options */}
+                <div className="row g-2 mb-3">
+                    {question.options.map((option, index) => {
+                        const isCorrect = index === question.correctAnswer
+                        const isUserAnswer = index === question.userAnswer
+                        const isWrongUserAnswer = isUserAnswer && !isCorrect
+
+                        let optionClass = "btn w-100 text-start p-3 border rounded-3"
+
+                        if (isCorrect) {
+                            optionClass += " btn-success text-white"
+                        } else if (isWrongUserAnswer) {
+                            optionClass += " btn-danger text-white"
+                        } else {
+                            optionClass += " btn-outline-secondary"
+                        }
+
+                        return (
+                            <div key={index} className="col-12 col-md-6">
+                                <button className={optionClass} disabled>
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <span className="fw-semibold me-2">{String.fromCharCode(65 + index)}.</span>
+                                            <span dangerouslySetInnerHTML={{ __html: option }}></span>
+                                        </div>
+                                        <div>
+                                            {isCorrect && <span className="ms-2">✓</span>}
+                                            {isWrongUserAnswer && <span className="ms-2">✗</span>}
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                        )
+                    })}
+                </div>
+
+                {/* Answer Details and Explanation */}
+                <div className="row">
+                    <div className="col-12">
+                        <div className="bg-light rounded-3 p-3">
+                            <div className="row g-3">
+                                <div className="col-12 col-md-6">
+                                    <div className="small">
+                                        <span className="text-muted">সঠিক উত্তর:</span>
+                                        <span className="fw-semibold text-success ms-2">
+                                            {String.fromCharCode(65 + question.correctAnswer)}.
+                                            <span dangerouslySetInnerHTML={{ __html: question.options[question.correctAnswer] }}></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="col-12 col-md-6">
+                                    <div className="small">
+                                        <span className="text-muted">আপনার উত্তর:</span>
+                                        {question.userAnswer !== undefined && question.userAnswer !== null ? (
+                                            <span className={`fw-semibold ms-2 ${getStatusColor()}`}>
+                                                {String.fromCharCode(65 + question.userAnswer)}.
+                                                <span dangerouslySetInnerHTML={{ __html: question.options[question.userAnswer] }}></span>
+                                            </span>
+                                        ) : (
+                                            <span className="fw-semibold text-warning ms-2">স্কিপ করা</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Explanation Section - Only shown if explanation exists */}
+                            {question.explanation && question.explanation.trim() !== '<p></p>' && (
+                                <div className="mt-3 pt-3 border-top">
+                                    <div className="d-flex align-items-start">
+                                        <span className="text-primary me-2">💡</span>
+                                        <div>
+                                            <div className="fw-semibold text-primary small mb-1">ব্যাখ্যা:</div>
+                                            <div
+                                                className="small text-dark"
+                                                dangerouslySetInnerHTML={{ __html: question.explanation }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     )
-}
-
-// Helper function to get color based on grade
-const getGradeColor = (grade) => {
-    switch (grade) {
-        case 'A+': return 'text-success'
-        case 'A': return 'text-success'
-        case 'A-': return 'text-primary'
-        case 'B': return 'text-info'
-        case 'C': return 'text-warning'
-        case 'D': return 'text-warning'
-        default: return 'text-danger'
-    }
 }
 
 PracticeExamResult.layout = (page) => <Layout children={page} />

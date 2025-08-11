@@ -43,21 +43,18 @@ class PracticeExamController extends Controller
 
     public function loadPracticeExamResult(Request $request, $exam)
     {
-        $results = $request->input('results');
-        $examName = $request->input('examName');
-        $subject = $request->input('subject');
-        $totalMarks = $request->input('totalMarks');
-        $answers = $request->input('answers');
-
         return Inertia::render('Student/Exam/PracticeExam/PracticeExamResult', [
             'submission' => [
-            'examId' => $exam,
-            'examName' => $request->input('examName'),
-            'subject' => $request->input('subject'),
-            'totalMarks' => $request->input('totalMarks'),
-            'answers' => $request->input('answers'),
-            'results' => $request->input('results'),
-            'submittedAt' => now()->toISOString(),
+                'examId' => $exam,
+                'exam' => $request->input('examData'), // Pass the full exam data
+                'questions' => $request->input('questions'), // Pass the questions
+                'examName' => $request->input('examName'),
+                'subject' => $request->input('subject'),
+                'totalMarks' => $request->input('totalMarks'),
+                'answers' => $request->input('answers'),
+                'results' => $request->input('results'),
+                'spentTime' => $request->input('spentTime'),
+                'submittedAt' => now()->toISOString(),
             ]
         ]);
     }
