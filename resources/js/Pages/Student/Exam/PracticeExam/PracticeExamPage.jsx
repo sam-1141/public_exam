@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import Layout from "../../../../layouts/Layout"
 import { router, usePage } from "@inertiajs/react"
-import ExamTimer from "../LiveExam/ExamTimer"
+// import ExamTimer from "../LiveExam/ExamTimer"
 import QuestionCard from "./QuestionCard"
+import ExamTimer from "./ExamTimer"
 
 const PracticeExamPage = ({ exam, questions }) => {
   const [loading, setLoading] = useState(false)

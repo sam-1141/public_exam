@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigInteger('exam_id');
             $table->timestamp('exam_start_time')->nullable();
             $table->timestamp('exam_end_time')->nullable();
-            $table->timestamp('student_exam_start_time');
+            $table->timestamp('student_exam_start_time')->nullable();
             $table->timestamp('student_exam_end_time')->nullable();
             $table->timestamp('submit_time')->nullable();
             $table->tinyInteger('submit_status')->nullable()->comment('1=by_student, 2=time_expired, 3=forced_exit');
