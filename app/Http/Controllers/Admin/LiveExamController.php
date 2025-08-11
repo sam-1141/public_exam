@@ -61,7 +61,6 @@ class LiveExamController extends Controller
                 'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                 'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
                 'examUrl' => $exam->exam_url,
-                'status' => $exam->status,
                 'exam_type' => $exam->exam_type,
             ],
             'examType' => $type,
@@ -347,7 +346,7 @@ class LiveExamController extends Controller
     {
         DB::table('live_exams')
             ->where('id', $id)
-            ->update(['status' => $request->status]);
+            ->update(['publish' => $request->publish]);
 
         return back()->with('success', "Exam status updated .");
     }

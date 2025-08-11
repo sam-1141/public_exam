@@ -49,6 +49,7 @@ class StudentLiveExamController extends Controller
         $inserted = DB::table('student_exam_attendance')->insert([
             'student_id' => $studentId,
             'exam_id' => $exam->id,
+            'exam_type' => false,
             'exam_start_time' => $exam->start_time,
             'exam_end_time' => $exam->end_time,
             'student_exam_start_time' => now(),
