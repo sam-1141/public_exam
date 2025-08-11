@@ -37,8 +37,6 @@ class StudentLiveExamController extends Controller
 
         $studentId = auth()->user()->id;
 
-//        dd($exam);
-
         $exists = DB::table('student_exam_attendance')
             ->where('student_id', $studentId)
             ->where('exam_id', $exam->id)
@@ -78,6 +76,29 @@ class StudentLiveExamController extends Controller
         }
 
 
+    }
+
+    public function submitExamMainPage(Request $request)
+    {
+        $data = $request->validate([
+            'examId'     => ['required','integer'],
+            'submit_status' => ['required','integer'],
+        ]);
+
+        $studentId = auth()->user()->id;
+
+        DB::table('student_exam_attendance')
+            ->where('student_id', $studentId)
+            ->where('exam_id', $request->examId)
+            ->update([
+                'submit_time' => now(),
+                'submit_status' => $data['submit_status'],
+            ]);
+
+        return response()->json([
+            'type' => 'success',
+            'message' => 'Exam updated successfully.'
+        ]);
     }
 
     public function loadExamSuccessPage()
