@@ -37,7 +37,6 @@ const LiveExam = ({ courses, subjects }) => {
                 setExams([]);
             })
             .finally(() => setLoading(false));
-        console.log("Fetching exam list...", exams);
     }, [refresh]);
 
     const onClose = () => {

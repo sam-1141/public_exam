@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import Layout from "../../../../layouts/Layout";
 import { route } from "ziggy-js";
-import { exams, practiceExams } from "../exam";
-
 import ExamCard from "../../../../components/Exam/ExamCard";
 import axios from "axios";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 const PracticeExam = () => {
     const [exams, setExams] = useState([]);
@@ -17,7 +15,6 @@ const PracticeExam = () => {
     const [editExamData, setEditExamData] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
-
 
     useEffect(() => {
         setLoading(true);
@@ -31,7 +28,6 @@ const PracticeExam = () => {
                 setExams([]);
             })
             .finally(() => setLoading(false));
-        // console.log("Fetching exam list...", exams);
     }, [refresh]);
 
     return (

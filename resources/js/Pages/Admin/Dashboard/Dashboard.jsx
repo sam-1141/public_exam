@@ -1,10 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../../layouts/Layout";
-import { exams, practiceExams } from "../Exam/exam";
 import { route } from "ziggy-js";
 import { Link } from "@inertiajs/react";
+import axios from "axios";
 
 function AdminDashboard() {
+    const [liveExams, setLiveExams] = useState([]);
+    const [practiceExams, setPracticeExams] = useState([]);
+    const [loading, setLoading] = useState({
+        live: true,
+        practice: true,
+    });
+    const [showAllLive, setShowAllLive] = useState(false);
+    const [showAllPractice, setShowAllPractice] = useState(false);
+
+    // Fetch live exams
+    useEffect(() => {
+        setLoading((prev) => ({ ...prev, live: true }));
+        axios
+            .get(route("show.exam.list"))
+            .then((res) => {
+                setLiveExams(res.data.exams || []);
+            })
+            .catch(() => {
+                setLiveExams([]);
+            })
+            .finally(() => setLoading((prev) => ({ ...prev, live: false })));
+    }, []);
+
+    // Fetch practice exams
+    useEffect(() => {
+        setLoading((prev) => ({ ...prev, practice: true }));
+        axios
+            .get(route("show.practise.exam.list"))
+            .then((res) => {
+                setPracticeExams(res.data.exams || []);
+            })
+            .catch(() => {
+                setPracticeExams([]);
+            })
+            .finally(() =>
+                setLoading((prev) => ({ ...prev, practice: false }))
+            );
+    }, []);
+
+    // Show only 5 items initially, or all if showAll is true
+    const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
+    const displayedPracticeExams = showAllPractice
+        ? practiceExams
+        : practiceExams.slice(0, 5);
+
     return (
         <div className="container-fluid py-4">
             {/* Quick Stats Row */}
@@ -30,7 +75,7 @@ function AdminDashboard() {
                         <div className="card-body">
                             <h5 className="card-title">Total Exams</h5>
                             <h2 className="mb-0">
-                                {exams.length + practiceExams.length}
+                                {liveExams.length + practiceExams.length}
                             </h2>
                         </div>
                     </div>
@@ -75,78 +120,176 @@ function AdminDashboard() {
             </div>
 
             {/* Exams Section */}
-            <div className="row">
-                <div className="col-12">
-                    <div className="card">
-                        <div className="card-header">
-                            <h4 className="card-title font-bold text-xl">
-                                Live Exams
-                            </h4>
-                        </div>
-                        <div className="card-body">
-                            <div className="row">
-                                {exams.map((exam) => (
-                                    <div key={exam.id} className="col-md-12 ">
+            {/* Live Exams Section */}
+            <div className="mb-2">
+                <div className="card ">
+                    <div className="card-header ">
+                        <h2 className="text-xl font-semibold mb-0">
+                            Live Exams ({liveExams.length})
+                        </h2>
+                    </div>
+                    <div className="card-body p-0">
+                        {loading.live ? (
+                            <div className="text-center py-4">
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">
+                                        Loading...
+                                    </span>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="list-group list-group-flush">
+                                    {displayedLiveExams.map((exam, index) => (
                                         <Link
+                                            key={exam.id}
                                             href={route("admin.exam.details", {
-                                                exam: exam.id,
+                                                exam: exam.slug,
                                                 type: "live",
                                             })}
-                                            className="card exam-card "
+                                            className="list-group-item list-group-item-action border-0"
                                         >
-                                            <div className="card-body">
-                                                <h5 className="card-title font-semibold text-lg">
-                                                    {exam.title}
-                                                </h5>
-                                                <p className="card-text text-muted">
-                                                    {exam.description.substring(
-                                                        0,
-                                                        100
-                                                    )}
-                                                    ...
-                                                </p>
+                                            <div className="d-flex w-100 justify-content-between align-items-start ">
+                                                <div className="flex-grow-1">
+                                                    <h5 className="h4 font-semibold text-lg  text-gray-700">
+                                                        {exam.name}
+                                                    </h5>
+                                                    <p className="text-muted mb-0">
+                                                        {exam.description?.substring(
+                                                            0,
+                                                            100
+                                                        ) ||
+                                                            "No description available"}
+                                                        {exam.description
+                                                            ?.length > 100
+                                                            ? "..."
+                                                            : ""}
+                                                    </p>
+                                                </div>
+                                                <small className="text-muted ms-3">
+                                                    <i className="fas fa-chevron-right"></i>
+                                                </small>
                                             </div>
                                         </Link>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                                    ))}
+                                </div>
 
-                    <div className="card">
-                        <div className="card-header">
-                            <h4 className="card-title font-bold text-xl">
-                                Practice Exams
-                            </h4>
-                        </div>
-                        <div className="card-body">
-                            <div className="row">
-                                {practiceExams.map((exam) => (
-                                    <div key={exam.id} className="col-md-12">
-                                        <Link
-                                            href={route("admin.exam.details", {
-                                                exam: exam.id,
-                                                type: "practice",
-                                            })}
-                                            className="card exam-card"
+                                {liveExams.length > 5 && (
+                                    <div className="card-footer text-center bg-light">
+                                        <button
+                                            className="btn btn-outline-primary btn-sm"
+                                            onClick={() =>
+                                                setShowAllLive(!showAllLive)
+                                            }
                                         >
-                                            <div className="card-body">
-                                                <h5 className="card-title font-semibold text-lg">
-                                                    {exam.title}
-                                                </h5>
-                                                <p className="card-text text-muted">
-                                                    {exam.description.substring(
-                                                        0,
-                                                        100
-                                                    )}
-                                                    ...
-                                                </p>
-                                            </div>
-                                        </Link>
+                                            {showAllLive
+                                                ? "Show Less"
+                                                : `See More (${
+                                                      liveExams.length - 5
+                                                  } more)`}
+                                        </button>
                                     </div>
-                                ))}
+                                )}
+
+                                {liveExams.length === 0 && !loading.live && (
+                                    <div className="text-center py-5 text-muted">
+                                        <i className="fas fa-inbox fa-2x mb-3 d-block"></i>
+                                        No live exams found
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Practice Exams Section */}
+            <div className="mb-2">
+                <div className="card ">
+                    <div className="card-header ">
+                        <h2 className="text-xl font-semibold mb-0">
+                            Practice Exams ({practiceExams.length})
+                        </h2>
+                    </div>
+                    <div className="card-body p-0">
+                        {loading.practice ? (
+                            <div className="text-center py-4">
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">
+                                        Loading...
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <>
+                                <div className="list-group list-group-flush">
+                                    {displayedPracticeExams.map(
+                                        (exam, index) => (
+                                            <Link
+                                                key={exam.id}
+                                                href={route(
+                                                    "admin.exam.details",
+                                                    {
+                                                        exam: exam.slug,
+                                                        type: "practice",
+                                                    }
+                                                )}
+                                                className="list-group-item list-group-item-action border-0"
+                                            >
+                                                <div className="d-flex w-100 justify-content-between align-items-start ">
+                                                    <div className="flex-grow-1">
+                                                        <h5 className="font-semibold text-lg text-gray-700">
+                                                            {exam.name}
+                                                        </h5>
+                                                        <p className="text-muted mb-0">
+                                                            {exam.description?.substring(
+                                                                0,
+                                                                100
+                                                            ) ||
+                                                                "No description available"}
+                                                            {exam.description
+                                                                ?.length > 100
+                                                                ? "..."
+                                                                : ""}
+                                                        </p>
+                                                    </div>
+                                                    <small className="text-muted ms-3">
+                                                        <i className="fas fa-chevron-right"></i>
+                                                    </small>
+                                                </div>
+                                            </Link>
+                                        )
+                                    )}
+                                </div>
+
+                                {practiceExams.length > 5 && (
+                                    <div className="card-footer text-center bg-light">
+                                        <button
+                                            className="btn btn-outline-primary btn-sm"
+                                            onClick={() =>
+                                                setShowAllPractice(
+                                                    !showAllPractice
+                                                )
+                                            }
+                                        >
+                                            {showAllPractice
+                                                ? "Show Less"
+                                                : `See More (${
+                                                      practiceExams.length - 5
+                                                  } more)`}
+                                        </button>
+                                    </div>
+                                )}
+
+                                {practiceExams.length === 0 &&
+                                    !loading.practice && (
+                                        <div className="text-center py-5 text-muted">
+                                            <i className="fas fa-inbox fa-2x mb-3 d-block"></i>
+                                            No practice exams found
+                                        </div>
+                                    )}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
