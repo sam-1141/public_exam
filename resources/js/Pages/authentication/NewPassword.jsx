@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
-import { useForm } from "@inertiajs/react";
+import { useForm, router } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import "./login.css";
 
 function NewPassword({ props, errors, flash }) {
     const { message, error_message } = props;
     const [validatePassword, setValidatePassword] = useState(false);
-    // save user_id into cookie
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     useEffect(() => {
         const userId = props?.user_id;
         if (userId) {
-            // save user_id in a cookie for 10 minutes
             Cookies.set("user_id", userId, { expires: 10 / 1440 });
         }
     }, [props.session]);
 
-    // Retrieve user_id from the cookie
-    let user_id = Cookies.get("user_id");
-
-    if (!user_id) {
-        user_id = "timeout";
-    }
+    let user_id = Cookies.get("user_id") || "timeout";
 
     const { data, setData, post, processing } = useForm({
         user_id: "",
@@ -29,10 +26,9 @@ function NewPassword({ props, errors, flash }) {
         confirm_password: "",
     });
 
-    // handle submit
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (data.password != data.confirm_password) {
+        if (data.password !== data.confirm_password) {
             setValidatePassword(true);
             return;
         }
@@ -42,92 +38,97 @@ function NewPassword({ props, errors, flash }) {
     };
 
     useEffect(() => {
-        // show success message
-        if (flash.success) {
-            toast.success(flash.success);
-            flash.success = null;
-        }
-
-        // Show error message
-        if (flash.error) {
-            toast.error(flash.error);
-            flash.error = null;
-        }
-
-        if (errors) {
-            Object.values(errors).forEach((error) => {
-                toast.error(error);
-            });
-            errors = null;
-        }
+        if (flash.success) toast.success(flash.success);
+        if (flash.error) toast.error(flash.error);
+        if (errors) Object.values(errors).forEach((error) => toast.error(error));
     }, [flash, errors]);
 
     return (
-        <div className="auth-main">
+        <div className="login-container">
             <ToastContainer />
-            <div className="auth-wrapper v1">
-                <div className="auth-form">
-                    <div className="card my-5">
-                        <div className="card-body">
-                            <div className="text-center">
-                                <a href="#">
-                                    <img
-                                        src="/assets/images/ftlogo.png"
-                                        alt="img"
-                                    />
-                                </a>
-                            </div>
-                            <h4 className="text-center f-w-500 mb-4 mt-4">
-                                Set Your Account Password
-                            </h4>
-                            {message && (
-                                <p className="alert alert-success">{message}</p>
-                            )}
-                            {error_message && (
-                                <p className="alert alert-danger">
-                                    {error_message}
-                                </p>
-                            )}
-                            <div className="mb-3">
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Password"
-                                    name="password"
-                                    value={data.value}
-                                    onChange={(e) =>
-                                        setData(e.target.name, e.target.value)
-                                    }
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Confirm Password"
-                                    name="confirm_password"
-                                    value={data.value}
-                                    onChange={(e) =>
-                                        setData(e.target.name, e.target.value)
-                                    }
-                                />
-                                <small style={{ color: "red" }}>
-                                    {validatePassword &&
-                                        "Password and confirm password are not matched. Both must be the same."}
-                                </small>
-                            </div>
 
-                            <div className="d-grid mt-4">
+            <div className="login-wrapper">
+                <div className="login-left">
+                    <h2>ফাহাদ'স টিউটোরিয়াল-এ তোমাকে স্বাগতম</h2>
+                    <img src="/assets/images/auth.7b116a16.png" alt="Welcome" />
+                </div>
+
+                <div className="login-form">
+                    <div className="border border-primary p-4 rounded shadow">
+                        <div className="text-center mb-5">
+                            <h2 className="fw-bold">নতুন পাসওয়ার্ড সেট করো</h2>
+                        </div>
+
+                        {message && (
+                            <div className="alert alert-success text-center">
+                                {message}
+                            </div>
+                        )}
+                        {error_message && (
+                            <div className="alert alert-danger text-center">
+                                {error_message}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-3 position-relative">
+                                <label>নতুন পাসওয়ার্ড<span className="text-danger"> *</span></label>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control"
+                                    placeholder="পাসওয়ার্ড লিখুন"
+                                    name="password"
+                                    value={data.password}
+                                    onChange={(e) => setData('password', e.target.value)}
+                                />
                                 <button
                                     type="button"
-                                    className="btn btn-primary"
-                                    onClick={handleSubmit}
-                                    disabled={processing}
+                                    className="btn btn-link position-absolute"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    style={{ top: '42px', right: '10px' }}
                                 >
-                                    {processing ? "Processing..." : "Signup"}
+                                    {showPassword ? (
+                                        <i className="fas fa-eye-slash" style={{ fontSize: '18px' }}></i>
+                                    ) : (
+                                        <i className="fas fa-eye" style={{ fontSize: '18px' }}></i>
+                                    )}
                                 </button>
                             </div>
-                        </div>
+
+                            <div className="mb-3 position-relative">
+                                <label>পাসওয়ার্ড নিশ্চিত করো<span className="text-danger"> *</span></label>
+                                <input
+                                    type={showConfirmPassword ? "text" : "password"}
+                                    className="form-control"
+                                    placeholder="পুনরায় পাসওয়ার্ড লিখুন"
+                                    name="confirm_password"
+                                    value={data.confirm_password}
+                                    onChange={(e) => setData('confirm_password', e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="btn btn-link position-absolute"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    style={{ top: '42px', right: '10px' }}
+                                >
+                                    {showConfirmPassword ? (
+                                        <i className="fas fa-eye-slash" style={{ fontSize: '18px' }}></i>
+                                    ) : (
+                                        <i className="fas fa-eye" style={{ fontSize: '18px' }}></i>
+                                    )}
+                                </button>
+                            </div>
+
+                            <div className="button-container">
+                                <button
+                                    type="submit"
+                                    className="login-btn text-bold"
+                                    disabled={processing}
+                                >
+                                    {processing ? "প্রসেসিং..." : "সাবমিট করো"}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

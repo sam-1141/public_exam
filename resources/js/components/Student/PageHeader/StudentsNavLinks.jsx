@@ -40,7 +40,7 @@ function StudentNavLinks() {
                     <section className="font-baloo">
                         <li className="pc-item">
                             <Link
-                                href={route("student.dashboard")}
+                                href={route("dashboard")}
                                 className="pc-link"
                             >
                                 <span className="pc-micon">
