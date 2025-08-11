@@ -210,7 +210,7 @@ function Navbar() {
                                         >
                                             <Link
                                                 // href={route(profileRoute)}
-                                                className="dropdown-item"
+                                                className="card-body d-flex gap-3 p-2 mb-3"
                                             >
                                                 <svg className="pc-icon text-muted">
                                                     <use xlinkHref="#custom-user" />
@@ -218,7 +218,7 @@ function Navbar() {
                                                 <span>Profile Update</span>
                                             </Link>
 
-                                            <hr className="border-secondary border-opacity-50" />
+                                            <hr className="border-secondary border-opacity-50 mb-4" />
                                             <div className="d-grid mb-3">
                                                 <button
                                                     className="btn btn-light text-white font-weight-bold w-100 d-flex align-items-center justify-content-center"
