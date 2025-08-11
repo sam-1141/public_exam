@@ -32,8 +32,6 @@ const ExamMainPage = ({ exam, questions }) => {
 
     window.addEventListener("beforeunload", handleBeforeUnload)
     window.addEventListener("popstate", handlePopState)
-
-    // Push initial state
     window.history.pushState(null, "", window.location.href)
 
     return () => {
@@ -43,17 +41,10 @@ const ExamMainPage = ({ exam, questions }) => {
   }, [])
 
   const handleAnswerSelect = async (questionId, answerIndex) => {
-    // Update local state immediately
     setAnswers((prev) => ({
       ...prev,
       [questionId]: answerIndex,
     }));
-
-      console.log("Answer selected:", {
-          examId: exam.id,
-          questionId,
-          answerIndex,
-      })
 
       try {
           await axios.post(route('student.exam.answer.store'), {
@@ -67,18 +58,31 @@ const ExamMainPage = ({ exam, questions }) => {
 
   };
 
-  const handleSubmitByStudent = (submitStatus) => {
-    if (!exam) return
-    router.get(route('student.live.exam.success'), {
-      examId: exam.id,
-      submit_status: submitStatus,
-    })
+  const handleSubmitByStudent = async (submitStatus) => {
+      console.log("Submitting exam with status:", submitStatus)
+      try {
+          const response = await axios.post(route('student.live.exam.main.submit'), {
+              examId: exam.id,
+              submit_status: submitStatus,
+          });
+          console.log("Submit response:", response);
 
-    console.log("Route hitted by student", submitStatus)
+          if (response.data.type === 'success') {
+              // Redirect to success page
+              console.log(response.data.message);
+          }
+
+      } catch (error) {
+          if (error.response) {
+              // give general error message in modal (static text)
+              console.error('Error status:', error.response.status);
+              console.error('Error data:', error.response.data);
+          }
+      }
+
   }
 
   const handleSubmit = (isAuto = false) => {
-    // If a click event slipped in (onClick passed function reference), sanitize
     if (typeof isAuto !== 'boolean') {
       isAuto = false
     }
@@ -90,8 +94,16 @@ const ExamMainPage = ({ exam, questions }) => {
       auto: isAuto
     }, {
       preserveState: true,
-      onBefore: () => {
-        // Could set a submitting state here
+      onBefore: async () => {
+          const response = await axios.post(route('student.live.exam.main.submit'), {
+              examId: exam.id,
+              submit_status: 3,
+          });
+
+          if (response.data.type === 'success') {
+              // Redirect to success page (with warning message);
+              console.log(response.data.message);
+          }
       }
     })
 

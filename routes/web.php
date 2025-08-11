@@ -98,6 +98,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::controller(StudentLiveExamController::class)->group(function () {
         Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
         Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
+        Route::post('/student/live-exam/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
         Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
         Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
     });
