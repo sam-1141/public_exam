@@ -15,6 +15,9 @@ const Leaderboard = () => {
         setCurrentPage(1);
     };
 
+    // Get selected exam details
+    const selectedExamDetails = exams.find((exam) => exam.id === selectedExam);
+
     // Pagination logic
     const currentLeaderboard = selectedExam
         ? leaderboardData[selectedExam]
@@ -27,11 +30,9 @@ const Leaderboard = () => {
 
     const downloadAsCSV = () => {
         const csvUrl = "/leaderboard.xlsx";
-
         const link = document.createElement("a");
         link.href = csvUrl;
         link.download = "leaderboard.xlsx";
-
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -44,7 +45,7 @@ const Leaderboard = () => {
                     <h3 className="h3 font-semibold mb-3">
                         Course Leaderboard
                     </h3>
-                    <div className="d-flex ">
+                    <div className="d-flex">
                         <select
                             className="form-select w-75"
                             value={selectedExam}
@@ -71,36 +72,77 @@ const Leaderboard = () => {
             ) : (
                 <div className="row">
                     <div className="col-12">
-                        <div className="d-flex justify-content-end mb-3 gap-2">
-                            <button
-                                className="btn btn-success d-flex align-items-center gap-2"
-                                onClick={downloadAsCSV}
-                            >
-                                <Icon icon="vscode-icons:file-type-excel" />
-                                Export to CSV
-                            </button>
-                            {/* <button
-                                className="btn btn-primary d-flex align-items-center gap-2"
-                                onClick={downloadAsDoc}
-                            >
-                                <Icon icon="vscode-icons:file-type-word" />
-                                Export to Word
-                            </button> */}
+                        {/* Course Details Card */}
+                        <div className="card mb-4">
+                            <div className="card-body">
+                                <div className="row align-items-center">
+                                    <div className="col-md-8">
+                                        <h4 className="h5 card-title mb-1 font-semibold">
+                                            {selectedExamDetails?.name}
+                                        </h4>
+                                        <p className="card-text text-muted mb-2">
+                                            {selectedExamDetails?.description ||
+                                                "Course description not available"}
+                                        </p>
+                                        <div className="d-flex gap-4">
+                                            <div>
+                                                <span className="text-muted">
+                                                    Participants:
+                                                </span>
+                                                <span className="fw-bold ms-2">
+                                                    {currentLeaderboard.length}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span className="text-muted">
+                                                    Top Score:
+                                                </span>
+                                                <span className="fw-bold ms-2">
+                                                    {currentLeaderboard[0]
+                                                        ?.score || 0}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span className="text-muted">
+                                                    Average Score:
+                                                </span>
+                                                <span className="fw-bold ms-2">
+                                                    {Math.round(
+                                                        currentLeaderboard.reduce(
+                                                            (acc, curr) =>
+                                                                acc +
+                                                                curr.score,
+                                                            0
+                                                        ) /
+                                                            currentLeaderboard.length
+                                                    ) || 0}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-4 text-md-end mt-3 mt-md-0">
+                                        <button
+                                            className="btn btn-success d-inline-flex align-items-center gap-2"
+                                            onClick={downloadAsCSV}
+                                        >
+                                            <Icon icon="vscode-icons:file-type-excel" />
+                                            Export to CSV
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="table-responsive border rounded shadow-sm">
                             <table className="table align-middle">
                                 <thead className="table-light">
                                     <tr>
-                                        <th style={{ width: "10%" }}>Rank</th>
-                                        <th style={{ width: "25%" }}>
+                                        <th style={{ width: "15%" }}>Rank</th>
+                                        <th style={{ width: "35%" }}>
                                             Participant
                                         </th>
-                                        <th style={{ width: "25%" }}>
-                                            Institute
-                                        </th>
-                                        <th style={{ width: "10%" }}>Score</th>
-                                        <th style={{ width: "10%" }}>Time</th>
+                                        <th style={{ width: "25%" }}>Score</th>
+                                        <th style={{ width: "25%" }}>Time</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -108,22 +150,22 @@ const Leaderboard = () => {
                                         <tr
                                             key={item.id}
                                             className={`
-                                                    ${
-                                                        item.rank === 1
-                                                            ? styles.goldRow
-                                                            : ""
-                                                    }
-                                                    ${
-                                                        item.rank === 2
-                                                            ? styles.silverRow
-                                                            : ""
-                                                    }
-                                                    ${
-                                                        item.rank === 3
-                                                            ? styles.bronzeRow
-                                                            : ""
-                                                    }
-                                                `}
+                                                ${
+                                                    item.rank === 1
+                                                        ? styles.goldRow
+                                                        : ""
+                                                }
+                                                ${
+                                                    item.rank === 2
+                                                        ? styles.silverRow
+                                                        : ""
+                                                }
+                                                ${
+                                                    item.rank === 3
+                                                        ? styles.bronzeRow
+                                                        : ""
+                                                }
+                                            `}
                                         >
                                             <td>
                                                 <div className="d-flex align-items-center gap-2">
@@ -156,30 +198,15 @@ const Leaderboard = () => {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <div className="d-flex align-items-center gap-3">
-                                                    <img
-                                                        src={item.image}
-                                                        alt={item.name}
-                                                        className="rounded-circle"
-                                                        style={{
-                                                            width: "40px",
-                                                            height: "40px",
-                                                            objectFit: "cover",
-                                                        }}
-                                                    />
-                                                    <span
-                                                        className={`${
-                                                            item.rank <= 3
-                                                                ? "fw-bold"
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        {item.name}
-                                                    </span>
-                                                </div>
+                                            <td
+                                                className={`${
+                                                    item.rank <= 3
+                                                        ? "fw-bold"
+                                                        : ""
+                                                }`}
+                                            >
+                                                {item.name}
                                             </td>
-                                            <td>{item.institute}</td>
                                             <td
                                                 className={`fw-bold ${
                                                     item.rank <= 3 ? "fs-5" : ""
