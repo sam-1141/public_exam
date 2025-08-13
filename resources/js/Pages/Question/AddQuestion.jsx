@@ -8,8 +8,8 @@ function AddQuestion({ classes, subjects, chapters, errors, flash }) {
     const [selectedClass, setSelectedClass] = useState("");
     const [selectedSubject, setSelectedSubject] = useState("");
     const [selectedChapter, setSelectedChapter] = useState("");
-    const [showDetailedForm, setShowDetailedForm] = useState(false); // State to toggle visibility
-    const [showQuickForm, setShowQuickForm] = useState(false); // State for Quick Question
+    const [showDetailedForm, setShowDetailedForm] = useState(true); // State to toggle visibility
+    // const [showQuickForm, setShowQuickForm] = useState(false); // State for Quick Question
 
     const [filteredSubjects, setFilteredSubjects] = useState([]);
 
@@ -47,22 +47,23 @@ function AddQuestion({ classes, subjects, chapters, errors, flash }) {
     return (
         <>
             <ToastContainer />
+            <h4 className="h3 font-semibold mb-4">Add Question</h4>
             <div className="card">
                 <div className="card-body">
                     <div className="row mt-3">
                         <div className="col-12 text-center">
                             {/* Detailed Question Button */}
-                            <button
+                            {/* <button
                                 className="btn btn-primary me-3"
                                 onClick={() => {
                                     setShowDetailedForm(true);
-                                    setShowQuickForm(false);
+                                    // setShowQuickForm(false);
                                 }}
                             >
                                 Detailed Question
-                            </button>
+                            </button> */}
                             {/* Quick Question Button */}
-                            <button
+                            {/* <button
                                 className="btn btn-secondary"
                                 onClick={() => {
                                     setShowQuickForm(true);
@@ -70,97 +71,14 @@ function AddQuestion({ classes, subjects, chapters, errors, flash }) {
                                 }}
                             >
                                 Quick Question
-                            </button>
+                            </button> */}
                         </div>
                     </div>
-
-                    {/* Show form for Quick Question */}
-                    {showQuickForm && (
-                        <>
-                            <div className="row mt-4">
-                                {/* Class Dropdown */}
-                                <div className="col-md-6 col-sm-6 col-12 mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="classSelectQuick"
-                                    >
-                                        Class
-                                    </label>
-                                    <select
-                                        className="form-select"
-                                        id="classSelectQuick"
-                                        value={selectedClass}
-                                        onChange={(e) =>
-                                            setSelectedClass(e.target.value)
-                                        }
-                                    >
-                                        <option value="">Select Class</option>
-                                        {classes.map((cls) => (
-                                            <option
-                                                key={cls.id}
-                                                value={cls.id}
-                                            >
-                                                {cls.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Subject Dropdown */}
-                                <div className="col-md-6 col-sm-6 col-12 mb-3">
-                                    <label
-                                        className="form-label"
-                                        htmlFor="subjectSelectQuick"
-                                    >
-                                        Subject
-                                    </label>
-                                    <select
-                                        className="form-select"
-                                        id="subjectSelectQuick"
-                                        value={selectedSubject}
-                                        onChange={(e) =>
-                                            setSelectedSubject(e.target.value)
-                                        }
-                                        disabled={!selectedClass}
-                                    >
-                                        <option value="">Select Subject</option>
-                                        {filteredSubjects.map((subject) => (
-                                            <option
-                                                key={subject.id}
-                                                value={subject.id}
-                                            >
-                                                {subject.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="row mt-3">
-                                <div className="col-12 text-center">
-                                    <Link
-                                        href={route("page.quick.question", {
-                                            class: selectedClass,
-                                            subject: selectedSubject,
-                                        })}
-                                    >
-                                        <button
-                                            className="btn btn-success"
-                                            disabled={!selectedClass || !selectedSubject}
-                                        >
-                                            Proceed to Quick Question
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </>
-                    )}
 
                     {/* Show form for Detailed Question */}
                     {showDetailedForm && (
                         <>
-                            <div className="row mt-4">
+                            <div className="row mt-2">
                                 {/* Class Dropdown */}
                                 <div className="col-md-4 col-sm-6 col-12 mb-3">
                                     <label
@@ -179,10 +97,7 @@ function AddQuestion({ classes, subjects, chapters, errors, flash }) {
                                     >
                                         <option value="">Select Class</option>
                                         {classes.map((cls) => (
-                                            <option
-                                                key={cls.id}
-                                                value={cls.id}
-                                            >
+                                            <option key={cls.id} value={cls.id}>
                                                 {cls.name}
                                             </option>
                                         ))}
@@ -266,7 +181,7 @@ function AddQuestion({ classes, subjects, chapters, errors, flash }) {
                                                 !selectedChapter
                                             }
                                         >
-                                            Proceed to Detailed Question
+                                            Proceed to Add Question
                                         </button>
                                     </Link>
                                 </div>
