@@ -152,22 +152,32 @@ const QuestionList = ({ questions }) => {
                                                     key={index}
                                                     className={`list-group-item ${
                                                         option.ans
-                                                            ? "bg-success bg-opacity-10"
-                                                            : ""
+                                                            ? "border-2 border-success"
+                                                            : "border-1"
                                                     }`}
                                                 >
                                                     <div className="flex items-center">
                                                         <span className="font-medium me-2">
                                                             Option {index + 1}:
                                                         </span>
-                                                        <div
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: option.option,
-                                                            }}
-                                                        />
+                                                        {option.option.startsWith(
+                                                            "<img"
+                                                        ) ? (
+                                                            <div
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: option.option,
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <div
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: option.option,
+                                                                }}
+                                                            />
+                                                        )}
                                                         {option.ans && (
-                                                            <span className="ms-auto badge bg-success">
-                                                                Correct Answer
+                                                            <span className="ms-auto badge bg-success text-white">
+                                                                Correct
                                                             </span>
                                                         )}
                                                     </div>

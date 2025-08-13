@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
-import {route} from "ziggy-js";
+import { route } from "ziggy-js";
 
 const AddQuestionModal = ({ show, onClose, examId }) => {
+    const [noCorrectAnswerError, setNoCorrectAnswerError] = useState(false);
     const { data, setData, post, processing, errors } = useForm({
         examId,
         question: "",
@@ -16,9 +17,18 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
         explanation: "",
     });
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Check if at least one option is marked as correct
+        const hasCorrectAnswer = data.options.some((option) => option.ans);
+
+        if (!hasCorrectAnswer) {
+            setNoCorrectAnswerError(true);
+            return;
+        }
+
+        setNoCorrectAnswerError(false);
+
         post(route("admin.exam.questions.store"), {
             onSuccess: () => {
                 setData({
@@ -36,8 +46,6 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
             },
         });
     };
-
-
 
     // Handle option text change
     const handleOptionTextChange = (index, value) => {
@@ -132,7 +140,7 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
                                                 className={`flex items-start gap-4 p-3 rounded-lg border ${
                                                     errors[
                                                         `option_${index + 1}`
-                                                        ]
+                                                    ]
                                                         ? "border-danger"
                                                         : "border-gray-200"
                                                 } ${
@@ -209,13 +217,21 @@ const AddQuestionModal = ({ show, onClose, examId }) => {
                                                             `option_${
                                                                 index + 1
                                                             }`
-                                                            ]
+                                                        ]
                                                     }
                                                 </p>
                                             )}
                                         </div>
                                     ))}
                                 </div>
+
+                                {noCorrectAnswerError && (
+                                    <div className="alert alert-danger mb-3">
+                                        <i className="fas fa-exclamation-circle me-2"></i>
+                                        Please select at least one correct
+                                        answer!
+                                    </div>
+                                )}
 
                                 <div className="mt-3 text-sm text-gray-500">
                                     <i className="fas fa-info-circle me-1"></i>
