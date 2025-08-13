@@ -44,11 +44,26 @@ function AdminDashboard() {
             );
     }, []);
 
+    console.log({
+        liveExams,
+        practiceExams,
+    });
+
     // Show only 5 items initially, or all if showAll is true
     const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
     const displayedPracticeExams = showAllPractice
         ? practiceExams
         : practiceExams.slice(0, 5);
+
+    const totalQuestions =
+        displayedLiveExams.reduce(
+            (acc, exam) => acc + exam?.totalQuestions || 0,
+            0
+        ) +
+        displayedPracticeExams.reduce(
+            (acc, exam) => acc + exam?.totalQuestions || 0,
+            0
+        );
 
     return (
         <div className="container-fluid py-4">
@@ -65,12 +80,12 @@ function AdminDashboard() {
                     <div className="card card-statistic bg-primary text-white">
                         <div className="card-body">
                             <h5 className="card-title">Total Questions</h5>
-                            <h2 className="mb-0">12,450</h2>
+                            <h2 className="mb-0">{totalQuestions}</h2>
                         </div>
                     </div>
                 </div>
 
-                <div className="col-lg-3 col-md-6 ">
+                {/* <div className="col-lg-3 col-md-6 ">
                     <div className="card card-statistic bg-success text-white">
                         <div className="card-body">
                             <h5 className="card-title">Total Exams</h5>
@@ -79,44 +94,7 @@ function AdminDashboard() {
                             </h2>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Quick Actions Row */}
-            <div className="row mb-4">
-                <div className="col-12">
-                    <h4 className="mb-3 text-xl font-semibold">
-                        Quick Actions
-                    </h4>
-                </div>
-
-                <div className="col-md-3 col-sm-6 ">
-                    <Link
-                        href="/add-questions"
-                        className="card quick-action-card"
-                    >
-                        <div className="card-body text-center">
-                            <div className="action-icon mb-2">
-                                <i className="fas fa-plus-circle text-primary"></i>
-                            </div>
-                            <h6 className="mb-0">Add New Question</h6>
-                        </div>
-                    </Link>
-                </div>
-
-                <div className="col-md-3 col-sm-6">
-                    <Link
-                        href="/admin/add-exam/live-exam"
-                        className="card quick-action-card"
-                    >
-                        <div className="card-body text-center">
-                            <div className="action-icon mb-2">
-                                <i className="fas fa-file-alt text-success"></i>
-                            </div>
-                            <h6 className="mb-0">Create Exam</h6>
-                        </div>
-                    </Link>
-                </div>
+                </div> */}
             </div>
 
             {/* Exams Section */}

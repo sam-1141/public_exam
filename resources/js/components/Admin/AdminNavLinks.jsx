@@ -1,30 +1,17 @@
 import { Link } from "@inertiajs/react";
-import React, { useState } from "react";
+import React from "react";
 import { route } from "ziggy-js";
 import "./admin.css";
 import {
-  LayoutDashboard,
-  ShieldCheck,
-  Users,
-  GraduationCap,
-  FilePlus,
-  BookOpenCheck,
-  Library,
-  Trophy,
-  CalendarClock ,
-  ClipboardCheck,
-  ClipboardPlus,
-  History,
-  ChevronDown ,
-    ChevronUp
+    LayoutDashboard,
+    FilePlus,
+    BookOpenCheck,
+    Library,
+    Trophy,
+    ClipboardPlus,
 } from "lucide-react";
 
 function AdminNavLinks() {
-    const [openDropdown, setOpenDropdown] = useState(null);
-
-    const toggleDropdown = (menu) => {
-        setOpenDropdown(openDropdown === menu ? null : menu);
-    };
     return (
         <>
             <ul
@@ -46,7 +33,7 @@ function AdminNavLinks() {
                     <li className="pc-item">
                         <Link href={route("dashboard")} className="pc-link">
                             <span className="pc-micon">
-                                <LayoutDashboard size={18}/>
+                                <LayoutDashboard size={18} />
                             </span>
                             <span className="pc-mtext" data-i18n="Dashboard">
                                 Dashboard
@@ -54,162 +41,11 @@ function AdminNavLinks() {
                         </Link>
                     </li>
 
-                    {/* Admins Dropdown */}
-                    <li
-                        className={`pc-item pc-hasmenu ${
-                            openDropdown === "admin" ? "active" : ""
-                        }`}
-                    >
-                        <a
-                            href="#"
-                            className="pc-link"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                toggleDropdown("admin");
-                            }}
-                        >
-                            <span className="pc-micon">
-                                <ShieldCheck size={18}/>
-                            </span>
-                            <span className="pc-mtext">Admins</span>
-                            <span className="pc-arrow">
-                                {openDropdown === "admin" ? (
-                                    <ChevronUp size={18} />
-                                    ) : (
-                                    <ChevronDown size={18} />
-                                )}
-                            </span>
-                        </a>
-                        <ul
-                            className="pc-submenu"
-                            style={{
-                                display:
-                                    openDropdown === "admin" ? "block" : "none",
-                            }}
-                        >
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">Add Admin</span>
-                                </Link>
-                            </li>
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">
-                                        Manage Admins
-                                    </span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-
-                    {/* Teachers Dropdown */}
-                    <li
-                        className={`pc-item pc-hasmenu ${
-                            openDropdown === "teacher" ? "active" : ""
-                        }`}
-                    >
-                        <a
-                            href="#"
-                            className="pc-link"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                toggleDropdown("teacher");
-                            }}
-                        >
-                            <span className="pc-micon">
-                                <Users size={18}/>
-                            </span>
-                            <span className="pc-mtext">Teachers</span>
-                            <span className="pc-arrow">
-                                {openDropdown === "teacher" ? (
-                                    <ChevronUp size={18} />
-                                    ) : (
-                                    <ChevronDown size={18} />
-                                )}
-                            </span>
-                        </a>
-                        <ul
-                            className="pc-submenu"
-                            style={{
-                                display:
-                                    openDropdown === "teacher"
-                                        ? "block"
-                                        : "none",
-                            }}
-                        >
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">
-                                        Add Teacher
-                                    </span>
-                                </Link>
-                            </li>
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">
-                                        Manage Teachers
-                                    </span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-                    {/* Students Dropdown */}
-                    <li
-                        className={`pc-item pc-hasmenu ${
-                            openDropdown === "student" ? "active" : ""
-                        }`}
-                    >
-                        <a
-                            href="#"
-                            className="pc-link"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                toggleDropdown("student");
-                            }}
-                        >
-                            <span className="pc-micon">
-                                <GraduationCap size={18}/>
-                            </span>
-                            <span className="pc-mtext">Students</span>
-                            <span className="pc-arrow">
-                                {openDropdown === "student" ? (
-                                    <ChevronUp size={18} />
-                                    ) : (
-                                    <ChevronDown size={18} />
-                                )}
-                            </span>
-                        </a>
-                        <ul
-                            className="pc-submenu"
-                            style={{
-                                display:
-                                    openDropdown === "student"
-                                        ? "block"
-                                        : "none",
-                            }}
-                        >
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">
-                                        Add Student
-                                    </span>
-                                </Link>
-                            </li>
-                            <li className="pc-item">
-                                <Link href="#" className="pc-link">
-                                    <span className="pc-mtext">
-                                        Manage Students
-                                    </span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </li>
-
                     {/* Existing Pages Links */}
                     <li className="pc-item">
                         <Link href={route("add.questions")} className="pc-link">
                             <span className="pc-micon">
-                                <FilePlus size={18}/>
+                                <FilePlus size={18} />
                             </span>
                             <span className="pc-mtext" data-i18n="Add Question">
                                 Add Question
@@ -222,7 +58,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <ClipboardPlus size={18}/>
+                                <ClipboardPlus size={18} />
                             </span>
                             <span className="pc-mtext" data-i18n="Add Question">
                                 Add Exam
@@ -232,7 +68,7 @@ function AdminNavLinks() {
                     <li className="pc-item">
                         <Link href={route("mcq.bank")} className="pc-link">
                             <span className="pc-micon">
-                                <BookOpenCheck  size={18}/>
+                                <BookOpenCheck size={18} />
                             </span>
                             <span
                                 className="pc-mtext"
@@ -248,7 +84,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <Library  size={18}/>
+                                <Library size={18} />
                             </span>
                             <span
                                 className="pc-mtext"
@@ -264,7 +100,7 @@ function AdminNavLinks() {
                             className="pc-link"
                         >
                             <span className="pc-micon">
-                                <Trophy size={18}/>
+                                <Trophy size={18} />
                             </span>
                             <span
                                 className="pc-mtext"
@@ -274,128 +110,6 @@ function AdminNavLinks() {
                             </span>
                         </Link>
                     </li>
-                    {/* Students */}
-                    {/*<li className="pc-item pc-caption">*/}
-                    {/*    <label data-i18n="Navigation">Student</label>*/}
-                    {/*</li>*/}
-                    {/*<section className="font-baloo">*/}
-                    {/*    <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.dashboard")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <LayoutDashboard size={18}/>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                স্টুডেন্ট ড্যাশবোর্ড*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li>*/}
-                    {/*    <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.live.exam.list")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <CalendarClock size={18}/>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                লাইভ পরীক্ষা*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li>*/}
-                    {/*    <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.practice.exam.list")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <ClipboardCheck size={18}/>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                প্র্যাকটিস পরীক্ষা*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li>*/}
-                    {/*    /!* <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.trial.exam")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <i className="material-icons-two-tone">*/}
-                    {/*                    assignment*/}
-                    {/*                </i>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                ট্রায়াল পরীক্ষা*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li> *!/*/}
-                    {/*    /!* <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.archive.exam")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <i className="material-icons-two-tone">*/}
-                    {/*                    archive*/}
-                    {/*                </i>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                আর্কাইভ*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li> *!/*/}
-                    {/*    <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.leaderboard")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <Trophy size={18}/>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                লিডারবোর্ড*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li>*/}
-                    {/*    <li className="pc-item">*/}
-                    {/*        <Link*/}
-                    {/*            href={route("student.history")}*/}
-                    {/*            className="pc-link"*/}
-                    {/*        >*/}
-                    {/*            <span className="pc-micon">*/}
-                    {/*                <History size={18}/>*/}
-                    {/*            </span>*/}
-                    {/*            <span*/}
-                    {/*                className="pc-mtext"*/}
-                    {/*                data-i18n="Question Bank"*/}
-                    {/*            >*/}
-                    {/*                হিস্ট্রি*/}
-                    {/*            </span>*/}
-                    {/*        </Link>*/}
-                    {/*    </li>*/}
-                    {/*</section>*/}
                 </li>
             </ul>
         </>

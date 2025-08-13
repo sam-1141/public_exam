@@ -134,6 +134,11 @@ function Navbar() {
                                         </h6>
                                         <small className="h6 font-normal">
                                             {role}
+                                            {role === "student" && (
+                                                <span className="ms-1">
+                                                    ID: {auth?.user?.id}
+                                                </span>
+                                            )}
                                         </small>
                                     </div>
                                 </div>
