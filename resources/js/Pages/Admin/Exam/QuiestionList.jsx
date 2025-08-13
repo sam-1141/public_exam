@@ -112,6 +112,17 @@ const QuestionList = ({ questions }) => {
                                             </h4>
                                             <div className="flex space-x-2 gap-2">
                                                 <button
+                                                    // onClick={() =>
+                                                    //     handleDelete(
+                                                    //         question.id
+                                                    //     )
+                                                    // }
+                                                    className="btn btn-sm btn-outline-warning"
+                                                >
+                                                    <i className="fas fa-pen me-1"></i>{" "}
+                                                    Edit
+                                                </button>
+                                                <button
                                                     onClick={() =>
                                                         handleDelete(
                                                             question.id
