@@ -30,3 +30,48 @@ body.modal-open .pc-sidebar {
     top: 0;
     z-index: 1050; /* higher than Bootstrap default 1020 */
 }
+
+.accordion-item {
+    transition: transform 0.2s ease;
+}
+@media (max-width: 768px) {
+    .drag-handle {
+        padding: 12px;
+    }
+}
+
+/* question re-order */
+/* Fix for modal positioning */
+.fixed {
+    position: fixed;
+}
+
+/* Ensure modal appears above everything */
+.z-\[1000\] {
+    z-index: 1000;
+}
+
+/* Fix for modal container sizing */
+.max-h-\[calc\(100vh-4rem\)\] {
+    max-height: calc(100vh - 4rem);
+}
+
+/* Sticky header and footer */
+.sticky {
+    position: sticky;
+}
+
+/* Ensure modal is properly centered */
+.flex.items-center.justify-center {
+    align-items: center;
+    justify-content: center;
+}
+
+/* Scrollbar styling for modal content */
+.overflow-y-auto::-webkit-scrollbar {
+    width: 6px;
+}
+.overflow-y-auto::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1;
+    border-radius: 3px;
+}

@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import QuestionReorderModal from "./QuestionReorderModal";
 
-const QuestionList = ({ questions }) => {
+const QuestionList = ({ questions: initialQuestions }) => {
     const [expandedQuestion, setExpandedQuestion] = useState(null);
+    const [questions, setQuestions] = useState(initialQuestions);
+    const [showReorderModal, setShowReorderModal] = useState(false);
 
-    useEffect(() => {
-        // console.log("Exam Details:", questions);
-    }, [questions]);
+    const handleSaveOrder = async (reorderedQuestions) => {
+        setQuestions(reorderedQuestions);
+        setShowReorderModal(false);
+        try {
+            const orderedIds = reorderedQuestions.map((q) => q.id);
+
+            console.log("Order saved successfully!", orderedIds);
+
+            alert("Order saved successfully!");
+        } catch (error) {
+            alert("Failed to save order");
+            console.error("Error saving order:", error);
+        }
+    };
 
     const handleDelete = async (questionId) => {
         if (confirm("Are you sure you want to delete this question?")) {
@@ -46,9 +61,20 @@ const QuestionList = ({ questions }) => {
 
     return (
         <div className="mt-4">
-            <h3 className="text-xl font-semibold mb-3 text-center">
-                Questions ({questions.length})
-            </h3>
+            <div className="flex justify-between items-center mb-3">
+                <h3 className="text-xl font-semibold text-center">
+                    Questions ({questions.length})
+                </h3>
+                <button
+                    onClick={() => {
+                        console.log("Button clicked");
+                        setShowReorderModal(true);
+                    }}
+                    className="btn btn-sm btn-outline-primary"
+                >
+                    Reorder Questions
+                </button>
+            </div>
 
             <div className="accordion" id="questionsAccordion">
                 {questions.map((question, index) => {
@@ -216,6 +242,14 @@ const QuestionList = ({ questions }) => {
                     );
                 })}
             </div>
+
+            {showReorderModal && (
+                <QuestionReorderModal
+                    questions={questions}
+                    onClose={() => setShowReorderModal(false)}
+                    onSave={handleSaveOrder}
+                />
+            )}
         </div>
     );
 };
