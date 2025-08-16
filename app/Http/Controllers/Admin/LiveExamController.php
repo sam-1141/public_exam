@@ -36,7 +36,28 @@ class LiveExamController extends Controller
 
     public function loadViewExamDetails($type, $examSlug)
     {
+//        dd($type, $examSlug);
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
+
+        $courseExam = DB::table('course_exam')
+            ->where('exam_id', $exam->id)
+            ->pluck('course_id')
+            ->toArray();
+
+        $courseInfo = DB::connection('Webapp')
+            ->table('courses')
+            ->whereIn('id', $courseExam)
+            ->get('course_name');
+
+        $examSubject = DB::table('exam_subject')
+            ->where('exam_id', $exam->id)
+            ->pluck('subject_id')
+            ->toArray();
+
+        $subjectInfo = DB::connection('CoreDB')
+            ->table('subjects')
+            ->whereIn('id', $examSubject)
+            ->get('name');
 
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
@@ -44,10 +65,13 @@ class LiveExamController extends Controller
             ->select('questions.*')
             ->get();
 
+
         return Inertia::render('Admin/Exam/ViewDetails', [
             'exam' => [
                 'id' => $exam->id,
                 'name' => $exam->name,
+                'courseInfo' => $courseInfo,
+                'subjectInfo' => $subjectInfo,
                 'slug' => $exam->slug,
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
@@ -60,6 +84,7 @@ class LiveExamController extends Controller
                 'publishInstant' => $exam->publish,
                 'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                 'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
+                'resultPublishTime' => optional($exam->result_publish_time)->format('Y-m-d H:i'),
                 'examUrl' => $exam->exam_url,
                 'exam_type' => $exam->exam_type,
             ],
@@ -142,27 +167,31 @@ class LiveExamController extends Controller
 
     public function showAllExam()
     {
-        $exams = LiveExam::orderBy('created_at', 'desc')->where('exam_type', 0)->get()->map(function ($exam) {
-            return [
-                'id' => $exam->id,
-                'name' => $exam->name,
-                'slug' => $exam->slug,
-                'description' => $exam->description,
-                'totalQuestions' => $exam->total_questions,
-                'hasNegativeMarks' => $exam->has_negative_marks, // boolean
-                'negativeMarksValue' => $exam->negative_marks_value,
-                'totalMarks' => $exam->total_marks,
-                'duration' => $exam->duration,
-                'questionType' => $exam->question_type,
-                'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish,
-                'startTime' => $exam->start_time ? $exam->start_time->format('Y-m-d H:i') : null,
-                'endTime' => $exam->end_time ? $exam->end_time->format('Y-m-d H:i') : null,
-                'examUrl' => $exam->exam_url,
-                'status' => $exam->status,
-                'exam_type' => $exam->exam_type,
-            ];
-        });
+
+        $exams = LiveExam::where('exam_type', 0)
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->through(function ($exam) {
+                return [
+                    'id' => $exam->id,
+                    'name' => $exam->name,
+                    'slug' => $exam->slug,
+                    'description' => $exam->description,
+                    'totalQuestions' => $exam->total_questions,
+                    'hasNegativeMarks' => $exam->has_negative_marks,
+                    'negativeMarksValue' => $exam->negative_marks_value,
+                    'totalMarks' => $exam->total_marks,
+                    'duration' => $exam->duration,
+                    'questionType' => $exam->question_type,
+                    'privacy' => $exam->privacy,
+                    'publishInstant' => $exam->publish,
+                    'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
+                    'endTime'   => optional($exam->end_time)->format('Y-m-d H:i'),
+                    'examUrl' => $exam->exam_url,
+                    'status'  => $exam->status,
+                    'exam_type' => $exam->exam_type,
+                ];
+            });
 
         return response()->json(['exams' => $exams], 200);
     }

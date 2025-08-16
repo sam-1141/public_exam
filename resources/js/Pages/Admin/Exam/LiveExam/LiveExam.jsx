@@ -20,15 +20,12 @@ const LiveExam = ({ courses, subjects }) => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
 
-    useEffect(() => {
-        // console.log("Courses:", courses);
-        // console.log("subjects:", subjects);
-    }, []);
-
-    useEffect(() => {
+    const fetchExams = (url = null) => {
         setLoading(true);
+        const requestUrl = url ?? route("show.exam.list");
+
         axios
-            .get(route("show.exam.list"))
+            .get(requestUrl)
             .then((res) => {
                 setExams(res.data.exams || []);
             })
@@ -37,7 +34,16 @@ const LiveExam = ({ courses, subjects }) => {
                 setExams([]);
             })
             .finally(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        fetchExams();
     }, [refresh]);
+
+    const handlePageChange = (url) => {
+        if (!url) return;
+        fetchExams(url);
+    };
 
     const onClose = () => {
         setEditExamSlug(null);
@@ -113,7 +119,7 @@ const LiveExam = ({ courses, subjects }) => {
             ) : (
                 <>
                     <div className="row">
-                        {exams.map((exam) => (
+                        {exams?.data?.map((exam) => (
                             <ExamCard
                                 key={exam.id}
                                 exam={exam}
@@ -123,7 +129,7 @@ const LiveExam = ({ courses, subjects }) => {
                         ))}
                     </div>
 
-                    {exams.length === 0 && (
+                    {exams?.data?.length === 0 && (
                         <div className="text-center py-3">
                             <div className="mb-3">
                                 <i className="fas fa-calendar-times fa-3x text-muted"></i>
@@ -141,6 +147,41 @@ const LiveExam = ({ courses, subjects }) => {
                             </Link>
                         </div>
                     )}
+
+                    <div>
+                        {exams.links.length > 0 && (
+                            <nav className="d-flex justify-content-center mt-4">
+                                <ul className="pagination">
+                                    {exams.links.length > 0 && (
+                                        <nav className="d-flex justify-content-center mt-4">
+                                            <ul className="pagination">
+                                                {exams.links.map((link, i) => (
+                                                    <li
+                                                        key={i}
+                                                        className={`page-item ${link.active ? "active" : ""} ${!link.url ? "disabled" : ""}`}
+                                                    >
+                                                        {link.url ? (
+                                                            <button
+                                                                className="page-link"
+                                                                onClick={() => handlePageChange(link.url)}
+                                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                                            />
+                                                        ) : (
+                                                            <span
+                                                                className="page-link"
+                                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                                            />
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </nav>
+                                    )}
+
+                                </ul>
+                            </nav>
+                        )}
+                    </div>
                 </>
             )}
 

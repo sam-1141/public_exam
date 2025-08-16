@@ -52,6 +52,7 @@ class StudentLiveExamController extends Controller
             'exam_type' => false,
             'exam_start_time' => $exam->start_time,
             'exam_end_time' => $exam->end_time,
+            'result_publish_time' => $exam->result_publish_time,
             'student_exam_start_time' => now(),
             'student_exam_end_time' => now()->addMinutes($exam->duration),
             'submit_time' => null,
