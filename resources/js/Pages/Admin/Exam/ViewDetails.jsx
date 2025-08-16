@@ -92,9 +92,9 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.courses
-                                            ? exam.courses
-                                                  .map((c) => c.name)
+                                        {exam.courseInfo
+                                            ? exam?.courseInfo
+                                                  .map((c) => c.course_name)
                                                   .join(", ")
                                             : "No Course"}
                                     </small>
@@ -112,8 +112,10 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.subject
-                                            ? exam.subject.name
+                                        {exam.subjectInfo
+                                            ? exam?.subjectInfo
+                                                .map((subject) => subject.name)
+                                                .join(", ")
                                             : "No Subject"}
                                     </small>
                                 </div>
