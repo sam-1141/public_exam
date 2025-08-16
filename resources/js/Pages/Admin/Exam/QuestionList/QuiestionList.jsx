@@ -64,15 +64,17 @@ const QuestionList = ({ questions: initialQuestions }) => {
                 <h3 className="text-xl font-semibold text-center">
                     Questions ({questions.length})
                 </h3>
-                <button
-                    onClick={() => {
-                        console.log("Button clicked");
-                        setShowReorderModal(true);
-                    }}
-                    className="btn btn-sm btn-outline-primary"
-                >
-                    Reorder Questions
-                </button>
+                {questions.length > 0 && (
+                    <button
+                        onClick={() => {
+                            console.log("Button clicked");
+                            setShowReorderModal(true);
+                        }}
+                        className="btn btn-sm btn-outline-primary"
+                    >
+                        Reorder Questions
+                    </button>
+                )}
             </div>
 
             <div className="accordion" id="questionsAccordion">
