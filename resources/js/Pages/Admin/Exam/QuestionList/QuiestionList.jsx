@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import QuestionReorderModal from "./QuestionReorderModal";
 
 const QuestionList = ({ questions: initialQuestions }) => {
@@ -72,6 +71,7 @@ const QuestionList = ({ questions: initialQuestions }) => {
                     }}
                     className="btn btn-sm btn-outline-primary"
                 >
+                    <i className="fas fa-arrows-alt me-1"></i>
                     Reorder Questions
                 </button>
             </div>
@@ -108,11 +108,11 @@ const QuestionList = ({ questions: initialQuestions }) => {
                                                 <div className="truncate">
                                                     ${question.question.substring(
                                                         0,
-                                                        50
+                                                        80
                                                     )}
                                                     ${
                                                         question.question
-                                                            .length > 50
+                                                            .length > 80
                                                             ? "..."
                                                             : ""
                                                     }

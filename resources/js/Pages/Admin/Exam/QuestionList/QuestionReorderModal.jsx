@@ -1,32 +1,56 @@
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
 import { useState } from "react";
 
 const QuestionReorderModal = ({ questions, onClose, onSave }) => {
     const [localQuestions, setLocalQuestions] = useState([...questions]);
+    // Track which item is currently being dragged
+    const [activeId, setActiveId] = useState(null);
 
-    const onDragEnd = (result) => {
-        if (!result.destination) return;
+    // Configure sensors for drag interactions
+    // PointerSensor: handles mouse/touch drag events
+    // KeyboardSensor: enables keyboard accessibility for screen readers
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor)
+    );
 
-        const items = Array.from(localQuestions);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        setLocalQuestions(items);
+    const handleDragStart = (event) => {
+        // Store the ID of the item being dragged
+        setActiveId(event.active.id);
     };
 
-    const handlePositionChange = (questionId, newPosition) => {
-        if (newPosition < 1 || newPosition > localQuestions.length) return;
+    // Called when drag operation ends (item is dropped)
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        // Reset the active drag state
+        setActiveId(null);
 
-        const items = [...localQuestions];
-        const currentIndex = items.findIndex((q) => q.id === questionId);
+        // Only proceed if dropped on a different item
+        if (active.id !== over?.id) {
+            setLocalQuestions((items) => {
+                // Find the current positions of dragged and target items
+                const oldIndex = items.findIndex(
+                    (item) => item.id === active.id
+                );
+                const newIndex = items.findIndex((item) => item.id === over.id);
 
-        // Remove the item from its current position
-        const [movedItem] = items.splice(currentIndex, 1);
+                // Create new array with moved item
+                const newItems = [...items];
+                // Remove the dragged item from its current position
+                const [movedItem] = newItems.splice(oldIndex, 1);
+                // Insert the dragged item at its new position
+                newItems.splice(newIndex, 0, movedItem);
 
-        // Insert at new position (adjusting for 0-based index)
-        items.splice(newPosition - 1, 0, movedItem);
-
-        // Update the state with the new order
-        setLocalQuestions(items);
+                return newItems;
+            });
+        }
     };
 
     return (
@@ -76,144 +100,131 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
 
                     <div
                         className="modal-body p-0"
-                        style={{
-                            flex: 1,
-                            overflowY: "auto",
-                            position: "relative",
-                        }}
+                        style={{ flex: 1, overflowY: "auto" }}
                     >
-                        <DragDropContext onDragEnd={onDragEnd}>
-                            <Droppable droppableId="questions">
-                                {(provided) => (
-                                    <div
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
-                                        className="list-group list-group-flush"
-                                        style={{ minHeight: "100%" }}
-                                    >
-                                        {localQuestions.map(
-                                            (question, index) => (
-                                                <Draggable
-                                                    key={question.id}
-                                                    draggableId={String(
-                                                        question.id
-                                                    )}
-                                                    index={index}
-                                                >
-                                                    {(provided) => (
-                                                        <div
-                                                            ref={
-                                                                provided.innerRef
-                                                            }
-                                                            {...provided.draggableProps}
-                                                            className="list-group-item"
-                                                        >
-                                                            <div className="d-flex align-items-center gap-3">
-                                                                <div
-                                                                    {...provided.dragHandleProps}
-                                                                    className="cursor-move text-muted"
-                                                                >
-                                                                    <i className="fas fa-grip-vertical fs-5"></i>
-                                                                </div>
+                        <div className="p-3 border-bottom">
+                            <div className="alert alert-info py-2 mb-0">
+                                <i className="fas fa-arrows-alt me-2"></i>
+                                Drag questions up or down to reorder them
+                            </div>
+                        </div>
 
-                                                                <div className="flex-grow-1">
-                                                                    <div className="fw-medium">
-                                                                        Q
-                                                                        {index +
-                                                                            1}
-                                                                        :
-                                                                    </div>
-                                                                    <div
-                                                                        className="text-muted mt-1"
-                                                                        dangerouslySetInnerHTML={{
-                                                                            __html:
-                                                                                question
-                                                                                    .question
-                                                                                    .length >
-                                                                                60
-                                                                                    ? `${question.question.substring(
-                                                                                          0,
-                                                                                          60
-                                                                                      )}...`
-                                                                                    : question.question,
-                                                                        }}
-                                                                    />
-                                                                    {question.question_image && (
-                                                                        <div className="mt-2">
-                                                                            <img
-                                                                                src={`/storage/${question.question_image}`}
-                                                                                alt="Question"
-                                                                                className="img-thumbnail"
-                                                                                style={{
-                                                                                    maxWidth:
-                                                                                        "120px",
-                                                                                    maxHeight:
-                                                                                        "80px",
-                                                                                    objectFit:
-                                                                                        "contain",
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    )}
-                                                                </div>
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
+                        >
+                            {localQuestions.map((question, index) => (
+                                <div
+                                    key={question.id}
+                                    id={question.id}
+                                    draggable
+                                    onDragStart={(e) => {
+                                        e.dataTransfer.setData(
+                                            "text/plain",
+                                            question.id
+                                        );
+                                        setActiveId(question.id);
+                                    }}
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                    }}
+                                    // Get the ID of the dragged item
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const draggedId =
+                                            e.dataTransfer.getData(
+                                                "text/plain"
+                                            );
+                                        // Only proceed if dropping on a different item
+                                        if (
+                                            draggedId &&
+                                            draggedId !== question.id
+                                        ) {
+                                            // Find indices of dragged and target items
+                                            const draggedIndex =
+                                                localQuestions.findIndex(
+                                                    (q) => q.id == draggedId
+                                                );
+                                            const targetIndex = index;
 
-                                                                {/* <div className="d-flex align-items-center gap-2">
-                                                                    <span className="text-muted">
-                                                                        Position:
-                                                                    </span>
-                                                                    <input
-                                                                        type="number"
-                                                                        min="1"
-                                                                        max={
-                                                                            localQuestions.length
-                                                                        }
-                                                                        value={
-                                                                            index +
-                                                                            1
-                                                                        }
-                                                                        onChange={(
-                                                                            e
-                                                                        ) => {
-                                                                            const newPos =
-                                                                                parseInt(
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                );
-                                                                            if (
-                                                                                !isNaN(
-                                                                                    newPos
-                                                                                )
-                                                                            ) {
-                                                                                handlePositionChange(
-                                                                                    question.id,
-                                                                                    newPos
-                                                                                );
-                                                                            }
-                                                                        }}
-                                                                        className="form-control form-control-sm"
-                                                                        style={{
-                                                                            width: "70px",
-                                                                        }}
-                                                                    />
-                                                                </div> */}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            )
-                                        )}
-                                        {provided.placeholder}
+                                            if (draggedIndex !== -1) {
+                                                // Reorder the questions array
+                                                const newQuestions = [
+                                                    ...localQuestions,
+                                                ];
+                                                const [movedQuestion] =
+                                                    newQuestions.splice(
+                                                        draggedIndex,
+                                                        1
+                                                    );
+                                                newQuestions.splice(
+                                                    targetIndex,
+                                                    0,
+                                                    movedQuestion
+                                                );
+                                                setLocalQuestions(newQuestions);
+                                            }
+                                        }
+                                        setActiveId(null);
+                                    }}
+                                    // make dragged item semi-transparent
+                                    style={{
+                                        opacity:
+                                            activeId === question.id ? 0.5 : 1,
+                                        cursor: "move",
+                                    }}
+                                >
+                                    <div className="d-flex align-items-center gap-3 p-3 border-bottom">
+                                        {/* Drag handle icon */}
+                                        <div className="cursor-move">
+                                            <i className="fas fa-grip-vertical text-muted"></i>
+                                        </div>
+
+                                        <div className="text-muted px-2">
+                                            Q{index + 1}
+                                        </div>
+
+                                        <div className="flex-grow-1">
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html:
+                                                        question.question
+                                                            .length > 80
+                                                            ? `${question.question.substring(
+                                                                  0,
+                                                                  80
+                                                              )}...`
+                                                            : question.question,
+                                                }}
+                                            />
+                                            {/* Display question image if available (reduced size) */}
+                                            {question.question_image && (
+                                                <div className="mt-2">
+                                                    <img
+                                                        src={`/storage/${question.question_image}`}
+                                                        alt="Question"
+                                                        className="rounded border"
+                                                        style={{
+                                                            maxWidth: "120px",
+                                                            maxHeight: "80px",
+                                                            objectFit: "cover",
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
+                                </div>
+                            ))}
+                        </DndContext>
                     </div>
 
                     <div className="modal-footer border-top">
                         <button
                             type="button"
-                            className="btn btn-secondary"
+                            className="btn btn-secondary me-2"
                             onClick={onClose}
                         >
                             Cancel
@@ -223,7 +234,7 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
                             className="btn btn-primary"
                             onClick={() => onSave(localQuestions)}
                         >
-                            Save Order
+                            Save All Changes
                         </button>
                     </div>
                 </div>
