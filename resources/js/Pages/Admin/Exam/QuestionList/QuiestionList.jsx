@@ -59,8 +59,8 @@ const QuestionList = ({ questions: initialQuestions }) => {
     };
 
     return (
-        <div className="mt-4">
-            <div className="flex justify-between items-center mb-3">
+        <div className="mt-2">
+            <div className="flex justify-between items-center mb-2">
                 <h3 className="text-xl font-semibold text-center">
                     Questions ({questions.length})
                 </h3>
@@ -71,7 +71,6 @@ const QuestionList = ({ questions: initialQuestions }) => {
                     }}
                     className="btn btn-sm btn-outline-primary"
                 >
-                    <i className="fas fa-arrows-alt me-1"></i>
                     Reorder Questions
                 </button>
             </div>
@@ -83,7 +82,7 @@ const QuestionList = ({ questions: initialQuestions }) => {
                     return (
                         <div
                             key={question.id}
-                            className="accordion-item mb-3 border rounded"
+                            className="accordion-item mb-2 border rounded"
                         >
                             <h2 className="accordion-header">
                                 <button

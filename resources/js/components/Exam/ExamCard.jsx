@@ -13,7 +13,17 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
         : "No";
 
     const handleDeleteExam = () => {
-        // Logic to delete the exam
+        if (window.confirm("Are you sure you want to delete this exam?")) {
+            axios
+                // .delete(route("delete.exam", { slug: exam.slug }))
+                .then(() => {
+                    toast.success("Exam deleted successfully");
+                    setRefresh((prev) => !prev);
+                })
+                .catch(() => {
+                    toast.error("Failed to delete exam");
+                });
+        }
     };
 
     return (
