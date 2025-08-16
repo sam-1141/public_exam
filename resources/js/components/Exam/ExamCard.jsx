@@ -12,27 +12,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
             : "Yes"
         : "No";
 
-    // // Function to display course names
-    // const displayCourses = () => {
-    //     if (!exam.courses) return "No courses";
-    //     if (Array.isArray(exam.courses)) {
-    //         return exam.courses.length > 0
-    //             ? exam.courses.map((c) => c.course_name || c.name).join(", ")
-    //             : "No courses";
-    //     }
-    //     return exam.courses;
-    // };
-
-    // // Function to display subject names
-    // const displaySubjects = () => {
-    //     if (!exam.subjects) return "No subjects";
-    //     if (Array.isArray(exam.subjects)) {
-    //         return exam.subjects.length > 0
-    //             ? exam.subjects.map((s) => s.name).join(", ")
-    //             : "No subjects";
-    //     }
-    //     return exam.subjects;
-    // };
+    const handleDeleteExam = () => {
+        // Logic to delete the exam
+    };
 
     return (
         <div className="col-md-6 mb-4">
@@ -193,22 +175,30 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                         </div>
                     </div>
 
-                    <div className="d-flex justify-content-end mt-auto pt-3">
+                    <div className="d-flex justify-content-between mt-auto pt-3">
                         <button
-                            onClick={() => setEditExamSlug(exam.slug)}
-                            className="btn btn-outline-warning btn-sm me-2"
+                            onClick={() => handleDeleteExam(exam.slug)}
+                            className="btn btn-outline-danger btn-sm me-2"
                         >
-                            <i className="fas fa-edit me-1"></i> Edit
+                            <i className="fas fa-trash me-1"></i> Delete
                         </button>
-                        <Link
-                            href={route("admin.exam.details", {
-                                exam: exam.slug,
-                                type: examType,
-                            })}
-                            className="btn btn-warning btn-sm"
-                        >
-                            <i className="fas fa-eye me-1"></i> View
-                        </Link>
+                        <div>
+                            <button
+                                onClick={() => setEditExamSlug(exam.slug)}
+                                className="btn btn-outline-warning btn-sm me-2"
+                            >
+                                <i className="fas fa-edit me-1"></i> Edit
+                            </button>
+                            <Link
+                                href={route("admin.exam.details", {
+                                    exam: exam.slug,
+                                    type: examType,
+                                })}
+                                className="btn btn-warning btn-sm"
+                            >
+                                <i className="fas fa-eye me-1"></i> View
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

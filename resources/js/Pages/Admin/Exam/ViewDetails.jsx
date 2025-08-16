@@ -240,7 +240,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                         </>
                     ) : (
                         <>
-                            <i className="fas fa-copy me-1"></i>Make it Practise
+                            <i className="fas fa-copy me-1"></i>Make it Practice
                             Exam
                         </>
                     )}
