@@ -157,7 +157,7 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
                                                                     )}
                                                                 </div>
 
-                                                                <div className="d-flex align-items-center gap-2">
+                                                                {/* <div className="d-flex align-items-center gap-2">
                                                                     <span className="text-muted">
                                                                         Position:
                                                                     </span>
@@ -196,7 +196,7 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
                                                                             width: "70px",
                                                                         }}
                                                                     />
-                                                                </div>
+                                                                </div> */}
                                                             </div>
                                                         </div>
                                                     )}
