@@ -89,8 +89,8 @@ class LiveExamController extends Controller
             'publish_instant' => 'nullable|boolean',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
+            'result_publish_time' => 'required|date|after:end_time',
         ]);
-
 
         $slug = Str::slug($validated['name']);
         $baseUrl = rtrim(env('APP_URL'), '/');
@@ -114,6 +114,7 @@ class LiveExamController extends Controller
                 'publish'             => $request->publish_instant ?? true,
                 'start_time'          => $request->start_time,
                 'end_time'            => $request->end_time,
+                'result_publish_time' => $request->result_publish_time ? $request->result_publish_time : $request->end_time,
                 'exam_url'            => $examUrl,
                 'created_by'          => Auth::id(),
                 'created_at'          => now(),
