@@ -25,10 +25,12 @@ class LiveExam extends Model
         'created_by',
         'exam_type',
         'status',
+        'result_publish_time',
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
+        'result_publish_time' => 'datetime',
     ];
 }
