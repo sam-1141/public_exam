@@ -3,7 +3,7 @@ import { Link, router, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import AddQuestionModal from "./AddQuestion";
-import QuestionList from "./QuiestionList";
+import QuestionList from "./QuestionList/QuiestionList";
 
 const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
