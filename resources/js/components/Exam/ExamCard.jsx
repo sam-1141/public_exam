@@ -145,7 +145,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                 {!isPracticeExam && (
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
-                                            <i className="fas fa-calendar fa-lg text-warning"></i>
+                                            <i className="fas fa-hourglass-half  fa-lg text-gray-600"></i>
                                         </div>
                                         <div>
                                             <div className="fw-bold">
