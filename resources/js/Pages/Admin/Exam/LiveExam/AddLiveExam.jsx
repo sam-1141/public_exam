@@ -109,8 +109,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                 </div>
                             )}
                             <div className="row g-2">
-                                <div className={'col-md-12'}>
-                                    <div className={'mb-2'}>
+                                <div className={"col-md-12"}>
+                                    <div className={"mb-2"}>
                                         <label className="form-label">
                                             Name:
                                         </label>
@@ -130,7 +130,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Course:
@@ -164,7 +164,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Subject:
@@ -198,7 +198,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Total Questions:
@@ -221,7 +221,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Total Marks:
@@ -244,7 +244,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Duration (min):
@@ -267,7 +267,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-6'}>
+                                <div className={"col-md-6"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Question Type:
@@ -296,7 +296,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-12'}>
+                                <div className={"col-md-12"}>
                                     <div className="mb-2">
                                         <label className="form-label">
                                             Negative Marks:
@@ -315,8 +315,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                             name: "has_negative_marks",
                                                             type: "checkbox",
                                                             checked:
-                                                            e.target
-                                                                .checked,
+                                                                e.target
+                                                                    .checked,
                                                         },
                                                     });
                                                     // Only set default value when enabling
@@ -324,13 +324,11 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                         e.target.checked &&
                                                         !formData.negative_marks_value
                                                     ) {
-                                                        setFormData(
-                                                            (prev) => ({
-                                                                ...prev,
-                                                                negative_marks_value:
-                                                                    "",
-                                                            })
-                                                        );
+                                                        setFormData((prev) => ({
+                                                            ...prev,
+                                                            negative_marks_value:
+                                                                "",
+                                                        }));
                                                     }
                                                 }}
                                                 name="has_negative_marks"
@@ -358,7 +356,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                             : ""
                                                     }`}
                                                     min="0.0"
-                                                    step={'any'}
+                                                    step="0.25"
                                                     value={
                                                         formData.negative_marks_value
                                                     }
@@ -367,8 +365,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                     name="negative_marks_value"
                                                 />
                                                 <span className="text-sm text-gray-500">
-                                                        marks per wrong answer
-                                                    </span>
+                                                    marks per wrong answer
+                                                </span>
                                                 {errors.negative_marks_value && (
                                                     <div className="invalid-feedback">
                                                         {
@@ -381,7 +379,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         )}
                                     </div>
                                 </div>
-                                <div className={'col-md-12'}>
+                                <div className={"col-md-12"}>
                                     <label className="form-label">
                                         Description:
                                     </label>
@@ -402,16 +400,14 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         </div>
                                     )}
                                 </div>
-                                <div className={'col-md-6'}>
-
-                                </div>
+                                <div className={"col-md-6"}></div>
                                 <div className="col-12">
                                     <hr />
                                     <h6 className="my-3 font-semibold text-lg">
                                         Advanced Settings
                                     </h6>
                                 </div>
-                                <div className={'row g-2'}>
+                                <div className={"row g-2"}>
                                     <div className="col-md-6">
                                         <div className="mb-2">
                                             <label className="form-label">
@@ -526,12 +522,17 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                         : ""
                                                 }`}
                                                 name="result_publish_time"
-                                                value={formData.result_publish_time}
+                                                value={
+                                                    formData.result_publish_time
+                                                }
                                                 onChange={handleChange}
                                             />
                                             {errors.result_publish_time && (
                                                 <div className="invalid-feedback">
-                                                    {errors.result_publish_time[0]}
+                                                    {
+                                                        errors
+                                                            .result_publish_time[0]
+                                                    }
                                                 </div>
                                             )}
                                         </div>

@@ -2,6 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { route } from "ziggy-js";
 
+export const formatDateTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    // Handle invalid dates
+    if (isNaN(date.getTime())) return "";
+    // Convert to local datetime string format for input[type=datetime-local]
+    const offset = date.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(date - offset).toISOString().slice(0, 16);
+    return localISOTime;
+};
+
 const EditExamModal = ({
     show,
     onClose,
@@ -35,9 +46,9 @@ const EditExamModal = ({
                 publish_instant: exam.publishInstant === 1 ? true : false,
                 privacy: exam.privacy || "everyone",
                 duration: exam.duration ? String(exam.duration) : "",
-                start_time: exam.startTime || "",
-                end_time: exam.endTime || "",
-                result_publish_time: exam.resultPublishTime || "",
+                start_time: formatDateTime(exam.startTime),
+                end_time: formatDateTime(exam.endTime),
+                result_publish_time: formatDateTime(exam.result_publish_time),
             });
             setErrors({});
         }

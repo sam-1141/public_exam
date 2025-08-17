@@ -1,6 +1,7 @@
 import { Link } from "@inertiajs/react";
 import React from "react";
 import { route } from "ziggy-js";
+import { formatDateTime } from "../../Pages/Admin/Exam/EditExam";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
     const isPracticeExam = examType === "practice";
@@ -64,7 +65,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                     </div>
 
                     {/* Course and Subject display */}
-                    <div className="row mt-2 mb-3">
+                    <div className="row mt-2 mb-2">
                         <div className="col-6">
                             <div className="d-flex align-items-center">
                                 <div className="me-3">
@@ -141,6 +142,23 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         </div>
                                     </div>
                                 )}
+                                {!isPracticeExam && (
+                                    <div className="d-flex align-items-center">
+                                        <div className="me-3">
+                                            <i className="fas fa-calendar fa-lg text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-bold">
+                                                Result Publish Time
+                                            </div>
+                                            <small>
+                                                {formatDateTime(
+                                                    exam.result_publish_time
+                                                )}
+                                            </small>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -193,12 +211,14 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                             <i className="fas fa-trash me-1"></i> Delete
                         </button>
                         <div>
-                            <button
-                                onClick={() => setEditExamSlug(exam.slug)}
-                                className="btn btn-outline-warning btn-sm me-2"
-                            >
-                                <i className="fas fa-edit me-1"></i> Edit
-                            </button>
+                            {!isPracticeExam && (
+                                <button
+                                    onClick={() => setEditExamSlug(exam.slug)}
+                                    className="btn btn-outline-warning btn-sm me-2"
+                                >
+                                    <i className="fas fa-edit me-1"></i> Edit
+                                </button>
+                            )}
                             <Link
                                 href={route("admin.exam.details", {
                                     exam: exam.slug,
