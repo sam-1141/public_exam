@@ -65,9 +65,11 @@ const PracticeExamListPage = ({allExam}) => {
                                                         </div>
 
                                                         <div className="mb-3">
-                                                            <div className="d-flex justify-content-between mb-2">
-                                                                <span className="text-muted small">বর্ণনা:</span>
-                                                                <span className="fw-semibold">{exam.description}</span>
+                                                            <div className="mb-2">
+                                                                {/* <p className="text-muted small mb-1">বর্ণনা:</p> */}
+                                                                <p className="mb-0 text-wrap" style={{ fontSize: '0.9rem' }}>
+                                                                    {exam.description}
+                                                                </p>
                                                             </div>
                                                             <div className="d-flex justify-content-between mb-2">
                                                                 <span className="text-muted small">মোট নম্বর:</span>
