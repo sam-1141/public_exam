@@ -51,9 +51,9 @@ const QuestionReview = ({ question, questionNumber }) => {
             let optionClass = "btn w-100 text-start p-3 border rounded-3"
 
             if (isCorrect) {
-              optionClass += " btn-success text-white" // Correct answer - green
+              optionClass += " border-success" // Correct answer - green
             } else if (isWrongUserAnswer) {
-              optionClass += " btn-danger text-white" // Wrong user answer - red
+              optionClass += " border-danger " // Wrong user answer - red
             } else {
               optionClass += " btn-outline-secondary" // Other options
             }

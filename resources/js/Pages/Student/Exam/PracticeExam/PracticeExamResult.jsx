@@ -178,12 +178,12 @@ const PracticeExamResult = () => {
                                 >
                                     প্র্যাকটিস লিস্টে ফিরে যান
                                 </button>
-                                <button
+                                {/* <button
                                     className="btn btn-primary px-4 py-2"
                                     onClick={() => router.visit(route('student.practice.exam', { exam: submission.examId }))}
                                 >
                                     আবার চেষ্টা করুন
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     </div>
@@ -247,9 +247,9 @@ const QuestionReview = ({ question, questionNumber }) => {
                         let optionClass = "btn w-100 text-start p-3 border rounded-3"
 
                         if (isCorrect) {
-                            optionClass += " btn-success text-white"
+                            optionClass += " border-success"
                         } else if (isWrongUserAnswer) {
-                            optionClass += " btn-danger text-white"
+                            optionClass += " border-danger"
                         } else {
                             optionClass += " btn-outline-secondary"
                         }
@@ -287,7 +287,7 @@ const QuestionReview = ({ question, questionNumber }) => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="col-12 col-md-6">
+                                {/* <div className="col-12 col-md-6">
                                     <div className="small">
                                         <span className="text-muted">আপনার উত্তর:</span>
                                         {question.userAnswer !== undefined && question.userAnswer !== null ? (
@@ -299,7 +299,7 @@ const QuestionReview = ({ question, questionNumber }) => {
                                             <span className="fw-semibold text-warning ms-2">স্কিপ করা</span>
                                         )}
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             {/* Explanation Section - Only shown if explanation exists */}
