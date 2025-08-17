@@ -77,7 +77,7 @@ function Navbar() {
     return (
         <>
             <nav
-                className={`pc-sidebar${
+                className={`pc-sidebar ${
                     isSideBarActive ? "mob-sidebar-active" : ""
                 } ${isDesktopCollapsed ? "pc-sidebar-hide" : ""}`}
                 ref={sidebarRef}
