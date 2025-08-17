@@ -152,9 +152,11 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                                 Result Publish Time
                                             </div>
                                             <small>
-                                                {formatDateTime(
-                                                    exam.result_publish_time
-                                                )}
+                                                {exam.result_publish_time
+                                                    ? formatDateTime(
+                                                          exam.result_publish_time
+                                                      )
+                                                    : "Not Set"}
                                             </small>
                                         </div>
                                     </div>
