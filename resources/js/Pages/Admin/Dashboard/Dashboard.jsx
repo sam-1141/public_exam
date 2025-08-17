@@ -20,7 +20,7 @@ function AdminDashboard() {
         axios
             .get(route("show.exam.list"))
             .then((res) => {
-                setLiveExams(res.data.exams || []);
+                setLiveExams(Array.isArray(res.data.exams?.data) ? res.data.exams.data : []);
             })
             .catch(() => {
                 setLiveExams([]);
