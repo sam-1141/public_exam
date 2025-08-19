@@ -12,8 +12,6 @@ use Inertia\Inertia;
 
 class LiveExamController extends Controller
 {
-
-
     public function loadAddExamPage()
     {
         return Inertia::render('Admin/Exam/AddExam');
@@ -29,14 +27,8 @@ class LiveExamController extends Controller
         ]);
     }
 
-    public function loadAddPracticeExamPage()
-    {
-        return Inertia::render('Admin/Exam/PracticeExam/PracticeExam');
-    }
-
     public function loadViewExamDetails($type, $examSlug)
     {
-//        dd($type, $examSlug);
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
 
         $courseExam = DB::table('course_exam')
@@ -47,7 +39,7 @@ class LiveExamController extends Controller
         $courseInfo = DB::connection('Webapp')
             ->table('courses')
             ->whereIn('id', $courseExam)
-            ->get('course_name');
+            ->get(['id','course_name']);
 
         $examSubject = DB::table('exam_subject')
             ->where('exam_id', $exam->id)
@@ -57,7 +49,7 @@ class LiveExamController extends Controller
         $subjectInfo = DB::connection('CoreDB')
             ->table('subjects')
             ->whereIn('id', $examSubject)
-            ->get('name');
+            ->get(['id', 'name']);
 
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
@@ -172,9 +164,31 @@ class LiveExamController extends Controller
             ->orderByDesc('created_at')
             ->paginate(10)
             ->through(function ($exam) {
+                $courseExam = DB::table('course_exam')
+                    ->where('exam_id', $exam->id)
+                    ->pluck('course_id')
+                    ->toArray();
+
+                $courseInfo = DB::connection('Webapp')
+                    ->table('courses')
+                    ->whereIn('id', $courseExam)
+                    ->get(['id','course_name']);
+
+                $examSubject = DB::table('exam_subject')
+                    ->where('exam_id', $exam->id)
+                    ->pluck('subject_id')
+                    ->toArray();
+
+                $subjectInfo = DB::connection('CoreDB')
+                    ->table('subjects')
+                    ->whereIn('id', $examSubject)
+                    ->get(['id', 'name']);
+
                 return [
                     'id' => $exam->id,
                     'name' => $exam->name,
+                    'courseInfo' => $courseInfo,
+                    'subjectInfo' => $subjectInfo,
                     'slug' => $exam->slug,
                     'description' => $exam->description,
                     'totalQuestions' => $exam->total_questions,
