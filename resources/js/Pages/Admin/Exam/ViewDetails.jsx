@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, router, usePage } from "@inertiajs/react";
 import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
-import AddQuestionModal from "./AddQuestion";
 import QuestionList from "./QuestionList/QuiestionList";
+import QuestionModal from "../../../components/Questions/QuestionModal";
 
 const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
@@ -114,8 +114,10 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     >
                                         {exam.subjectInfo
                                             ? exam?.subjectInfo
-                                                .map((subject) => subject.name)
-                                                .join(", ")
+                                                  .map(
+                                                      (subject) => subject.name
+                                                  )
+                                                  .join(", ")
                                             : "No Subject"}
                                     </small>
                                 </div>
@@ -276,11 +278,12 @@ const ExamDetails = ({ examType, exam, questions }) => {
 
             <QuestionList questions={questions} examType={examType} />
 
-            <AddQuestionModal
+            <QuestionModal
                 show={showAddQuestionModal}
                 onClose={() => setShowAddQuestionModal(false)}
                 examId={exam.id}
                 examType={examType}
+                mode="add"
             />
         </div>
     );

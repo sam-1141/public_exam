@@ -2,20 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import QuestionReorderModal from "./QuestionReorderModal";
+import QuestionModal from "../../../../components/Questions/QuestionModal";
 
-const QuestionList = ({ questions: initialQuestions }) => {
+const QuestionList = ({
+    questions: initialQuestions,
+    examId,
+    onQuestionDeleted,
+    onQuestionAdded,
+    onQuestionUpdated,
+}) => {
     const [expandedQuestion, setExpandedQuestion] = useState(null);
     const [questions, setQuestions] = useState(initialQuestions);
     const [showReorderModal, setShowReorderModal] = useState(false);
+    const [showQuestionModal, setShowQuestionModal] = useState(false);
+    const [editingQuestion, setEditingQuestion] = useState(null);
+
+    // Update questions when initialQuestions changes
+    useEffect(() => {
+        setQuestions(initialQuestions);
+    }, [initialQuestions]);
 
     const handleSaveOrder = async (reorderedQuestions) => {
         setQuestions(reorderedQuestions);
         setShowReorderModal(false);
         try {
             const orderedIds = reorderedQuestions.map((q) => q.id);
-
             console.log("Order saved successfully!", orderedIds);
-
             alert("Order saved successfully!");
         } catch (error) {
             alert("Failed to save order");
@@ -36,10 +48,50 @@ const QuestionList = ({ questions: initialQuestions }) => {
                         },
                     }
                 );
+                // Remove the question from local state
+                const updatedQuestions = questions.filter(
+                    (q) => q.id !== questionId
+                );
+                setQuestions(updatedQuestions);
+
+                // Call the parent callback if provided
+                if (onQuestionDeleted) {
+                    onQuestionDeleted(questionId);
+                }
                 alert("Question deleted successfully!");
             } catch (error) {
                 alert("Failed to delete question");
             }
+        }
+    };
+
+    const handleEdit = (question) => {
+        setEditingQuestion(question);
+        setShowQuestionModal(true);
+    };
+
+    const handleQuestionAdded = (newQuestion) => {
+        // Add the new question to the list
+        setQuestions([...questions, newQuestion]);
+        setShowQuestionModal(false);
+
+        // Call the parent callback if provided
+        if (onQuestionAdded) {
+            onQuestionAdded(newQuestion);
+        }
+    };
+
+    const handleQuestionUpdated = (updatedQuestion) => {
+        // Update the question in the list
+        const updatedQuestions = questions.map((q) =>
+            q.id === updatedQuestion.id ? updatedQuestion : q
+        );
+        setQuestions(updatedQuestions);
+        setShowQuestionModal(false);
+
+        // Call the parent callback if provided
+        if (onQuestionUpdated) {
+            onQuestionUpdated(updatedQuestion);
         }
     };
 
@@ -60,21 +112,20 @@ const QuestionList = ({ questions: initialQuestions }) => {
 
     return (
         <div className="mt-2">
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-3">
                 <h3 className="text-xl font-semibold text-center">
                     Questions ({questions.length})
                 </h3>
-                {questions.length > 0 && (
-                    <button
-                        onClick={() => {
-                            console.log("Button clicked");
-                            setShowReorderModal(true);
-                        }}
-                        className="btn btn-sm btn-outline-primary"
-                    >
-                        Reorder Questions
-                    </button>
-                )}
+                <div className="flex gap-2">
+                    {questions.length > 1 && (
+                        <button
+                            onClick={() => setShowReorderModal(true)}
+                            className="btn btn-sm btn-outline-primary"
+                        >
+                            Reorder Questions
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="accordion" id="questionsAccordion">
@@ -139,11 +190,9 @@ const QuestionList = ({ questions: initialQuestions }) => {
                                             </h4>
                                             <div className="flex space-x-2 gap-2">
                                                 <button
-                                                    // onClick={() =>
-                                                    //     handleDelete(
-                                                    //         question.id
-                                                    //     )
-                                                    // }
+                                                    onClick={() =>
+                                                        handleEdit(question)
+                                                    }
                                                     className="btn btn-sm btn-outline-warning"
                                                 >
                                                     <i className="fas fa-pen me-1"></i>{" "}
@@ -249,6 +298,18 @@ const QuestionList = ({ questions: initialQuestions }) => {
                     questions={questions}
                     onClose={() => setShowReorderModal(false)}
                     onSave={handleSaveOrder}
+                />
+            )}
+
+            {/* Edit Question Modal */}
+            {showQuestionModal && (
+                <QuestionModal
+                    show={showQuestionModal}
+                    onClose={() => setShowQuestionModal(false)}
+                    examId={examId}
+                    questionData={editingQuestion}
+                    mode="edit"
+                    onSuccess={handleQuestionUpdated}
                 />
             )}
         </div>
