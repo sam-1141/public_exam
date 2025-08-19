@@ -88,7 +88,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/add-exam', [LiveExamController::class, 'loadAddExamPage'])->name('admin.add.exam');
     Route::get('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
     Route::post('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
-    Route::get('/add-exam/practice-exam', [LiveExamController::class, 'loadAddPracticeExamPage'])->name('admin.add.practice.exam');
+    Route::get('/add-exam/practice-exam', [PractiseExamController::class, 'loadAddPracticeExamPage'])->name('admin.add.practice.exam');
     Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
 
     // For practise exam
