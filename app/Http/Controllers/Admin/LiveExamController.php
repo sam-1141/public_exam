@@ -159,7 +159,6 @@ class LiveExamController extends Controller
 
     public function showAllExam()
     {
-
         $exams = LiveExam::where('exam_type', 0)
             ->orderByDesc('created_at')
             ->paginate(10)
