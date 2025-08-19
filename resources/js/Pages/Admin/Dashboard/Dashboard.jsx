@@ -20,7 +20,11 @@ function AdminDashboard() {
         axios
             .get(route("show.exam.list"))
             .then((res) => {
-                setLiveExams(Array.isArray(res.data.exams?.data) ? res.data.exams.data : []);
+                setLiveExams(
+                    Array.isArray(res.data.exams?.data)
+                        ? res.data.exams.data
+                        : []
+                );
             })
             .catch(() => {
                 setLiveExams([]);
@@ -43,11 +47,6 @@ function AdminDashboard() {
                 setLoading((prev) => ({ ...prev, practice: false }))
             );
     }, []);
-
-    console.log({
-        liveExams,
-        practiceExams,
-    });
 
     // Show only 5 items initially, or all if showAll is true
     const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
@@ -154,18 +153,13 @@ function AdminDashboard() {
 
                                 {liveExams.length > 5 && (
                                     <div className="card-footer text-center bg-light">
-                                        <button
+                                        <Link
+                                            href={route("admin.add.live.exam")}
                                             className="btn btn-outline-primary btn-sm"
-                                            onClick={() =>
-                                                setShowAllLive(!showAllLive)
-                                            }
                                         >
-                                            {showAllLive
-                                                ? "Show Less"
-                                                : `See More (${
-                                                      liveExams.length - 5
-                                                  } more)`}
-                                        </button>
+                                            See All Live Exams (
+                                            {liveExams.length})
+                                        </Link>
                                     </div>
                                 )}
 
@@ -242,20 +236,15 @@ function AdminDashboard() {
 
                                 {practiceExams.length > 5 && (
                                     <div className="card-footer text-center bg-light">
-                                        <button
+                                        <Link
+                                            href={route(
+                                                "admin.add.practice.exam"
+                                            )}
                                             className="btn btn-outline-primary btn-sm"
-                                            onClick={() =>
-                                                setShowAllPractice(
-                                                    !showAllPractice
-                                                )
-                                            }
                                         >
-                                            {showAllPractice
-                                                ? "Show Less"
-                                                : `See More (${
-                                                      practiceExams.length - 5
-                                                  } more)`}
-                                        </button>
+                                            See All Practice Exams (
+                                            {practiceExams.length})
+                                        </Link>
                                     </div>
                                 )}
 

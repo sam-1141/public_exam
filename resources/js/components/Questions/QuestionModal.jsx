@@ -145,12 +145,11 @@ const QuestionModal = ({
             //         onClose();
             //     },
             // });
-
-            console.log("Updated question data:", {
-                ...questionData,
-                ...submitData,
-                options: JSON.stringify(submitData.options),
-            });
+            // console.log("Updated question data:", {
+            //     ...questionData,
+            //     ...submitData,
+            //     options: JSON.stringify(submitData.options),
+            // });
         }
     };
 

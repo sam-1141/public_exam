@@ -27,7 +27,7 @@ const QuestionList = ({
         setShowReorderModal(false);
         try {
             const orderedIds = reorderedQuestions.map((q) => q.id);
-            console.log("Order saved successfully!", orderedIds);
+            // console.log("Order saved successfully!", orderedIds);
             alert("Order saved successfully!");
         } catch (error) {
             alert("Failed to save order");
