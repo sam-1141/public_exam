@@ -4,6 +4,8 @@ import ParticipationModal from "./ParticipationModal";
 import PageHeader from "../../../../components/Student/PageHeader/PageHeader";
 import { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
+import LiveExamSection from "./LiveExamSection"; // Import the new component
+import UpcomingExamSection from "./UpcomingExamSection"; // Import the new component
 
 const ExamListPage = ({ allExam }) => {
   const [showModal, setShowModal] = useState(false);
@@ -73,68 +75,10 @@ const ExamListPage = ({ allExam }) => {
       )}
       <main className="flex-grow-1 p-1 bg-light mt-2">
         {/* Live Exams Section */}
-        <div className="mb-5">
-          <div className="justify-content-center mb-4">
-            <div className="col-12">
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <div>
-                  <h3 className="fw-bold text-dark mb-1">চলমান পরীক্ষাসমূহ</h3>
-                  <p className="text-muted mb-0">এখনই অংশগ্রহণ করুন এবং আপনার দক্ষতা যাচাই করুন</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <span className="badge bg-success me-2">🔴</span>
-                  <span className="small text-muted">{liveExams.length} টি লাইভ</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="col-12">
-              {liveExams.length > 0 ? (
-                <div className="row">
-                  {liveExams.map((exam) => (
-                    <LiveExamCard key={exam.id} exam={exam} onClick={handleExamClick} />
-                  ))}
-                </div>
-              ) : (
-                <div className="alert alert-info">বর্তমানে কোনো লাইভ পরীক্ষা চলমান নেই</div>
-              )}
-            </div>
-          </div>
-        </div>
-
+        <LiveExamSection exams={liveExams} onExamClick={handleExamClick} />
+        
         {/* Upcoming Exams Section */}
-        <div>
-          <div className="justify-content-center mb-4">
-            <div className="col-12">
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <div>
-                  <h3 className="fw-bold text-dark mb-1">আসন্ন পরীক্ষাসমূহ</h3>
-                  <p className="text-muted mb-0">আপনার পরীক্ষার জন্য প্রস্তুত হোন</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <span className="badge bg-warning me-2">⏰</span>
-                  <span className="small text-muted">{upcomingExams.length} টি আসন্ন</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div className="col-12">
-              {upcomingExams.length > 0 ? (
-                <div className="row">
-                  {upcomingExams.map((exam) => (
-                    <LiveExamCard key={exam.id} exam={exam} onClick={handleExamClick} />
-                  ))}
-                </div>
-              ) : (
-                <div className="alert alert-info">বর্তমানে কোনো আসন্ন পরীক্ষা নেই</div>
-              )}
-            </div>
-          </div>
-        </div>
+        <UpcomingExamSection exams={upcomingExams} onExamClick={handleExamClick} />
       </main>
 
       {selectedExam && (
