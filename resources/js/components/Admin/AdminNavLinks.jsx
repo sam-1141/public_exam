@@ -9,6 +9,7 @@ import {
     Library,
     Trophy,
     ClipboardPlus,
+    ClipboardList,
 } from "lucide-react";
 
 function AdminNavLinks() {
@@ -107,6 +108,22 @@ function AdminNavLinks() {
                                 data-i18n="Question Bank"
                             >
                                 Leaderboard
+                            </span>
+                        </Link>
+                    </li>
+                    <li className="pc-item">
+                        <Link
+                            href={route("admin.exam.results")}
+                            className="pc-link"
+                        >
+                            <span className="pc-micon">
+                                <ClipboardList size={18} />
+                            </span>
+                            <span
+                                className="pc-mtext"
+                                data-i18n="Question Bank"
+                            >
+                                Exam Results
                             </span>
                         </Link>
                     </li>
