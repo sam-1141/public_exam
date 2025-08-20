@@ -16,7 +16,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
     };
 
     useEffect(() => {
-        console.log('Exam Details:', exam);
+        console.log("Exam Details:", exam);
     }, [exam]);
 
     const toggleStatus = (id, currentStatus) => {
@@ -167,6 +167,25 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                                 Start Time
                                             </div>
                                             <small>{exam.startTime}</small>
+                                        </div>
+                                    </div>
+                                )}
+                                {!isPracticeExam && (
+                                    <div className="d-flex align-items-center">
+                                        <div className="me-3">
+                                            <i className="fas fa-hourglass-half  fa-lg text-gray-600"></i>
+                                        </div>
+                                        <div>
+                                            <div className="fw-bold">
+                                                Result Publish Time
+                                            </div>
+                                            <small>
+                                                {exam.result_publish_time
+                                                    ? formatDateTime(
+                                                          exam.result_publish_time
+                                                      )
+                                                    : "Not Set"}
+                                            </small>
                                         </div>
                                     </div>
                                 )}

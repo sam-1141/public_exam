@@ -138,13 +138,6 @@ const LiveExam = ({ courses, subjects }) => {
                             <p className="text-muted mb-4">
                                 You haven't created any live exams yet
                             </p>
-                            <Link
-                                href="/exams/live/create"
-                                className="btn btn-primary"
-                            >
-                                <i className="fas fa-plus me-2"></i>Create Your
-                                First Live Exam
-                            </Link>
                         </div>
                     )}
 
@@ -158,18 +151,34 @@ const LiveExam = ({ courses, subjects }) => {
                                                 {exams.links.map((link, i) => (
                                                     <li
                                                         key={i}
-                                                        className={`page-item ${link.active ? "active" : ""} ${!link.url ? "disabled" : ""}`}
+                                                        className={`page-item ${
+                                                            link.active
+                                                                ? "active"
+                                                                : ""
+                                                        } ${
+                                                            !link.url
+                                                                ? "disabled"
+                                                                : ""
+                                                        }`}
                                                     >
                                                         {link.url ? (
                                                             <button
                                                                 className="page-link"
-                                                                onClick={() => handlePageChange(link.url)}
-                                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                                                onClick={() =>
+                                                                    handlePageChange(
+                                                                        link.url
+                                                                    )
+                                                                }
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: link.label,
+                                                                }}
                                                             />
                                                         ) : (
                                                             <span
                                                                 className="page-link"
-                                                                dangerouslySetInnerHTML={{ __html: link.label }}
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: link.label,
+                                                                }}
                                                             />
                                                         )}
                                                     </li>
@@ -177,7 +186,6 @@ const LiveExam = ({ courses, subjects }) => {
                                             </ul>
                                         </nav>
                                     )}
-
                                 </ul>
                             </nav>
                         )}
