@@ -12,10 +12,6 @@ const ExamMainPage = ({ exam, questions }) => {
   const [showErrorModal, setShowErrorModal] = useState(false)
 
   useEffect(() => {
-    console.log('ExamMainPage props:', { exam, questions })
-  }, [questions]);
-
-  useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault()
       e.returnValue = ""
@@ -43,21 +39,21 @@ const ExamMainPage = ({ exam, questions }) => {
     try {
       parsedOptions = JSON.parse(question.options || "[]");
     } catch (error) {
-      console.error("Invalid options JSON", error);
+      // console.error("Invalid options JSON", error);
     }
-    
+
     // Find correct answers (can be multiple)
     const correctAnswers = parsedOptions
       .map((opt, idx) => (opt.ans ? idx : -1))
       .filter(idx => idx !== -1);
-    
+
     // Check if user's answer is correct
     const isCorrect = correctAnswers.includes(answerIndex);
-    
+
     // Calculate per question mark
-    const singleQuestionMark = exam.totalMarks / questions.length;
-    
-    setAnswers((prev) => ({
+      const singleQuestionMark = exam.total_marks / exam.total_questions;
+
+      setAnswers((prev) => ({
       ...prev,
       [questionId]: {
         answerIndex,
@@ -67,29 +63,35 @@ const ExamMainPage = ({ exam, questions }) => {
       },
     }));
 
+      console.log({
+          exam_id: exam.id,
+          question_id: questionId,
+          ans_given: String(answerIndex),
+          correct_ans: correctAnswers.join(','),
+          is_correct: isCorrect,
+          single_question_mark: singleQuestionMark
+      });
+
     try {
       await axios.post(route('student.exam.answer.store'), {
         exam_id: exam.id,
         question_id: questionId,
         ans_given: String(answerIndex),
-        correct_ans: correctAnswers.join(','), // Store as comma-separated string
+        correct_ans: correctAnswers.join(','),
         is_correct: isCorrect,
         single_question_mark: singleQuestionMark
       })
-      console.log("stored all data")
     } catch (err) {
-      console.error('Answer save failed:', err)
+      // console.error('Answer save failed:', err)
     }
   };
 
   const handleSubmitByStudent = async (submitStatus) => {
-    console.log("Submitting exam with status:", submitStatus)
     try {
       const response = await axios.post(route('student.live.exam.main.submit'), {
         examId: exam.id,
         submit_status: submitStatus,
       });
-      console.log("Submit response:", response);
 
       if (response.data.type === 'success') {
         // Use Inertia's router to redirect
@@ -99,14 +101,11 @@ const ExamMainPage = ({ exam, questions }) => {
           replace: true
         });
       }
-      console.log("response.data.type", response.data.type)
 
     } catch (error) {
       if (error.response) {
         setShowSubmitModal(false);
         setShowErrorModal(true);
-        console.error('Error status:', error.response.status);
-        console.error('Error data:', error.response.data);
       }
     }
   }
@@ -115,9 +114,7 @@ const ExamMainPage = ({ exam, questions }) => {
     if (typeof isAuto !== 'boolean') {
       isAuto = false
     }
-    console.log("Typeof isAuto:", typeof isAuto, "Value:", isAuto)
     if (!exam) return
-    console.log("Submitting exam with answers:", answers)
     router.get(route('student.live.exam.success'), {
       preserveState: true,
       onBefore: async () => {
@@ -127,11 +124,10 @@ const ExamMainPage = ({ exam, questions }) => {
         });
 
         if (response.data.type === 'success') {
-          console.log(response.data.message);
+          // console.log(response.data.message);
         }
       }
     })
-    console.log("Route hitted")
   }
 
   if (!exam) {
