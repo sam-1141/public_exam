@@ -56,4 +56,12 @@ class HistoryController extends Controller
     {
         return Inertia::render('Student/AnswerSheet/AnswerSheetPage');
     }
+
+
+
+    /* Admin- Exam Results */
+    public function loadExamResults()
+    {
+        return Inertia::render('Admin/Result/Result');
+    }
 }

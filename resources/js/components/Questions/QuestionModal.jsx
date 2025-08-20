@@ -360,7 +360,7 @@ const QuestionModal = ({
                                                                 )
                                                             }
                                                             init={{
-                                                                height: 150,
+                                                                height: 180,
                                                                 menubar: false,
                                                                 plugins: [
                                                                     "advlist autolink lists link image charmap",

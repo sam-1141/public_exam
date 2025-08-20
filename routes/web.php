@@ -116,6 +116,11 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::controller(HistoryController::class)->group(function () {
         Route::get('/student/history', 'loadHistoryPage')->name('student.history');
         Route::get('/student/answer-sheet/{examSlug}', 'loadAnswerSheetPage')->name('student.answer.sheet');
+        Route::get('/student/answer-sheet', 'loadAnswerSheetPage')->name('student.answer.sheet');
+
+
+        /* Admin- Exam Results */
+        Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
     });
 
 });

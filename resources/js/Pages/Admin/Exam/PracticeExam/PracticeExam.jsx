@@ -65,7 +65,7 @@ const PracticeExam = () => {
             ) : (
                 <>
                     <div className="row">
-                        {exams.map((exam) => (
+                        {exams?.data?.map((exam) => (
                             <ExamCard
                                 key={exam.id}
                                 exam={exam}
@@ -75,14 +75,14 @@ const PracticeExam = () => {
                         ))}
                     </div>
                     {/* Empty state */}
-                    {exams.length === 0 && (
-                        <div className="text-center py-5">
+                    {exams?.data?.length === 0 && (
+                        <div className="text-center py-3">
                             <div className="mb-3">
                                 <i className="fas fa-calendar-times fa-3x text-muted"></i>
                             </div>
-                            <h4 className="mb-2">No Live Exams Found</h4>
+                            <h4 className="mb-2">No Practice Exams Found</h4>
                             <p className="text-muted mb-4">
-                                You haven't created any live exams yet
+                                You haven't created any practice exams yet
                             </p>
                         </div>
                     )}
