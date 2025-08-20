@@ -8,10 +8,6 @@ const PracticeExamListPage = ({allExam}) => {
     const [expandedCourses, setExpandedCourses] = useState({})
     const examsPerPage = 9
 
-    useEffect(() => {
-        console.log('allExam', allExam)
-    }, [allExam]);
-
     // Sort exams from newest to oldest (assuming newer exams have higher IDs)
     const sortedExams = [...allExam].sort((a, b) => b.id - a.id)
 

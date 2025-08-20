@@ -8,8 +8,6 @@ const PracticeExamResult = () => {
     const [examData, setExamData] = useState(null)
     const [questions, setQuestions] = useState([])
 
-    console.log(submission)
-
     useEffect(() => {
         if (submission) {
             // Format exam data

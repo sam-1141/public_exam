@@ -12,11 +12,6 @@ const PracticeExamPage = ({ exam, questions }) => {
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [spentTime, setSpentTime] = useState(0)
 
-  useEffect(() => {
-    console.log('Exam data:', exam)
-    console.log('Questions data:', questions)
-  }, [exam, questions])
-
   // Parse questions and prepare data for QuestionCard
   const parsedQuestions = questions.map(question => {
     const options = JSON.parse(question.options || "[]")
@@ -62,11 +57,6 @@ const PracticeExamPage = ({ exam, questions }) => {
   }
 
   const handleExamSubmit = (answers) => {
-    if (!exam || !exam.id) {
-      console.error("Exam ID is missing!")
-      return
-    }
-
     const results = calculateResults(formattedExam, answers)
 
     router.post(route('student.practice.exam.result', { exam: exam.id }), {
