@@ -2,31 +2,110 @@ import ExamSummary from "./ExamSummary"
 import QuestionReview from "./QuestionReview"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
-import { questions } from "../../../utils/AnswerSheet/questions"
 import {useEffect} from "react";
 
 const AnswerSheetPage = ({ info }) => {
-  // Dummy exam data
-  const examData = {
-    examName: "পদার্থবিজ্ঞান মডেল টেস্ট - ২",
-    totalGivenTime: 60, // minutes
-    submissionTime: 45, // minutes
-    totalQuestions: 10,
-    answeredQuestions: 8,
-    skippedQuestions: 2,
-    correctAnswers: 6,
-    wrongAnswers: 2,
-    totalScore: 100,
-    obtainedScore: 60,
-  }
-
     useEffect(() => {
         console.log("AnswerSheetPage mounted", info);
     }, [info]);
 
+  // Transform backend data to frontend format
+  const transformExamData = () => {
+    const attendance = info.studentExamsAttendance;
+    const questions = info.questions;
+    const answers = info.studentsExamAnswers;
+
+    // Calculate time spent
+    const attendTime = new Date(attendance.studentExamAttendTime);
+    const submitTime = new Date(attendance.examSubmitTime);
+    const timeSpentMs = submitTime - attendTime;
+    const submissionTimeMinutes = Math.floor(timeSpentMs / (1000 * 60));
+
+    // Count answers
+    const correctAnswers = answers.filter(answer => answer.is_correct === 1).length;
+    const wrongAnswers = answers.filter(answer => answer.is_correct === 0 && answer.ans_given !== null).length;
+    const skippedAnswers = answers.filter(answer => answer.ans_given === null).length;
+    // const answeredQuestions = correctAnswers + wrongAnswers;
+
+    return {
+      examName: attendance.liveExamName,
+      totalGivenTime: attendance.liveExamDuration,
+      submissionTime: submissionTimeMinutes,
+      totalQuestions: attendance.examTotalQuestions,
+      // answeredQuestions: answeredQuestions,
+      skippedQuestions: skippedAnswers,
+      correctAnswers: correctAnswers,
+      wrongAnswers: wrongAnswers,
+      totalScore: attendance.examTotalMarks,
+      obtainedScore: attendance.studentTotalMarks,
+    };
+  };
+
+  // Transform questions data
+  const transformQuestions = () => {
+    if (!info?.questions || !info?.studentsExamAnswers) {
+      return [];
+    }
+
+    return info.questions.map((question, index) => {
+      const studentAnswer = info.studentsExamAnswers.find(ans => ans.question_id === question.id);
+      
+      // Parse options from JSON string
+      let options = [];
+      try {
+        const parsedOptions = JSON.parse(question.options);
+        options = parsedOptions.map(opt => {
+          // Extract text from HTML if needed
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = opt.option;
+          return tempDiv.textContent || tempDiv.innerText || '';
+        });
+      } catch (error) {
+        console.error("Error parsing options:", error);
+        options = ["Option 1", "Option 2", "Option 3", "Option 4"];
+      }
+
+      // Find correct answer index
+      let correctAnswerIndex = -1;
+      try {
+        const parsedOptions = JSON.parse(question.options);
+        correctAnswerIndex = parsedOptions.findIndex(opt => opt.ans === true);
+      } catch (error) {
+        console.error("Error finding correct answer:", error);
+      }
+
+      return {
+        id: question.id,
+        text: question.question,
+        options: options,
+        correctAnswer: correctAnswerIndex,
+        userAnswer: studentAnswer ? parseInt(studentAnswer.ans_given) : null,
+        marks: 1, // Assuming each question carries 1 mark
+        teacherNote: question.explanation
+      };
+    });
+  };
+
+  const examData = transformExamData();
+  const transformedQuestions = transformQuestions();
+
   const handleBackClick = () => {
     window.history.back();
   };
+
+  if (!examData) {
+    return (
+      <div className="flex-grow-1 d-flex flex-column font-baloo">
+        <PageHeader title="উত্তরপত্র" />
+        <div className="text-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3">ডেটা লোড হচ্ছে...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-grow-1 d-flex flex-column font-baloo">
@@ -39,7 +118,7 @@ const AnswerSheetPage = ({ info }) => {
           <div className="row justify-content-center">
             <div className="col-12 ">
               {/* Exam Summary */}
-              <ExamSummary examData={examData} />
+              <ExamSummary examData={examData} attendanceData={info?.studentExamsAttendance} />
 
               {/* Questions Review */}
               <div className="d-flex align-items-center justify-content-between mb-4">
@@ -60,7 +139,7 @@ const AnswerSheetPage = ({ info }) => {
                 </div>
               </div>
 
-              {questions.map((question, index) => (
+              {transformedQuestions.map((question, index) => (
                 <QuestionReview key={question.id} question={question} questionNumber={index + 1} />
               ))}
 

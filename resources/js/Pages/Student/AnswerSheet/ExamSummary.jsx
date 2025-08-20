@@ -1,10 +1,7 @@
-const ExamSummary = ({ examData }) => {
+const ExamSummary = ({ examData, attendanceData }) => {
   const {
     examName,
-    totalGivenTime,
-    submissionTime,
     totalQuestions,
-    answeredQuestions,
     skippedQuestions,
     correctAnswers,
     wrongAnswers,
@@ -12,7 +9,40 @@ const ExamSummary = ({ examData }) => {
     obtainedScore,
   } = examData
 
-  const formatTime = (minutes) => {
+  // Calculate spend time from attendance data (can be in seconds)
+  const calculateSpendTime = () => {
+    try {
+      const attendTime = new Date(attendanceData.studentExamAttendTime);
+      const submitTime = new Date(attendanceData.examSubmitTime);
+      const timeSpentMs = submitTime - attendTime;
+      
+      const totalSeconds = Math.floor(timeSpentMs / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      
+      return { minutes, seconds };
+    } catch (error) {
+      console.error("Error calculating spend time:", error);
+      return { minutes: 0, seconds: 0 };
+    }
+  }
+
+  const spendTime = calculateSpendTime();
+
+  const formatTime = (minutes, seconds = 0) => {
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    
+    if (hours > 0) {
+      return `${hours} ঘন্টা ${mins} মিনিট ${seconds} সেকেন্ড`
+    }
+    if (minutes > 0) {
+      return `${mins} মিনিট ${seconds} সেকেন্ড`
+    }
+    return `${seconds} সেকেন্ড`
+  }
+
+  const formatGivenTime = (minutes) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
     if (hours > 0) {
@@ -34,11 +64,11 @@ const ExamSummary = ({ examData }) => {
             <div className="d-flex flex-wrap gap-4 text-muted">
               <div className="d-flex align-items-center">
                 <span className="me-2">⏰</span>
-                <span>নির্ধারিত সময়: {formatTime(totalGivenTime)}</span>
+                <span>নির্ধারিত সময়: {formatGivenTime(examData.totalGivenTime)}</span>
               </div>
               <div className="d-flex align-items-center">
                 <span className="me-2">⏱️</span>
-                <span>জমা দেওয়ার সময়: {formatTime(submissionTime)}</span>
+                <span>মোট সময়: {formatTime(spendTime.minutes, spendTime.seconds)}</span>
               </div>
               <div className="d-flex align-items-center">
                 <span className="me-2">📊</span>
@@ -76,48 +106,6 @@ const ExamSummary = ({ examData }) => {
             </div>
           </div>
         </div>
-
-        {/* Progress Bars */}
-        {/* <div className="row mt-4">
-          <div className="col-12">
-            <div className="mb-2">
-              <div className="d-flex justify-content-between small text-muted mb-1">
-                <span>সঠিক উত্তর</span>
-                <span>{getPercentage(correctAnswers, totalQuestions)}%</span>
-              </div>
-              <div className="progress mb-2" style={{ height: "6px" }}>
-                <div
-                  className="progress-bar bg-success"
-                  style={{ width: `${getPercentage(correctAnswers, totalQuestions)}%` }}
-                ></div>
-              </div>
-            </div>
-            <div className="mb-2">
-              <div className="d-flex justify-content-between small text-muted mb-1">
-                <span>ভুল উত্তর</span>
-                <span>{getPercentage(wrongAnswers, totalQuestions)}%</span>
-              </div>
-              <div className="progress mb-2" style={{ height: "6px" }}>
-                <div
-                  className="progress-bar bg-danger"
-                  style={{ width: `${getPercentage(wrongAnswers, totalQuestions)}%` }}
-                ></div>
-              </div>
-            </div>
-            <div>
-              <div className="d-flex justify-content-between small text-muted mb-1">
-                <span>স্কিপ করা</span>
-                <span>{getPercentage(skippedQuestions, totalQuestions)}%</span>
-              </div>
-              <div className="progress" style={{ height: "6px" }}>
-                <div
-                  className="progress-bar bg-warning"
-                  style={{ width: `${getPercentage(skippedQuestions, totalQuestions)}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   )
