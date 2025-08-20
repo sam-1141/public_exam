@@ -3,8 +3,9 @@ import QuestionReview from "./QuestionReview"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { questions } from "../../../utils/AnswerSheet/questions"
+import {useEffect} from "react";
 
-const AnswerSheetPage = () => {
+const AnswerSheetPage = ({ info }) => {
   // Dummy exam data
   const examData = {
     examName: "পদার্থবিজ্ঞান মডেল টেস্ট - ২",
@@ -18,6 +19,10 @@ const AnswerSheetPage = () => {
     totalScore: 100,
     obtainedScore: 60,
   }
+
+    useEffect(() => {
+        console.log("AnswerSheetPage mounted", info);
+    }, [info]);
 
   const handleBackClick = () => {
     window.history.back();
