@@ -1,23 +1,18 @@
 import Layout from "../../../layouts/Layout"
-import { useState, useMemo } from "react"
+import {useState, useMemo, useEffect} from "react"
 import HistoryPagination from "./HistoryPagination"
 import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import ExamHistoryCard from "./ExamHistoryCard"
 
-const HistoryPage = () => {
+const HistoryPage = ({courses}) => {
   const [selectedCourse, setSelectedCourse] = useState("physics")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-  const courses = [
-    { id: "physics", name: "পদার্থবিজ্ঞান" },
-    { id: "chemistry", name: "রসায়ন" },
-    { id: "math", name: "উচ্চতর গণিত" },
-    { id: "biology", name: "জীববিজ্ঞান" },
-    { id: "bangla", name: "বাংলা" },
-    { id: "english", name: "English" },
-  ]
+    // useEffect(() => {
+    //     console.log("All exams Info:", exams);
+    // }, [exams]);
 
   const currentExamData = examHistory[selectedCourse]?.live || []
 
@@ -81,7 +76,7 @@ const HistoryPage = () => {
                   >
                     {courses.map((course) => (
                       <option key={course.id} value={course.id}>
-                        {course.name}
+                        {course.course_name}
                       </option>
                     ))}
                   </select>

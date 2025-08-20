@@ -34,7 +34,6 @@ class StudentLiveExamController extends Controller
             ->select('questions.*')
             ->get();
 
-
         $studentId = auth()->user()->id;
 
         $exists = DB::table('student_exam_attendance')
@@ -57,7 +56,9 @@ class StudentLiveExamController extends Controller
             'student_exam_end_time' => now()->addMinutes($exam->duration),
             'submit_time' => null,
             'submit_status' => null,
+            'exam_total_questions' => $exam->total_questions,
             'exam_total_mark' => $exam->total_marks,
+            'negative_marks_value' => $exam->negative_marks_value,
             'student_total_mark' => null,
             'total_correct_answers' => null,
             'total_skipped_answers' => null,

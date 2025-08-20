@@ -23,7 +23,9 @@ return new class extends Migration
             $table->timestamp('student_exam_end_time')->nullable();
             $table->timestamp('submit_time')->nullable();
             $table->tinyInteger('submit_status')->nullable()->comment('1=by_student, 2=time_expired, 3=forced_exit');
+            $table->integer('exam_total_questions')->nullable();
             $table->integer('exam_total_mark')->default(0)->nullable();
+            $table->float('negative_marks_value')->nullable();
             $table->integer('student_total_mark')->default(0)->nullable();
             $table->integer('total_correct_answers')->default(0)->nullable();
             $table->integer('total_skipped_answers')->default(0)->nullable();
