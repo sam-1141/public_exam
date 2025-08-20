@@ -38,7 +38,13 @@ function AdminDashboard() {
         axios
             .get(route("show.practise.exam.list"))
             .then((res) => {
-                setPracticeExams(res.data.exams || []);
+                setPracticeExams(
+                    Array.isArray(res.data.exams?.data)
+                        ? res.data.exams.data
+                        : Array.isArray(res.data.exams)
+                            ? res.data.exams
+                            : []
+                );
             })
             .catch(() => {
                 setPracticeExams([]);
