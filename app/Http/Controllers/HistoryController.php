@@ -100,9 +100,9 @@ class HistoryController extends Controller
 
 
 
-    /* Admin- Exam Results */
-    public function loadExamResults()
-    {
-        return Inertia::render('Admin/Result/Result');
-    }
+    // /* Admin- Exam Results */
+    // public function loadExamResults()
+    // {
+    //     return Inertia::render('Admin/Result/Result');
+    // }
 }

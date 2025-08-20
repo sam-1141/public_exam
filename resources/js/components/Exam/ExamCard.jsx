@@ -1,7 +1,6 @@
 import { Link } from "@inertiajs/react";
 import React from "react";
 import { route } from "ziggy-js";
-import { formatDateTime } from "../../Pages/Admin/Exam/EditExam";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
     const isPracticeExam = examType === "practice";
@@ -77,9 +76,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.course
-                                            ? exam.course.name
-                                            : "No courses"}
+                                        {exam.courseInfo
+                                            .map((course) => course.course_name)
+                                            .join(", ") || "No courses"}
                                     </small>
                                 </div>
                             </div>
@@ -95,9 +94,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.subject
-                                            ? exam.subject.name
-                                            : "No subjects"}
+                                        {exam.subjectInfo
+                                            .map((subject) => subject.name)
+                                            .join(", ") || "No subjects"}
                                     </small>
                                 </div>
                             </div>
@@ -138,7 +137,11 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                             <div className="fw-bold">
                                                 Start Time
                                             </div>
-                                            <small>{exam.startTime}</small>
+                                            <small>
+                                                {exam.startTime
+                                                    ? exam.startTime
+                                                    : "Not Set"}
+                                            </small>
                                         </div>
                                     </div>
                                 )}
@@ -152,10 +155,9 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                                 Result Publish Time
                                             </div>
                                             <small>
-                                                {exam.result_publish_time
-                                                    ? formatDateTime(
-                                                          exam.result_publish_time
-                                                      )
+                                                {exam.resultPublishTime
+                                                    ? exam.resultPublishTime ||
+                                                      exam.result_publish_time
                                                     : "Not Set"}
                                             </small>
                                         </div>
@@ -197,7 +199,11 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                             <div className="fw-bold">
                                                 End Time
                                             </div>
-                                            <small>{exam.endTime}</small>
+                                            <small>
+                                                {exam.endTime
+                                                    ? exam.endTime
+                                                    : "Not set"}
+                                            </small>
                                         </div>
                                     </div>
                                 )}

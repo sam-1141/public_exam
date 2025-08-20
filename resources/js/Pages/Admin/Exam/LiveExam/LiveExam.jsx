@@ -118,6 +118,7 @@ const LiveExam = ({ courses, subjects }) => {
                 </div>
             ) : (
                 <>
+                    {/* Exam data */}
                     <div className="row">
                         {exams?.data?.map((exam) => (
                             <ExamCard
@@ -129,8 +130,9 @@ const LiveExam = ({ courses, subjects }) => {
                         ))}
                     </div>
 
+                    {/* Empty state */}
                     {exams?.data?.length === 0 && (
-                        <div className="text-center py-3">
+                        <div className="card-body bg-white text-center py-5 mt-5">
                             <div className="mb-3">
                                 <i className="fas fa-calendar-times fa-3x text-muted"></i>
                             </div>
@@ -141,55 +143,60 @@ const LiveExam = ({ courses, subjects }) => {
                         </div>
                     )}
 
-                    <div>
-                        {exams.links.length > 0 && (
-                            <nav className="d-flex justify-content-center mt-4">
-                                <ul className="pagination">
-                                    {exams.links.length > 0 && (
-                                        <nav className="d-flex justify-content-center mt-4">
-                                            <ul className="pagination">
-                                                {exams.links.map((link, i) => (
-                                                    <li
-                                                        key={i}
-                                                        className={`page-item ${
-                                                            link.active
-                                                                ? "active"
-                                                                : ""
-                                                        } ${
-                                                            !link.url
-                                                                ? "disabled"
-                                                                : ""
-                                                        }`}
-                                                    >
-                                                        {link.url ? (
-                                                            <button
-                                                                className="page-link"
-                                                                onClick={() =>
-                                                                    handlePageChange(
-                                                                        link.url
-                                                                    )
-                                                                }
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: link.label,
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <span
-                                                                className="page-link"
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: link.label,
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </nav>
-                                    )}
-                                </ul>
-                            </nav>
-                        )}
-                    </div>
+                    {/* Pagination */}
+                    {exams.data.length > 0 && (
+                        <div>
+                            {exams.links.length > 0 && (
+                                <nav className="d-flex justify-content-center mt-4">
+                                    <ul className="pagination">
+                                        {exams.links.length > 0 && (
+                                            <nav className="d-flex justify-content-center mt-4">
+                                                <ul className="pagination">
+                                                    {exams.links.map(
+                                                        (link, i) => (
+                                                            <li
+                                                                key={i}
+                                                                className={`page-item ${
+                                                                    link.active
+                                                                        ? "active"
+                                                                        : ""
+                                                                } ${
+                                                                    !link.url
+                                                                        ? "disabled"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                {link.url ? (
+                                                                    <button
+                                                                        className="page-link"
+                                                                        onClick={() =>
+                                                                            handlePageChange(
+                                                                                link.url
+                                                                            )
+                                                                        }
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: link.label,
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <span
+                                                                        className="page-link"
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: link.label,
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </nav>
+                                        )}
+                                    </ul>
+                                </nav>
+                            )}
+                        </div>
+                    )}
                 </>
             )}
 

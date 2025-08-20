@@ -4,6 +4,7 @@ import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import QuestionList from "./QuestionList/QuiestionList";
 import QuestionModal from "../../../components/Questions/QuestionModal";
+import { formatDateTime } from "./EditExam";
 
 const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
@@ -16,7 +17,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
     };
 
     useEffect(() => {
-        console.log("Exam Details:", exam);
+        // console.log("Exam Details:", exam);
     }, [exam]);
 
     const toggleStatus = (id, currentStatus) => {
@@ -180,10 +181,8 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                                 Result Publish Time
                                             </div>
                                             <small>
-                                                {exam.result_publish_time
-                                                    ? formatDateTime(
-                                                          exam.result_publish_time
-                                                      )
+                                                {exam.resultPublishTime
+                                                    ? exam.resultPublishTime
                                                     : "Not Set"}
                                             </small>
                                         </div>

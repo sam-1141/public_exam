@@ -12,9 +12,6 @@ const PracticeExam = () => {
     const [refresh, setRefresh] = useState(false);
 
     const [editExamSlug, setEditExamSlug] = useState(null);
-    const [editExamData, setEditExamData] = useState(null);
-    const [editModalOpen, setEditModalOpen] = useState(false);
-    const [editLoading, setEditLoading] = useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -43,7 +40,7 @@ const PracticeExam = () => {
                     </Link>
                 </div>
                 {/* Page title */}
-                <h2 className="mb-4 font-semibold text-2xl text-center">
+                <h2 className="font-semibold text-2xl text-center">
                     Practice Exams
                 </h2>
             </div>
@@ -64,6 +61,7 @@ const PracticeExam = () => {
                 </div>
             ) : (
                 <>
+                    {/* Exam data */}
                     <div className="row">
                         {exams?.data?.map((exam) => (
                             <ExamCard
@@ -74,9 +72,10 @@ const PracticeExam = () => {
                             />
                         ))}
                     </div>
+
                     {/* Empty state */}
                     {exams?.data?.length === 0 && (
-                        <div className="text-center py-3">
+                        <div className="card-body bg-white text-center py-5 mt-5">
                             <div className="mb-3">
                                 <i className="fas fa-calendar-times fa-3x text-muted"></i>
                             </div>
@@ -84,6 +83,61 @@ const PracticeExam = () => {
                             <p className="text-muted mb-4">
                                 You haven't created any practice exams yet
                             </p>
+                        </div>
+                    )}
+
+                    {/* Pagination */}
+                    {exams.data.length > 0 && (
+                        <div>
+                            {exams.links.length > 0 && (
+                                <nav className="d-flex justify-content-center mt-4">
+                                    <ul className="pagination">
+                                        {exams.links.length > 0 && (
+                                            <nav className="d-flex justify-content-center mt-4">
+                                                <ul className="pagination">
+                                                    {exams.links.map(
+                                                        (link, i) => (
+                                                            <li
+                                                                key={i}
+                                                                className={`page-item ${
+                                                                    link.active
+                                                                        ? "active"
+                                                                        : ""
+                                                                } ${
+                                                                    !link.url
+                                                                        ? "disabled"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                {link.url ? (
+                                                                    <button
+                                                                        className="page-link"
+                                                                        onClick={() =>
+                                                                            handlePageChange(
+                                                                                link.url
+                                                                            )
+                                                                        }
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: link.label,
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    <span
+                                                                        className="page-link"
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: link.label,
+                                                                        }}
+                                                                    />
+                                                                )}
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </nav>
+                                        )}
+                                    </ul>
+                                </nav>
+                            )}
                         </div>
                     )}
                 </>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LiveExamController;
+use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\LeaderboardController;
@@ -120,7 +121,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     });
 
     /* Admin- Exam Results */
-    Route::controller(HistoryController::class)->group(function () {
+    Route::controller(ResultController::class)->group(function () {
         Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
     });
 
