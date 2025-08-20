@@ -15,8 +15,7 @@ class HistoryController extends Controller
 
         $studentExams = DB::table('student_exam_attendance')
             ->where('student_exam_attendance.student_id', auth()->id())
-            // after dynamic this section uncomment this line
-//            ->where('student_exam_attendance.result_publish_time', '<', now())
+            ->where('student_exam_attendance.result_publish_time', '<', now())
             ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
             ->join('course_exam', 'student_exam_attendance.exam_id', '=', 'course_exam.exam_id')
             ->groupBy(
@@ -28,6 +27,7 @@ class HistoryController extends Controller
                 'student_exam_attendance.student_exam_end_time',
                 'student_exam_attendance.submit_time',
                 'live_exams.name',
+                'live_exams.slug',
                 'live_exams.duration'
             )
             ->get([
@@ -40,6 +40,7 @@ class HistoryController extends Controller
                 'student_exam_attendance.submit_time as examSubmitTime',
 
                 'live_exams.name as liveExamName',
+                'live_exams.slug as liveExamSlug',
                 'live_exams.duration as liveExamDuration',
 
                 DB::raw('GROUP_CONCAT(course_exam.course_id) as relatedCourseIds'),
@@ -61,6 +62,7 @@ class HistoryController extends Controller
         $studentExamsAttendance = DB::table('student_exam_attendance')
             ->where('student_exam_attendance.student_id', auth()->id())
             ->where('student_exam_attendance.exam_id', $exam->id)
+            ->where('student_exam_attendance.result_publish_time', '<', now())
             ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
             ->firstOrFail([
                 'student_exam_attendance.exam_type as studentExamType',
