@@ -6,11 +6,31 @@ const ExamHistoryCard = ({ exam, date }) => {
     useEffect(() => {
         console.log("Exam History Card Data:", exam);
     }, [exam]);
+    
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100
     if (percentage >= 80) return "text-success"
     if (percentage >= 60) return "text-warning"
     return "text-danger"
+  }
+
+  // Calculate time spent between attend time and submit time
+  const calculateTimeSpent = () => {
+    if (!exam.attendTime || !exam.submitTime) return "N/A";
+    
+    try {
+      const attendTime = new Date(exam.attendTime);
+      const submitTime = new Date(exam.submitTime);
+      
+      const timeDiff = submitTime - attendTime; // difference in milliseconds
+      const minutes = Math.floor(timeDiff / (1000 * 60));
+      const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+      
+      return `${minutes} মিনিট ${seconds} সেকেন্ড`;
+    } catch (error) {
+      console.error("Error calculating time spent:", error);
+      return "N/A";
+    }
   }
 
   return (
@@ -19,7 +39,7 @@ const ExamHistoryCard = ({ exam, date }) => {
         <div className="col-12 col-md-6 mb-2 mb-md-0 text-center text-md-start">
           <h6 className="fw-semibold mb-1">{exam.name}</h6>
           <div className="d-flex align-items-center justify-content-center justify-content-md-start text-muted small">
-            <span className="me-3">⏱️ {exam.duration} মিনিট</span>
+            <span className="me-3">⏱️ {calculateTimeSpent()}</span>
             <span className="me-3">⏰ {date}</span>
           </div>
         </div>
