@@ -54,7 +54,7 @@ const ExamHistoryCard = ({ exam, date }) => {
 
             <a
                 className="btn btn-outline-primary btn-sm"
-                href={route("student.answer.sheet", exam.id)}
+                href={route("student.answer.sheet", exam.slug)}
             >
                 উত্তরপত্র
             </a>
