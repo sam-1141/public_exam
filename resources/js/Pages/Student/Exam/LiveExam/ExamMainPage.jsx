@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
@@ -39,9 +37,34 @@ const ExamMainPage = ({ exam, questions }) => {
   }, [])
 
   const handleAnswerSelect = async (questionId, answerIndex) => {
+    // Calculate the additional data points
+    const question = questions.find(q => q.id === questionId);
+    let parsedOptions = [];
+    try {
+      parsedOptions = JSON.parse(question.options || "[]");
+    } catch (error) {
+      console.error("Invalid options JSON", error);
+    }
+    
+    // Find correct answers (can be multiple)
+    const correctAnswers = parsedOptions
+      .map((opt, idx) => (opt.ans ? idx : -1))
+      .filter(idx => idx !== -1);
+    
+    // Check if user's answer is correct
+    const isCorrect = correctAnswers.includes(answerIndex);
+    
+    // Calculate per question mark
+    const singleQuestionMark = exam.totalMarks / questions.length;
+    
     setAnswers((prev) => ({
       ...prev,
-      [questionId]: answerIndex,
+      [questionId]: {
+        answerIndex,
+        correct_ans: correctAnswers,
+        is_correct: isCorrect,
+        single_question_mark: singleQuestionMark
+      },
     }));
 
     try {
@@ -49,7 +72,11 @@ const ExamMainPage = ({ exam, questions }) => {
         exam_id: exam.id,
         question_id: questionId,
         ans_given: String(answerIndex),
+        correct_ans: correctAnswers.join(','), // Store as comma-separated string
+        is_correct: isCorrect,
+        single_question_mark: singleQuestionMark
       })
+      console.log("stored all data")
     } catch (err) {
       console.error('Answer save failed:', err)
     }
@@ -166,7 +193,7 @@ const ExamMainPage = ({ exam, questions }) => {
                 question={question}
                 questionNumber={index + 1}
                 onAnswerSelect={handleAnswerSelect}
-                selectedAnswer={answers[question.id]}
+                selectedAnswer={answers[question.id]?.answerIndex}
                 isAnswered={answers[question.id] !== undefined}
               />
             ))}

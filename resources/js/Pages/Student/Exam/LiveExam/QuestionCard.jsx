@@ -1,5 +1,3 @@
-"use client"
-
 const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer, isAnswered }) => {
   // Parse the options JSON string into an array
   let parsedOptions = [];
