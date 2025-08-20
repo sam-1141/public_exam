@@ -1,20 +1,88 @@
 import Layout from "../../../layouts/Layout"
-import {useState, useMemo, useEffect} from "react"
+import { useState, useMemo, useEffect } from "react"
 import HistoryPagination from "./HistoryPagination"
 import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import ExamHistoryCard from "./ExamHistoryCard"
 
-const HistoryPage = ({courses, examsInfo}) => {
-  const [selectedCourse, setSelectedCourse] = useState("physics")
+const HistoryPage = ({ courses, examsInfo }) => {
+  const [selectedCourse, setSelectedCourse] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-    useEffect(() => {
-        console.log("All exams Info:", examsInfo);
-    }, [examsInfo]);
+  useEffect(() => {
+    console.log("All exams Info:", courses, examsInfo);
 
-  const currentExamData = examHistory[selectedCourse]?.live || []
+    // Set initial selected course to the first available course from exams
+    if (examsInfo.length > 0 && courses.length > 0) {
+      const firstCourseId = getAvailableCourses()[0]?.id;
+      if (firstCourseId) {
+        setSelectedCourse(firstCourseId.toString());
+      }
+    }
+  }, [examsInfo, courses]);
+
+  // Get available courses that have exams
+  const getAvailableCourses = () => {
+    const courseIdsWithExams = new Set();
+
+    examsInfo.forEach(exam => {
+      if (exam.relatedCourseIds) {
+        exam.relatedCourseIds.split(',').forEach(courseId => {
+          courseIdsWithExams.add(courseId.trim());
+        });
+      }
+    });
+
+    return courses.filter(course => courseIdsWithExams.has(course.id.toString()));
+  }
+
+  // Transform examsInfo to match the expected format
+  const transformExamData = useMemo(() => {
+    const availableCourses = getAvailableCourses();
+    const result = {};
+
+    availableCourses.forEach(course => {
+      const courseId = course.id.toString();
+      result[courseId] = { live: [] };
+
+      // Group exams by date for this course
+      const examsByDate = {};
+
+      examsInfo.forEach(exam => {
+        if (exam.relatedCourseIds && exam.relatedCourseIds.includes(courseId)) {
+          const examDate = exam.examSubmitTime.split(' ')[0]; // Get date part
+
+          if (!examsByDate[examDate]) {
+            examsByDate[examDate] = [];
+          }
+
+          examsByDate[examDate].push({
+            id: exam.id || Math.random(),
+            name: exam.liveExamName,
+            duration: exam.liveExamDuration,
+            attendTime: exam.studentExamAttendTime,
+            submitTime: exam.examSubmitTime,
+            score: exam.studentTotalMarks,
+            totalMarks: exam.examTotalMarks,
+            time: exam.examSubmitTime.split(' ')[1]
+          });
+        }
+      });
+
+      // Convert to the expected format
+      Object.keys(examsByDate).forEach(date => {
+        result[courseId].live.push({
+          date: date,
+          exams: examsByDate[date]
+        });
+      });
+    });
+
+    return result;
+  }, [examsInfo, courses]);
+
+  const currentExamData = transformExamData[selectedCourse]?.live || []
 
   // Group & sort exams (newest date first, then time descending)
   const groupedExams = useMemo(() => {
@@ -39,7 +107,7 @@ const HistoryPage = ({courses, examsInfo}) => {
     setCurrentPage(1)
   }
 
-  const selectedCourseName = courses.find((c) => c.id === selectedCourse)?.name || ""
+  const selectedCourseName = courses.find((c) => c.id.toString() === selectedCourse)?.course_name || ""
 
   // Bangla date formatter
   const getBanglaDate = (dateStr) => {
@@ -58,6 +126,8 @@ const HistoryPage = ({courses, examsInfo}) => {
     return `${day} ${month}, ${year}`
   }
 
+  const availableCourses = getAvailableCourses();
+
   return (
     <div className="d-flex flex-column font-baloo">
       <PageHeader title="ইতিহাস" />
@@ -65,64 +135,70 @@ const HistoryPage = ({courses, examsInfo}) => {
       <main className="flex-grow-1 mt-2 bg-light">
         <div className="col-12">
 
-              {/* Course Selector */}
-              <div className="card border-0 shadow-sm mb-4">
-                <div className="card-body p-3">
-                  <label className="form-label fw-semibold mb-2">কোর্স নির্বাচন করুন</label>
-                  <select
-                    className="form-select"
-                    value={selectedCourse}
-                    onChange={(e) => handleCourseChange(e.target.value)}
-                  >
-                    {courses.map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.course_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Summary */}
-              <h4 className="fw-bold text-dark mb-4">{selectedCourseName}</h4>
-
-              {/* Exam History */}
-              {currentPageData.length > 0 ? (
-                <>
-                  {currentPageData.map((dateGroup, index) => (
-                    <div key={index} className=" ms-3">
-                      {dateGroup.exams.map((exam, idx) => (
-                        <ExamHistoryCard key={idx} exam={exam} date={getBanglaDate(dateGroup.date)} />
-                      ))}
-                    </div>
+          {/* Course Selector */}
+          {availableCourses.length > 0 && (
+            <div className="card border-0 shadow-sm mb-4">
+              <div className="card-body p-3">
+                <label className="form-label fw-semibold mb-2">কোর্স নির্বাচন করুন</label>
+                <select
+                  className="form-select"
+                  value={selectedCourse}
+                  onChange={(e) => handleCourseChange(e.target.value)}
+                >
+                  {availableCourses.map((course) => (
+                    <option key={course.id} value={course.id.toString()}>
+                      {course.course_name}
+                    </option>
                   ))}
-
-                  {totalPages > 1 && (
-                    <HistoryPagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      onPageChange={setCurrentPage}
-                      totalItems={groupedExams.length}
-                      itemsPerPage={itemsPerPage}
-                    />
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-5">
-                  <div
-                    className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                    style={{ width: "80px", height: "80px" }}
-                  >
-                    <span className="fs-1">📚</span>
-                  </div>
-                  <h5 className="fw-bold text-muted mb-2">কোনো পরীক্ষার ইতিহাস নেই</h5>
-                  <p className="text-muted">
-                    {selectedCourseName} এর লাইভ পরীক্ষায় এখনো অংশগ্রহণ করেননি।
-                  </p>
-                </div>
-              )}
-
+                </select>
+              </div>
             </div>
+          )}
+
+          {/* Summary */}
+          {selectedCourse && (
+            <h4 className="fw-bold text-dark mb-4">{selectedCourseName}</h4>
+          )}
+
+          {/* Exam History */}
+          {currentPageData.length > 0 ? (
+            <>
+              {currentPageData.map((dateGroup, index) => (
+                <div key={index} className=" ms-3">
+                  {dateGroup.exams.map((exam, idx) => (
+                    <ExamHistoryCard key={idx} exam={exam} date={getBanglaDate(dateGroup.date)} />
+                  ))}
+                </div>
+              ))}
+
+              {totalPages > 1 && (
+                <HistoryPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  totalItems={groupedExams.length}
+                  itemsPerPage={itemsPerPage}
+                />
+              )}
+            </>
+          ) : (
+            <div className="text-center py-5">
+              <div
+                className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                style={{ width: "80px", height: "80px" }}
+              >
+                <span className="fs-1">📚</span>
+              </div>
+              <h5 className="fw-bold text-muted mb-2">কোনো পরীক্ষার ইতিহাস নেই</h5>
+              <p className="text-muted">
+                {availableCourses.length === 0
+                  ? "কোনো কোর্সে পরীক্ষা দেওয়া হয়নি"
+                  : `${selectedCourseName} এর লাইভ পরীক্ষায় এখনো অংশগ্রহণ করেননি।`}
+              </p>
+            </div>
+          )}
+
+        </div>
       </main>
     </div>
   )
