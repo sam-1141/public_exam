@@ -1,6 +1,11 @@
 import { router } from "@inertiajs/react"
+import {route} from "ziggy-js";
+import {useEffect} from "react";
 
 const ExamHistoryCard = ({ exam, date }) => {
+    useEffect(() => {
+        console.log("Exam History Card Data:", exam);
+    }, [exam]);
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100
     if (percentage >= 80) return "text-success"
@@ -26,12 +31,13 @@ const ExamHistoryCard = ({ exam, date }) => {
         </div>
 
         <div className="col-12 col-md-3 d-flex gap-2 justify-content-center justify-content-md-end">
-          <button
-            className="btn btn-outline-primary btn-sm "
-            onClick={() => router.get(route("student.answer.sheet", { examId: exam.id }))}
-          >
-            উত্তরপত্র
-          </button>
+
+            <a
+                className="btn btn-outline-primary btn-sm"
+                href={route("student.answer.sheet", exam.id)}
+            >
+                উত্তরপত্র
+            </a>
           <button
             className="btn btn-outline-success btn-sm"
             onClick={() => router.get(route("student.leaderboard", { examId: exam.id }))}
