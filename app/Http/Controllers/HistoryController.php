@@ -18,17 +18,23 @@ class HistoryController extends Controller
             // after dynamic this section uncomment this line
 //            ->where('student_exam_attendance.result_publish_time', '<', now())
             ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
+            ->join('course_exam', 'student_exam_attendance.exam_id', '=', 'course_exam.exam_id')
+            ->groupBy(
+                'student_exam_attendance.id'
+            )
             ->get([
                 'student_exam_attendance.exam_type as studentExamType',
                 'student_exam_attendance.exam_total_questions as examTotalQuestions',
                 'student_exam_attendance.exam_total_mark as examTotalMarks',
                 'student_exam_attendance.student_total_mark as studentTotalMarks',
-
                 'student_exam_attendance.student_exam_start_time as studentExamAttendTime',
                 'student_exam_attendance.student_exam_end_time as studentExamEndTime',
+                'student_exam_attendance.submit_time as examSubmitTime',
 
                 'live_exams.name as liveExamName',
                 'live_exams.duration as liveExamDuration',
+
+                DB::raw('GROUP_CONCAT(course_exam.course_id) as relatedCourseIds'),
             ]);
 
         return Inertia::render('Student/History/HistoryPage',
