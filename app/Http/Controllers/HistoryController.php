@@ -54,8 +54,6 @@ class HistoryController extends Controller
     }
     public function loadAnswerSheetPage($examSlug)
     {
-        $examSlug = 'test-exam';
-
         $exam = DB::table('live_exams')
             ->where('slug', $examSlug)
             ->firstOrFail('id');
