@@ -5,14 +5,14 @@ import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import ExamHistoryCard from "./ExamHistoryCard"
 
-const HistoryPage = ({courses}) => {
+const HistoryPage = ({courses, examsInfo}) => {
   const [selectedCourse, setSelectedCourse] = useState("physics")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
 
-    // useEffect(() => {
-    //     console.log("All exams Info:", exams);
-    // }, [exams]);
+    useEffect(() => {
+        console.log("All exams Info:", examsInfo);
+    }, [examsInfo]);
 
   const currentExamData = examHistory[selectedCourse]?.live || []
 
