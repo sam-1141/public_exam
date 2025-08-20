@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('exam_total_questions')->nullable();
             $table->integer('exam_total_mark')->default(0)->nullable();
             $table->float('negative_marks_value')->nullable();
-            $table->integer('student_total_mark')->default(0)->nullable();
+            $table->float('student_total_mark')->default(0)->nullable();
             $table->integer('total_correct_answers')->default(0)->nullable();
             $table->integer('total_skipped_answers')->default(0)->nullable();
             $table->integer('tab_switch_count')->default(0)->nullable();
