@@ -63,15 +63,6 @@ const ExamMainPage = ({ exam, questions }) => {
       },
     }));
 
-      console.log({
-          exam_id: exam.id,
-          question_id: questionId,
-          ans_given: String(answerIndex),
-          correct_ans: correctAnswers.join(','),
-          is_correct: isCorrect,
-          single_question_mark: singleQuestionMark
-      });
-
     try {
       await axios.post(route('student.exam.answer.store'), {
         exam_id: exam.id,
