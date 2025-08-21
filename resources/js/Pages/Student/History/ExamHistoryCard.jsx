@@ -46,7 +46,7 @@ const ExamHistoryCard = ({ exam, date }) => {
 
         <div className="col-12 col-md-3 mb-2 mb-md-0 text-center">
           <div className={`fw-bold fs-5 ${getScoreColor(exam.score, exam.totalMarks)}`}>
-            {exam.score}/{exam.totalMarks}
+            {exam.score || 0}/{exam.totalMarks}
           </div>
         </div>
 
@@ -54,7 +54,7 @@ const ExamHistoryCard = ({ exam, date }) => {
 
             <a
                 className="btn btn-outline-primary btn-sm"
-                href={route("student.answer.sheet", exam.slug)}
+                href={route("student.answer.sheet", { examSlug: exam.liveExamSlug })}
             >
                 উত্তরপত্র
             </a>
