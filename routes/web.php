@@ -123,6 +123,8 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     /* Admin- Exam Results */
     Route::controller(ResultController::class)->group(function () {
         Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
+        Route::get('/admin/course/{courseSlug}/exam/results', 'loadExamResultsListByCourse')->name('admin.exam.results.list');
+        Route::get('/admin/student/{studentId}/exam/{examSlug}/answer-sheet', 'loadStudentAnswerSheetPage')->name('admin.student.answer.sheet');
     });
 
 });

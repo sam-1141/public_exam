@@ -100,12 +100,4 @@ class HistoryController extends Controller
             'info' => $info,
         ]);
     }
-
-
-
-    // /* Admin- Exam Results */
-    // public function loadExamResults()
-    // {
-    //     return Inertia::render('Admin/Result/Result');
-    // }
 }

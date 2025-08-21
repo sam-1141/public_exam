@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Layout from "../../../layouts/Layout";
 import Pagination from "../../../components/Pagination/Pagination";
 import { answerSheets, examResults } from "./result.data";
@@ -6,12 +6,16 @@ import AnswerSheetModal from "./AnswerSheetModal";
 import { Icon } from "@iconify/react";
 import styles from "../LeaderBoard/Leaderboard.module.css";
 
-const ExamResult = () => {
+const ExamResult = ({ coursesInfo }) => {
     const [selectedCourse, setSelectedCourse] = useState("math");
     const [showAnswerSheet, setShowAnswerSheet] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
+
+    useEffect(() => {
+        console.log("Courses Info:", coursesInfo);
+    }, [coursesInfo]);
 
     const courses = [
         { id: "math", name: "Mathematics", students: 24 },
