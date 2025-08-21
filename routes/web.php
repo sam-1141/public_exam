@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminLeaderboardController;
 use App\Http\Controllers\Admin\LiveExamController;
 use App\Http\Controllers\Admin\ResultController;
 use App\Http\Controllers\admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
-use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\Student\PracticeExamController;
+use App\Http\Controllers\Student\StudentLeaderboardController;
 use App\Http\Controllers\Student\StudentLiveExamController;
 use App\Http\Controllers\TrialExamController;
 use Illuminate\Support\Facades\Route;
@@ -67,11 +68,12 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         Route::get('/student/progress-report', 'loadProgressReport')->name('student.progress.report');
     });
 
-    Route::controller(LeaderboardController::class)->group(function () {
-        Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
+    // Student Leaderboard
+    Route::get('/student/leaderboard', [StudentLeaderboardController::class, 'loadLeaderBoardPage'])->name('student.leaderboard');
 
-        Route::get('/admin/leaderboard', 'loadAdminLeaderBoardPage')->name('admin.leaderboard');
-    });
+    // Admin Leaderboard
+    Route::get('/admin/leaderboard', [AdminLeaderboardController::class, 'loadAdminLeaderBoardPage'])->name('admin.leaderboard');
+    Route::get('/admin/exam/{examSlug}/leaderboard/list', [AdminLeaderboardController::class, 'loadAdminLeaderBoardList'])->name('admin.leaderboard.list');
 
     Route::controller(TrialExamController::class)->group(function () {
         Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');

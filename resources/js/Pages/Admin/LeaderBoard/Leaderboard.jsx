@@ -5,7 +5,7 @@ import { leaderboardData, exams } from "./leaderboardData";
 import styles from "./Leaderboard.module.css";
 import Pagination from "../../../components/Pagination/Pagination";
 
-const Leaderboard = () => {
+const Leaderboard = ({ examsInfo }) => {
     const [selectedExam, setSelectedExam] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
