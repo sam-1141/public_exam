@@ -1,37 +1,80 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../../layouts/Layout";
 import Pagination from "../../../components/Pagination/Pagination";
-import { answerSheets, examResults } from "./result.data";
 import AnswerSheetModal from "./AnswerSheetModal";
-import { Icon } from "@iconify/react";
-import styles from "../LeaderBoard/Leaderboard.module.css";
+import axios from "axios";
 
 const ExamResult = ({ coursesInfo }) => {
-    const [selectedCourse, setSelectedCourse] = useState("math");
+    const [selectedCourse, setSelectedCourse] = useState("");
     const [showAnswerSheet, setShowAnswerSheet] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const [loading, setLoading] = useState(false);
+    const [answerSheetLoading, setAnswerSheetLoading] = useState(false);
+    const [results, setResults] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const itemsPerPage = 10;
 
     useEffect(() => {
-        console.log("Courses Info:", coursesInfo);
+        if (coursesInfo && coursesInfo.length > 0) {
+            const transformedCourses = coursesInfo.map((course) => ({
+                id: course.slug,
+                name: course.course_name,
+            }));
+            setCourses(transformedCourses);
+        }
     }, [coursesInfo]);
 
-    const courses = [
-        { id: "math", name: "Mathematics", students: 24 },
-        { id: "physics", name: "Physics", students: 18 },
-        { id: "chemistry", name: "Chemistry", students: 22 },
-        { id: "biology", name: "Biology", students: 15 },
-    ];
+    useEffect(() => {
+        if (selectedCourse) {
+            fetchResults();
+        } else {
+            setResults([]);
+        }
+    }, [selectedCourse]);
+
+    const fetchResults = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get(
+                route("admin.exam.results.list", { courseSlug: selectedCourse })
+            );
+            setResults(response.data.examResults.data || []);
+        } catch (error) {
+            console.error("Failed to load results", error);
+            setResults([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCourseChange = (e) => {
         setSelectedCourse(e.target.value);
         setCurrentPage(1);
     };
 
-    const handleViewAnswerSheet = (student) => {
-        setSelectedStudent(student);
-        setShowAnswerSheet(true);
+    const handleViewAnswerSheet = async (student) => {
+        setAnswerSheetLoading(true);
+        try {
+            const response = await axios.get(
+                route("admin.student.answer.sheet", {
+                    studentId: student.studentId,
+                    examSlug: student.liveExamSlug,
+                })
+            );
+
+            setSelectedStudent({
+                ...student,
+                answerSheet: response.data.info,
+            });
+            setShowAnswerSheet(true);
+        } catch (error) {
+            console.error("Failed to load answer sheet", error);
+            setSelectedStudent(student);
+            setShowAnswerSheet(true);
+        } finally {
+            setAnswerSheetLoading(false);
+        }
     };
 
     const handleCloseAnswerSheet = () => {
@@ -39,27 +82,9 @@ const ExamResult = ({ coursesInfo }) => {
         setSelectedStudent(null);
     };
 
-    const getScoreVariant = (score) => {
-        if (score >= 90) return "success";
-        if (score >= 70) return "warning";
-        return "danger";
-    };
-
-    // Calculate statistics
-    const currentResults = examResults[selectedCourse] || [];
-    const averageScore = currentResults.length
-        ? Math.round(
-              currentResults.reduce((sum, student) => sum + student.score, 0) /
-                  currentResults.length
-          )
-        : 0;
-    const topScore = currentResults.length
-        ? Math.max(...currentResults.map((s) => s.score))
-        : 0;
-
     // Pagination logic
-    const totalPages = Math.ceil(currentResults.length / itemsPerPage);
-    const currentItems = currentResults.slice(
+    const totalPages = Math.ceil(results.length / itemsPerPage);
+    const currentItems = results.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
@@ -67,28 +92,17 @@ const ExamResult = ({ coursesInfo }) => {
     return (
         <>
             <div className="container-fluid py-4">
-                <div className="row mb-4">
-                    <div className="col">
-                        <h3 className="h3 font-semibold mb-3">
-                            All Exam Results
-                        </h3>
-                    </div>
-                </div>
+                <h3 className="h3 font-semibold mb-2">Exam Results</h3>
 
-                <div className="row mb-4 align-items-end">
+                <div className="row mb-4">
                     <div className="col-md-6">
-                        <label
-                            htmlFor="courseSelect"
-                            className="form-label fw-semibold"
-                        >
-                            Select Course
-                        </label>
                         <select
                             id="courseSelect"
                             className="form-select"
                             value={selectedCourse}
                             onChange={handleCourseChange}
                         >
+                            <option value="">Select a course</option>
                             {courses.map((course) => (
                                 <option key={course.id} value={course.id}>
                                     {course.name}
@@ -96,121 +110,163 @@ const ExamResult = ({ coursesInfo }) => {
                             ))}
                         </select>
                     </div>
-                    <div className="col-md-6 mt-2 mt-md-0">
-                        <div className="d-flex flex-wrap gap-2">
-                            <span className="badge bg-light text-dark p-2">
-                                <i className="bi bi-people-fill me-1"></i>{" "}
-                                {currentResults.length} Students
-                            </span>
-                            <span className="badge bg-light text-dark p-2">
-                                <i className="bi bi-check-circle-fill me-1"></i>{" "}
-                                Average: {averageScore}%
-                            </span>
-                            <span className="badge bg-light text-dark p-2">
-                                <i className="bi bi-trophy-fill me-1"></i> Top
-                                Score: {topScore}%
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
-                <div className="row mb-4">
-                    <div className="col">
-                        <div className="border rounded-3 bg-white">
-                            <div className="p-3 border-bottom bg-light">
-                                <h5 className="mb-0 text-dark">
-                                    {
-                                        courses.find(
-                                            (c) => c.id === selectedCourse
-                                        )?.name
-                                    }{" "}
-                                    Exam Results
-                                </h5>
+                {!selectedCourse ? (
+                    <div className="row">
+                        <div className="col-12 mx-auto">
+                            <div className="card border-0 shadow-sm">
+                                <div className="card-body text-center py-5">
+                                    <div className="mb-3">
+                                        <i className="bi bi-journal-text fs-1 text-muted"></i>
+                                    </div>
+                                    <h5 className="card-title mb-3">
+                                        Select a Course
+                                    </h5>
+                                    <p className="card-text text-muted">
+                                        Please select a course to view exam
+                                        results.
+                                    </p>
+                                </div>
                             </div>
-                            <div className="table-responsive">
-                                <table className="table table-hover mb-0">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th scope="col" className="ps-4">
-                                                Rank
-                                            </th>
-                                            <th scope="col">Student Name</th>
-                                            <th scope="col">Score</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentItems.map((student) => (
-                                            <tr key={student.id}>
-                                                <td className="ps-4">
-                                                    <div className="d-flex align-items-center gap-2">
-                                                        {student.rank === 1 && (
-                                                            <Icon
-                                                                icon="emojione:1st-place-medal"
-                                                                className={`${styles.medalIcon} ${styles.gold}`}
-                                                            />
-                                                        )}
-                                                        {student.rank === 2 && (
-                                                            <Icon
-                                                                icon="emojione:2nd-place-medal"
-                                                                className={`${styles.medalIcon} ${styles.silver}`}
-                                                            />
-                                                        )}
-                                                        {student.rank === 3 && (
-                                                            <Icon
-                                                                icon="emojione:3rd-place-medal"
-                                                                className={`${styles.medalIcon} ${styles.bronze}`}
-                                                            />
-                                                        )}
-                                                        <span
-                                                            className={`fw-bold ${
-                                                                student.rank <=
-                                                                3
-                                                                    ? "fs-5"
-                                                                    : ""
-                                                            }`}
+                        </div>
+                    </div>
+                ) : loading ? (
+                    <div className="row">
+                        <div className="col">
+                            <div className="d-flex justify-content-center py-5">
+                                <div
+                                    className="spinner-border text-primary"
+                                    role="status"
+                                >
+                                    <span className="visually-hidden">
+                                        Loading results...
+                                    </span>
+                                </div>
+                                <span className="ms-2">Loading results...</span>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="row mb-4">
+                            <div className="col">
+                                <div className="border rounded-3 bg-white">
+                                    <div className="table-responsive">
+                                        <table className="table table-hover mb-0">
+                                            <thead className="table-light">
+                                                <tr>
+                                                    <th scope="col">
+                                                        Student ID
+                                                    </th>
+
+                                                    <th scope="col">
+                                                        Exam Name
+                                                    </th>
+                                                    <th scope="col">
+                                                        Total Marks
+                                                    </th>
+                                                    <th scope="col">
+                                                        Submission Time
+                                                    </th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {currentItems.length > 0 ? (
+                                                    currentItems.map(
+                                                        (student) => (
+                                                            <tr
+                                                                key={`${student.studentId}-${student.liveExamSlug}`}
+                                                            >
+                                                                <td>
+                                                                    {
+                                                                        student.studentId
+                                                                    }
+                                                                </td>
+
+                                                                <td>
+                                                                    {
+                                                                        student.liveExamName
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <span className="font-semibold">
+                                                                        {
+                                                                            student.studentTotalMarks
+                                                                        }
+                                                                        /
+                                                                        {
+                                                                            student.examTotalMarks
+                                                                        }
+                                                                    </span>
+                                                                </td>
+                                                                <td>
+                                                                    {student.examSubmitTime
+                                                                        ? new Date(
+                                                                              student.examSubmitTime
+                                                                          ).toLocaleString()
+                                                                        : new Date(
+                                                                              student.studentExamAttendTime
+                                                                          ).toLocaleString()}
+                                                                </td>
+                                                                <td>
+                                                                    <button
+                                                                        className="btn btn-sm btn-outline-primary"
+                                                                        onClick={() =>
+                                                                            handleViewAnswerSheet(
+                                                                                student
+                                                                            )
+                                                                        }
+                                                                        disabled={
+                                                                            answerSheetLoading
+                                                                        }
+                                                                    >
+                                                                        {answerSheetLoading ? (
+                                                                            <>
+                                                                                <span
+                                                                                    className="spinner-border spinner-border-sm me-1"
+                                                                                    role="status"
+                                                                                ></span>
+                                                                                Loading...
+                                                                            </>
+                                                                        ) : (
+                                                                            "View Answers"
+                                                                        )}
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <tr>
+                                                        <td
+                                                            colSpan="5"
+                                                            className="text-center py-4"
                                                         >
-                                                            {student.rank}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>{student.name}</td>
-                                                <td>
-                                                    <span className="font-semibold">
-                                                        {student.score}/
-                                                        {student.total}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        onClick={() =>
-                                                            handleViewAnswerSheet(
-                                                                student
-                                                            )
-                                                        }
-                                                    >
-                                                        View Answers
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                                            No results found for
+                                                            this course.
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Pagination Component */}
-                {currentResults.length > 0 && (
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        itemsPerPage={itemsPerPage}
-                        totalItems={currentResults.length}
-                        onPageChange={setCurrentPage}
-                    />
+                        {/* Pagination Component */}
+                        {itemsPerPage && (
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                itemsPerPage={itemsPerPage}
+                                totalItems={results.length}
+                                onPageChange={setCurrentPage}
+                            />
+                        )}
+                    </>
                 )}
 
                 {/* Answer Sheet Modal */}
@@ -221,7 +277,7 @@ const ExamResult = ({ coursesInfo }) => {
                     courseName={
                         courses.find((c) => c.id === selectedCourse)?.name
                     }
-                    answerSheets={answerSheets}
+                    loading={answerSheetLoading}
                 />
             </div>
         </>

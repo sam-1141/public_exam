@@ -443,7 +443,7 @@ function McqBank({
                             </div>
                         ) : questions.length === 0 ? (
                             <div className="card shadow-sm border-0">
-                                <div className="card-body text-center py-5">
+                                <div className="card-body d-flex flex-column align-items-center justify-content-center text-center py-5">
                                     <Icon
                                         icon="mdi:file-question-outline"
                                         className="text-muted"
