@@ -36,7 +36,7 @@ class AdminLeaderboardController extends Controller
                 'students.name as student_name',
                 'students.institute as student_institute',
             )
-            ->get();
+            ->paginate(10);
 
         return response()->json([
             'examInfo' => $examInfo,

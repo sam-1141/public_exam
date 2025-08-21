@@ -3,7 +3,7 @@ import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
 
-const LeaderboardPage = () => {
+const LeaderboardPage = ({ examsInfo }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [selectedExam, setSelectedExam] = useState("")
