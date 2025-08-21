@@ -117,6 +117,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
     Route::controller(HistoryController::class)->group(function () {
         Route::get('/student/history', 'loadHistoryPage')->name('student.history');
         Route::get('/student/answer-sheet/{examSlug}', 'loadAnswerSheetPage')->name('student.answer.sheet');
+        Route::get('/student/leaderboard/exam', 'loadSingleExamLeaderBoardPage')->name('student.leaderboard.single.exam');
 
     });
 
