@@ -4,7 +4,6 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
     if (!show || !student) return null;
 
     const answerSheet = student.answerSheet;
-    console.log("Answer sheet data:", answerSheet);
 
     return (
         <div
@@ -168,7 +167,7 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
 // Question Item Component
 const QuestionItem = ({ question, index, studentAnswer }) => {
     const isCorrect =
-        studentAnswer && studentAnswer.answer === question.correct_answer;
+        studentAnswer && studentAnswer.ans_given === question.correct_answer;
 
     return (
         <div
@@ -201,7 +200,7 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                                 }
                                 isStudentAnswer={
                                     studentAnswer &&
-                                    studentAnswer.answer === optionKey
+                                    studentAnswer.ans_given === optionKey
                                 }
                             />
                         )
