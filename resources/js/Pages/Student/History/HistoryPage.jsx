@@ -65,7 +65,8 @@ const HistoryPage = ({ courses, examsInfo }) => {
             submitTime: exam.examSubmitTime,
             score: exam.studentTotalMarks,
             totalMarks: exam.examTotalMarks,
-            time: exam.examSubmitTime.split(' ')[1]
+            time: exam.examSubmitTime.split(' ')[1],
+            liveExamSlug: exam.liveExamSlug
           });
         }
       });
