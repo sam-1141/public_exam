@@ -1,4 +1,4 @@
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
@@ -7,6 +7,10 @@ const LeaderboardPage = ({ examsInfo }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
   const [selectedExam, setSelectedExam] = useState("")
+
+    useEffect(() => {
+        console.log("Exams Info:", examsInfo);
+    }, [examsInfo]);
 
   // Get unique exam names
   const examNames = [...new Set(leaderboardData.map(item => item.examName))]

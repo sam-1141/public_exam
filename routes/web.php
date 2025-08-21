@@ -70,6 +70,7 @@ Route::middleware([AuthMiddleware::class])->group(function () {
 
     // Student Leaderboard
     Route::get('/student/leaderboard', [StudentLeaderboardController::class, 'loadLeaderBoardPage'])->name('student.leaderboard');
+    Route::get('/student/exam/{examSlug}/leaderboard/list', [StudentLeaderboardController::class, 'loadStudentLeaderBoardList'])->name('admin.leaderboard.list');
 
     // Admin Leaderboard
     Route::get('/admin/leaderboard', [AdminLeaderboardController::class, 'loadAdminLeaderBoardPage'])->name('admin.leaderboard');
