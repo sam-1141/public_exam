@@ -11,7 +11,6 @@ use App\Http\Controllers\Student\StudentLeaderboardController;
 use App\Http\Controllers\Student\StudentLiveExamController;
 use App\Http\Controllers\TrialExamController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AuthMiddleware;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HardnessController;
@@ -21,124 +20,126 @@ use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
-use function PHPUnit\Framework\callback;
-
-Route::middleware([AuthMiddleware::class])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('dashboard');
         Route::get('/about', 'about')->name('about');
         Route::get('/student/dashboard', 'studentDashboard')->name('student.dashboard');
     });
 
-    Route::controller(MaterialsController::class)->group(function () {
-        Route::get("/manage/material", "index")->name("manage.material");
+    Route::middleware(['admin'])->group(function () {
+        Route::controller(MaterialsController::class)->group(function () {
+            Route::get("/manage/material", "index")->name("manage.material");
+        });
+
+        Route::controller(TagController::class)->group(function () {
+            Route::post('/add-tags', "store")->name('add.tags');
+            Route::put('/update-tag/{id}', [TagController::class, 'update'])->name('update.tag');
+            Route::delete('/delete-tag/{id}', [TagController::class, 'destroy'])->name('delete.tag');
+        });
+
+        Route::controller(HardnessController::class)->group(function () {
+            Route::post('/add-hardness', "store")->name('add.hardness');
+            Route::put('/update-hardness/{id}', [HardnessController::class, 'update'])->name('update.hardness');
+            Route::delete('/delete-hardness/{id}', [HardnessController::class, 'destroy'])->name('delete.hardness');
+        });
+
+        Route::controller(TopicController::class)->group(function () {
+            Route::post('/add-topics', "store")->name('add.topics');
+            Route::put('/update-topic/{id}', [TopicController::class, 'update'])->name('update.topic');
+            Route::delete('/delete-topic/{id}', [TopicController::class, 'destroy'])->name('delete.topic');
+        });
+
+        Route::controller(QuestionController::class)->group(function () {
+            Route::get('/add-questions', 'addQuestions')->name('add.questions');
+            Route::get('/add-mcq/{class?}/{subject?}/{chapter?}', 'create')->name('page.add.mcq');
+            Route::post('/add-mcq', 'store')->name('execute.submit.add.mcq.form');
+            Route::get('/mcq-bank', 'mcqBank')->name('mcq.bank');
+            Route::delete("/delete-mcq/{id}", 'deleteMcq')->name('delete.mcq');
+            Route::get("/edit-mcq/{id}", "editMcq")->name("edit.mcq");
+            Route::put("/update-mcq/{id}", "updateMcq")->name("update.mcq");
+            Route::get('/quick-question/{class?}/{subject?}/{chapter?}', 'quickQuestion')->name('page.quick.question');
+            Route::post('/quick-question', 'storeQuickQuestion')->name('execute.submit.quick.question');
+        });
+
+        Route::controller(AdminLeaderboardController::class)->group(function () {
+            Route::get('/admin/leaderboard', 'loadAdminLeaderBoardPage')->name('admin.leaderboard');
+            Route::get('/admin/exam/{examSlug}/leaderboard/list', 'loadAdminLeaderBoardList')->name('admin.leaderboard.list');
+        });
+
+        Route::controller(ResultController::class)->group(function () {
+            Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
+            Route::get('/admin/course/{courseSlug}/exam/results', 'loadExamResultsListByCourse')->name('admin.exam.results.list');
+            Route::get('/admin/student/{studentId}/exam/{examSlug}/answer-sheet', 'loadStudentAnswerSheetPage')->name('admin.student.answer.sheet');
+        });
+
+        Route::controller(LiveExamController::class)->group(function () {
+            Route::post('/admin/live-exam/store', 'store')->name('execute.store.exam');
+            Route::get('/admin/live-exam/list', 'showAllExam')->name('show.exam.list');
+            Route::get('/admin/live-exams/{slug}', 'getSingleExam')->name('get.single.exam');
+            Route::put('/admin/live-exams/{slug}', 'updateExam')->name('update.single.exam');
+            Route::post('/admin/live-exams/questions', 'storeExamQuestion')->name('admin.exam.questions.store');
+            Route::delete('/admin/live-exam/questions/{id}', 'destroyExamQuestion')->name('admin.exam.questions.destroy');
+            Route::put('/exams/{id}/toggle-status', 'toggleExamStatus')->name('exams.status.toggle');
+            Route::put('/exams/{id}/toggle-exam-type', 'toggleExamType')->name('exams.type.toggle');
+            Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
+            Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
+            Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
+            Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+        });
+
+        Route::controller(PractiseExamController::class)->group(function () {
+            Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
+            Route::get('/admin/practise-exam/list', 'showAllExam')->name('show.practise.exam.list');
+        });
     });
 
-    Route::controller(QuestionController::class)->group(function () {
-        Route::get('/add-questions', 'addQuestions')->name('add.questions');
-        Route::get('/add-mcq/{class?}/{subject?}/{chapter?}', 'create')->name('page.add.mcq');
-        Route::post('/add-mcq', 'store')->name('execute.submit.add.mcq.form');
-        Route::get('/mcq-bank', 'mcqBank')->name('mcq.bank');
-        Route::delete("/delete-mcq/{id}", 'deleteMcq')->name('delete.mcq');
-        Route::get("/edit-mcq/{id}", "editMcq")->name("edit.mcq");
-        Route::put("/update-mcq/{id}", "updateMcq")->name("update.mcq");
-        Route::get('/quick-question/{class?}/{subject?}/{chapter?}', [QuestionController::class, 'quickQuestion'])->name('page.quick.question');
-        Route::post('/quick-question', [QuestionController::class, 'storeQuickQuestion'])->name('execute.submit.quick.question');
-    });
+    Route::middleware(['student'])->group(function () {
+        Route::controller(ProgressReportController::class)->group(function () {
+            Route::get('/student/progress-report', 'loadProgressReport')->name('student.progress.report');
+        });
 
-    Route::controller(TagController::class)->group(function () {
-        Route::post('/add-tags', "store")->name('add.tags');
-        Route::put('/update-tag/{id}', [TagController::class, 'update'])->name('update.tag');
-        Route::delete('/delete-tag/{id}', [TagController::class, 'destroy'])->name('delete.tag');
-    });
+        Route::controller(StudentLeaderboardController::class)->group(function () {
+            Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
+            Route::get('/student/exam/{examSlug}/leaderboard/list', 'loadStudentLeaderBoardList')->name('admin.leaderboard.list');
+        });
 
-    Route::controller(HardnessController::class)->group(function () {
-        Route::post('/add-hardness', "store")->name('add.hardness');
-        Route::put('/update-hardness/{id}', [HardnessController::class, 'update'])->name('update.hardness');
-        Route::delete('/delete-hardness/{id}', [HardnessController::class, 'destroy'])->name('delete.hardness');
-    });
+        Route::controller(TrialExamController::class)->group(function () {
+            Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
+        });
 
-    Route::controller(TopicController::class)->group(function () {
-        Route::post('/add-topics', "store")->name('add.topics');
-        Route::put('/update-topic/{id}', [TopicController::class, 'update'])->name('update.topic');
-        Route::delete('/delete-topic/{id}', [TopicController::class, 'destroy'])->name('delete.topic');
-    });
+        Route::controller(StudentLiveExamController::class)->group(function () {
+            Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
+            Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
+            Route::post('/student/live-exam/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
+            Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
+            Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
+        });
 
-    Route::controller(ProgressReportController::class)->group(function () {
-        Route::get('/student/progress-report', 'loadProgressReport')->name('student.progress.report');
-    });
+        Route::controller(PracticeExamController::class)->group(function () {
+            Route::get('/student/practice-exam/practice', 'loadPracticeExamListPage')->name('student.practice.exam.list');
+            Route::get('/student/practice-exam/{exam}', 'loadPracticeExamPage')->name('student.practice.exam');
+            Route::post('/student/practice-exam/{exam}/result', 'loadPracticeExamResult')->name('student.practice.exam.result');
+        });
 
-    // Student Leaderboard
-    Route::get('/student/leaderboard', [StudentLeaderboardController::class, 'loadLeaderBoardPage'])->name('student.leaderboard');
-    Route::get('/student/exam/{examSlug}/leaderboard/list', [StudentLeaderboardController::class, 'loadStudentLeaderBoardList'])->name('admin.leaderboard.list');
+        Route::controller(ArchiveController::class)->group(function () {
+            // remove this route with all functionality
+            Route::get('/student/archive', 'loadArchivePage')->name('student.archive.exam');
+        });
 
-    // Admin Leaderboard
-    Route::get('/admin/leaderboard', [AdminLeaderboardController::class, 'loadAdminLeaderBoardPage'])->name('admin.leaderboard');
-    Route::get('/admin/exam/{examSlug}/leaderboard/list', [AdminLeaderboardController::class, 'loadAdminLeaderBoardList'])->name('admin.leaderboard.list');
-
-    Route::controller(TrialExamController::class)->group(function () {
-        Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
-    });
-
-    // For live Exam
-    Route::post('/admin/live-exam/store', [LiveExamController::class, 'store'])->name('execute.store.exam');
-    Route::get('/admin/live-exam/list', [LiveExamController::class, 'showAllExam'])->name('show.exam.list');
-    Route::get('/admin/live-exams/{slug}', [LiveExamController::class, 'getSingleExam'])->name('get.single.exam');
-    Route::put('/admin/live-exams/{slug}', [LiveExamController::class, 'updateExam'])->name('update.single.exam');
-    Route::post('/admin/live-exams/questions', [LiveExamController::class, 'storeExamQuestion'])->name('admin.exam.questions.store');
-    Route::delete('/admin/live-exam/questions/{id}', [LiveExamController::class, 'destroyExamQuestion'])->name('admin.exam.questions.destroy');
-    Route::put('/exams/{id}/toggle-status', [LiveExamController::class, 'toggleExamStatus'])->name('exams.status.toggle');
-    Route::put('/exams/{id}/toggle-exam-type', [LiveExamController::class, 'toggleExamType'])->name('exams.type.toggle');
-    Route::get('/add-exam', [LiveExamController::class, 'loadAddExamPage'])->name('admin.add.exam');
-    Route::get('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
-    Route::post('/add-exam/live-exam', [LiveExamController::class, 'loadAddLiveExamPage'])->name('admin.add.live.exam');
-    Route::get('/add-exam/practice-exam', [PractiseExamController::class, 'loadAddPracticeExamPage'])->name('admin.add.practice.exam');
-    Route::get('/exams/{type}/{exam}', [LiveExamController::class, 'loadViewExamDetails'])->name('admin.exam.details');
-
-    // For practise exam
-    Route::get('/admin/practise-exam/list', [PractiseExamController::class, 'showAllExam'])->name('show.practise.exam.list');
-
-
-    Route::controller(StudentLiveExamController::class)->group(function () {
-        Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
-        Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
-        Route::post('/student/live-exam/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
-        Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
-        Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
-    });
-
-    Route::controller(PracticeExamController::class)->group(function () {
-        Route::get('/student/practice-exam/practice', 'loadPracticeExamListPage')->name('student.practice.exam.list');
-        Route::get('/student/practice-exam/{exam}', 'loadPracticeExamPage')->name('student.practice.exam');
-        Route::post('/student/practice-exam/{exam}/result', 'loadPracticeExamResult')->name('student.practice.exam.result');
-    });
-
-    Route::controller(ArchiveController::class)->group(function () {
-        Route::get('/student/archive', 'loadArchivePage')->name('student.archive.exam');
-    });
-
-    Route::controller(HistoryController::class)->group(function () {
-        Route::get('/student/history', 'loadHistoryPage')->name('student.history');
-        Route::get('/student/answer-sheet/{examSlug}', 'loadAnswerSheetPage')->name('student.answer.sheet');
-        Route::get('/student/leaderboard/exam', 'loadSingleExamLeaderBoardPage')->name('student.leaderboard.single.exam');
+        Route::controller(HistoryController::class)->group(function () {
+            Route::get('/student/history', 'loadHistoryPage')->name('student.history');
+            Route::get('/student/answer-sheet/{examSlug}', 'loadAnswerSheetPage')->name('student.answer.sheet');
+            Route::get('/student/leaderboard/exam', 'loadSingleExamLeaderBoardPage')->name('student.leaderboard.single.exam');
+        });
 
     });
-
-    /* Admin- Exam Results */
-    Route::controller(ResultController::class)->group(function () {
-        Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
-        Route::get('/admin/course/{courseSlug}/exam/results', 'loadExamResultsListByCourse')->name('admin.exam.results.list');
-        Route::get('/admin/student/{studentId}/exam/{examSlug}/answer-sheet', 'loadStudentAnswerSheetPage')->name('admin.student.answer.sheet');
-    });
-
 });
 
 Route::controller(AuthController::class)->group(function () {
-
     // route for load login form
     Route::get("/auth/login", "loadLoginForm")->name("auth.login");
     Route::get('/logout', 'logout')->name('auth.logout');
-
     // route for load forgot passwordForm
     Route::get("/auth/forgot-password", "loadForgotPasswordForm")->name('auth.forgot.password');
     // route for load registration form
