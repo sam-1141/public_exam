@@ -1,44 +1,102 @@
 import {useEffect, useState} from "react"
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
-import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
+import axios from "axios"
 
 const LeaderboardPage = ({ examsInfo }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [selectedExam, setSelectedExam] = useState("")
+  const [leaderboardData, setLeaderboardData] = useState({data: [], links: []}) // dynamic data with pagination
+  const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        console.log("Exams Info:", examsInfo);
-    }, [examsInfo]);
+  useEffect(() => {
+    console.log("Exams Info:", examsInfo);
+  }, [examsInfo]);
 
-  // Get unique exam names
-  const examNames = [...new Set(leaderboardData.map(item => item.examName))]
+  // Get exam names from examsInfo (API data)
+  const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))
 
-  // Filter data based on selected exam
-  const filteredData = selectedExam
-    ? leaderboardData.filter(item => item.examName === selectedExam)
-    : []
+  // Fetch leaderboard data when exam changes
+  useEffect(() => {
+    if (selectedExam) {
+      setIsLoading(true)
+      axios
+        .get(`/student/exam/${selectedExam}/leaderboard/list`)
+        .then(res => {
+          // Process the data to calculate time spent
+          const processedData = processLeaderboardData(res.data.attendanceInfo.data)
+          setLeaderboardData({
+            data: processedData,
+            links: res.data.attendanceInfo.links || []
+          })
+          setIsLoading(false)
+        })
+        .catch(err => {
+          console.error("Failed to fetch leaderboard:", err)
+          setLeaderboardData({data: [], links: []})
+          setIsLoading(false)
+        })
+    }
+  }, [selectedExam])
 
-  // Sort by rank and add medal emojis
-  const sortedData = [...filteredData].sort((a, b) => a.rank - b.rank)
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentData = sortedData.slice(startIndex, endIndex)
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page)
+  // Handle pagination page change
+  const handlePageChange = (url) => {
+    if (!url) return;
+    
+    setIsLoading(true)
+    axios
+      .get(url)
+      .then(res => {
+        // Process the data to calculate time spent
+        const processedData = processLeaderboardData(res.data.attendanceInfo.data)
+        setLeaderboardData({
+          data: processedData,
+          links: res.data.attendanceInfo.links || []
+        })
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.error("Failed to fetch leaderboard:", err)
+        setLeaderboardData({data: [], links: []})
+        setIsLoading(false)
+      })
   }
 
-  const handleItemsPerPageChange = (items) => {
-    setItemsPerPage(items)
-    setCurrentPage(1)
+  // Process leaderboard data to calculate time spent
+  const processLeaderboardData = (data) => {
+    if (!data || !Array.isArray(data)) return []
+    
+    // Calculate time spent for each student
+    return data.map(student => {
+      const startTime = new Date(student.student_exam_start_time)
+      const endTime = new Date(student.submit_time)
+      const timeSpentMs = endTime - startTime
+      
+      return {
+        ...student,
+        timeSpentMs,
+        timeSpentFormatted: formatTimeSpent(timeSpentMs)
+      }
+    })
   }
 
-  const handleExamChange = (exam) => {
-    setSelectedExam(exam)
-    setCurrentPage(1)
+  // Helper function to format time spent
+  const formatTimeSpent = (ms) => {
+    if (!ms || ms <= 0) return "--:--:--"
+    
+    const seconds = Math.floor(ms / 1000)
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
+
+  // FilteredData now comes from our processed data
+  const filteredData = leaderboardData.data || []
+  console.log("Filtered Data", filteredData)
+
+  const handleExamChange = (examSlug) => {
+    setSelectedExam(examSlug)
   }
 
   // Function to get medal emoji based on rank
@@ -64,7 +122,7 @@ const LeaderboardPage = ({ examsInfo }) => {
   // Mock user data - replace with actual user data from your application
   const currentUser = {
     name: "আপনার নাম",
-    image: "/placeholder.svg",
+    image: "/assets/images/user/avatar-1.png",
     institution: "আপনার প্রতিষ্ঠানের নাম",
     rank: 5,
     score: 85,
@@ -95,7 +153,7 @@ const LeaderboardPage = ({ examsInfo }) => {
                   >
                     <option value="">পরীক্ষা নির্বাচন করুন</option>
                     {examNames.map((exam, index) => (
-                      <option key={index} value={exam}>{exam}</option>
+                      <option key={index} value={exam.slug}>{exam.name}</option>
                     ))}
                   </select>
                 </div>
@@ -116,7 +174,7 @@ const LeaderboardPage = ({ examsInfo }) => {
                       {/* User Image - Top center on small devices */}
                       <div className="mb-3 mb-md-0 me-md-3">
                         <img
-                          src={currentUser.image}
+                          src={currentUser.image || "/assets/images/user/avatar-1.png"}
                           alt={currentUser.name}
                           className="rounded-circle"
                           style={{
@@ -159,22 +217,32 @@ const LeaderboardPage = ({ examsInfo }) => {
           {/* Leaderboard List */}
           <div className="row">
             <div className="col-12">
-              {selectedExam ? (
+              {isLoading ? (
+                <div className="card border-0 shadow-sm">
+                  <div className="card-body text-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">লোড হচ্ছে...</span>
+                    </div>
+                    <div className="mt-3 text-muted">লিডارবোর্ড ডাটা লোড হচ্ছে...</div>
+                  </div>
+                </div>
+              ) : selectedExam ? (
                 <div className="card border-0 shadow-sm">
                   <div className="card-body p-0">
-                    {currentData.length > 0 ? (
-                      currentData.map((user, index) => {
-                        const isTopThree = user.rank <= 3
+                    {filteredData.length > 0 ? (
+                      filteredData.map((user, index) => {
+                        const rank = index + 1; // Simple index-based ranking
+                        const isTopThree = rank <= 3
                         return (
                           <div
                             key={user.id}
-                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(user.rank) : ''} ${index !== currentData.length - 1 ? "border-bottom" : ""
+                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== filteredData.length - 1 ? "border-bottom" : ""
                               }`}
                           >
                             <div className="me-3 position-relative">
                               <img
-                                src={user.image || "/placeholder.svg"}
-                                alt={user.name}
+                                src={user.image || "/assets/images/user/avatar-1.png"}
+                                alt={user.student_name}
                                 className="rounded-circle"
                                 style={{
                                   width: '50px',
@@ -187,24 +255,24 @@ const LeaderboardPage = ({ examsInfo }) => {
                             </div>
                             <div className="flex-grow-1">
                               <div className="fw-semibold text-dark mb-1">
-                                {user.name}
+                                {user.student_name}
                                 {isTopThree && (
-                                  <span className="ms-2">{getMedal(user.rank)}</span>
+                                  <span className="ms-2">{getMedal(rank)}</span>
                                 )}
                               </div>
-                              <div className="small text-muted">{user.institution}</div>
+                              <div className="small text-muted">{user.student_institute || ""}</div>
                             </div>
                             <div className="text-end">
                               <div className="d-flex align-items-center justify-content-end mb-1">
-                                <span className={`fw-bold fs-5 `}>
-                                  #{user.rank}
+                                <span className="fw-bold fs-5">
+                                  #{rank}
                                 </span>
                               </div>
-                              <div className={`small `}>
-                                স্কোর: {user.score}
+                              <div className="small">
+                                স্কোর: {user.student_total_mark || 0}
                               </div>
                               <div className="small text-muted">
-                                {user.completionTime} 00:29:30 {/* Added completion time here */}
+                                {user.timeSpentFormatted || "--:--:--"}
                               </div>
                             </div>
                           </div>
@@ -228,57 +296,40 @@ const LeaderboardPage = ({ examsInfo }) => {
             </div>
           </div>
 
-          {/* Pagination - Only show if exam is selected */}
-          {selectedExam && (
+          {/* Pagination - Only show if exam is selected and has pagination links */}
+          {selectedExam && !isLoading && leaderboardData.links.length > 0 && (
             <div className="row mt-4">
               <div className="col-12">
                 <nav aria-label="Leaderboard pagination">
-                  <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                    <div className="small text-muted">
-                      দেখানো হচ্ছে {startIndex + 1}-{Math.min(endIndex, filteredData.length)} এর মধ্যে{" "}
-                      {filteredData.length} টি
-                    </div>
-
-                    <ul className="pagination pagination-sm mb-0">
-                      <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                        <button
-                          className="page-link"
-                          onClick={() => handlePageChange(currentPage - 1)}
-                          disabled={currentPage === 1}
+                  <div className="d-flex justify-content-center">
+                    <ul className="pagination mb-0">
+                      {leaderboardData.links.map((link, i) => (
+                        <li
+                          key={i}
+                          className={`page-item ${
+                            link.active ? "active" : ""
+                          } ${
+                            !link.url ? "disabled" : ""
+                          }`}
                         >
-                          পূর্ববর্তী
-                        </button>
-                      </li>
-
-                      {[...Array(totalPages)].map((_, index) => {
-                        const page = index + 1
-                        if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
-                          return (
-                            <li key={page} className={`page-item ${currentPage === page ? "active" : ""}`}>
-                              <button className="page-link" onClick={() => handlePageChange(page)}>
-                                {page}
-                              </button>
-                            </li>
-                          )
-                        } else if (page === currentPage - 2 || page === currentPage + 2) {
-                          return (
-                            <li key={page} className="page-item disabled">
-                              <span className="page-link">...</span>
-                            </li>
-                          )
-                        }
-                        return null
-                      })}
-
-                      <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                        <button
-                          className="page-link"
-                          onClick={() => handlePageChange(currentPage + 1)}
-                          disabled={currentPage === totalPages}
-                        >
-                          পরবর্তী
-                        </button>
-                      </li>
+                          {link.url ? (
+                            <button
+                              className="page-link"
+                              onClick={() => handlePageChange(link.url)}
+                              dangerouslySetInnerHTML={{
+                                __html: link.label,
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className="page-link"
+                              dangerouslySetInnerHTML={{
+                                __html: link.label,
+                              }}
+                            />
+                          )}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </nav>
