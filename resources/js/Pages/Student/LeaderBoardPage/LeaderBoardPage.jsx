@@ -57,6 +57,16 @@ const LeaderboardPage = () => {
     }
   }
 
+  // Mock user data - replace with actual user data from your application
+  const currentUser = {
+    name: "আপনার নাম",
+    image: "/placeholder.svg",
+    institution: "আপনার প্রতিষ্ঠানের নাম",
+    rank: 5,
+    score: 85,
+    completionTime: "00:25:45"
+  }
+
   return (
     <div className="flex-grow-1 d-flex flex-column font-baloo">
       {/* Header */}
@@ -85,24 +95,62 @@ const LeaderboardPage = () => {
                     ))}
                   </select>
                 </div>
-                <div className="d-flex align-items-center gap-2">
-                  <span className="small text-muted">প্রতি পৃষ্ঠায়:</span>
-                  <select
-                    className="form-select form-select-sm"
-                    value={itemsPerPage}
-                    onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-                    style={{ width: "auto" }}
-                    disabled={!selectedExam}
-                  >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
               </div>
             </div>
           </div>
+
+          {/* User Info Section */}
+          {selectedExam && (
+            <div className="row mb-4">
+              <div className="col-12">
+                <div className="card border-0 shadow-sm">
+                  <div className="card-header bg-primary text-white py-3">
+                    <h6 className="mb-0 text-white">আপনার তথ্য</h6>
+                  </div>
+                  <div className="card-body">
+                    <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start">
+                      {/* User Image - Top center on small devices */}
+                      <div className="mb-3 mb-md-0 me-md-3">
+                        <img
+                          src={currentUser.image}
+                          alt={currentUser.name}
+                          className="rounded-circle"
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'cover',
+                            border: '2px solid #dee2e6'
+                          }}
+                        />
+                      </div>
+
+                      {/* User Details */}
+                      <div className="flex-grow-1">
+                        <div className="row">
+                          <div className="col-md-3 mb-2 mb-md-0">
+                            <div className="fw-semibold text-dark">{currentUser.name}</div>
+                            <div className="small text-muted">{currentUser.institution}</div>
+                          </div>
+                          <div className="col-md-3 mb-2 mb-md-0">
+                            <div className="small text-muted">র‍্যাংক</div>
+                            <div className="fw-bold text-dark">#{currentUser.rank}</div>
+                          </div>
+                          <div className="col-md-3 mb-2 mb-md-0">
+                            <div className="small text-muted">স্কোর</div>
+                            <div className="fw-bold text-dark">{currentUser.score}</div>
+                          </div>
+                          <div className="col-md-3 mb-2 mb-md-0">
+                            <div className="small text-muted">মোট সময়</div>
+                            <div className="fw-bold text-dark">{currentUser.completionTime}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Leaderboard List */}
           <div className="row">
