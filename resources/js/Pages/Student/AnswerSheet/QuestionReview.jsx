@@ -65,9 +65,9 @@ const QuestionReview = ({ question, questionNumber }) => {
             let optionClass = "btn w-100 text-start p-3 border rounded-3"
 
             if (isCorrect) {
-              optionClass += " border-success bg-success bg-opacity-10" // Correct answer - green
+              optionClass += " border-success bg-opacity-10" // Correct answer - green
             } else if (isWrongUserAnswer) {
-              optionClass += " border-danger bg-danger bg-opacity-10" // Wrong user answer - red
+              optionClass += " border-danger bg-opacity-10" // Wrong user answer - red
             } else {
               optionClass += " btn-outline-secondary" // Other options
             }
