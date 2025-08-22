@@ -60,7 +60,7 @@ const ExamHistoryCard = ({ exam, date }) => {
             </a>
           <button
             className="btn btn-outline-success btn-sm"
-            onClick={() => router.get(route("student.leaderboard.single.exam"))}
+            onClick={() => router.get(route("student.leaderboard.single.exam", exam.liveExamSlug))}
           >
             লিডারবোর্ড
           </button>

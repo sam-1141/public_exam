@@ -1,10 +1,89 @@
 import Layout from "../../../layouts/Layout"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
-import { leaderboardData } from "../../../utils/LeaderBoard/LeaderBoardData"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
-const SingleExamLeaderboard = () => {
+const SingleExamLeaderboard = ({ examSlug }) => {
+    const [leaderboardData, setLeaderboardData] = useState({ data: [], links: [] }) // dynamic data with pagination
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        if (examSlug) {
+            setIsLoading(true)
+            axios
+                .get(`/student/exam/${examSlug}/leaderboard/list`)
+                .then(res => {
+                    // Process the data to calculate time spent
+                    const processedData = processLeaderboardData(res.data.attendanceInfo.data)
+                    setLeaderboardData({
+                        data: processedData,
+                        links: res.data.attendanceInfo.links || []
+                    })
+                    setIsLoading(false)
+                })
+                .catch(err => {
+                    console.error("Failed to fetch leaderboard:", err)
+                    setLeaderboardData({ data: [], links: [] })
+                    setIsLoading(false)
+                })
+        }
+    }, [examSlug])
+
+    // Handle pagination page change
+    const handlePageChange = (url) => {
+        if (!url) return;
+
+        setIsLoading(true)
+        axios
+            .get(url)
+            .then(res => {
+                // Process the data to calculate time spent
+                const processedData = processLeaderboardData(res.data.attendanceInfo.data)
+                setLeaderboardData({
+                    data: processedData,
+                    links: res.data.attendanceInfo.links || []
+                })
+                setIsLoading(false)
+            })
+            .catch(err => {
+                console.error("Failed to fetch leaderboard:", err)
+                setLeaderboardData({ data: [], links: [] })
+                setIsLoading(false)
+            })
+    }
+
+    // Process leaderboard data to calculate time spent
+    const processLeaderboardData = (data) => {
+        if (!data || !Array.isArray(data)) return []
+
+        // Calculate time spent for each student
+        return data.map(student => {
+            const startTime = new Date(student.student_exam_start_time)
+            const endTime = new Date(student.submit_time)
+            const timeSpentMs = endTime - startTime
+
+            return {
+                ...student,
+                timeSpentMs,
+                timeSpentFormatted: formatTimeSpent(timeSpentMs)
+            }
+        })
+    }
+
+    // Helper function to format time spent
+    const formatTimeSpent = (ms) => {
+        if (!ms || ms <= 0) return "--:--:--"
+
+        const seconds = Math.floor(ms / 1000)
+        const hours = Math.floor(seconds / 3600)
+        const minutes = Math.floor((seconds % 3600) / 60)
+        const secs = seconds % 60
+
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    }
+
     // Sort by rank and add medal emojis
-    const sortedData = [...leaderboardData].sort((a, b) => a.rank - b.rank)
+    const sortedData = leaderboardData.data
 
     // Function to get medal emoji based on rank
     const getMedal = (rank) => {
@@ -28,12 +107,12 @@ const SingleExamLeaderboard = () => {
 
     // Mock user data - replace with actual user data from your application
     const currentUser = {
-        name: "আপনার নাম",
-        image: "/placeholder.svg",
-        institution: "আপনার প্রতিষ্ঠানের নাম",
+        name: "নাম",
+        image: "/assets/images/user/avatar-1.png",
+        institution: "প্রতিষ্ঠানের নাম",
         rank: 5,
-        score: 85,
-        completionTime: "00:25:45"
+        score: 2,
+        completionTime: "00:00:45"
     }
 
     return (
@@ -56,7 +135,7 @@ const SingleExamLeaderboard = () => {
                                         {/* User Image - Top center on small devices */}
                                         <div className="mb-3 mb-md-0 me-md-3">
                                             <img
-                                                src={currentUser.image}
+                                                src={currentUser.image || "/assets/images/user/avatar-1.png"}
                                                 alt={currentUser.name}
                                                 className="rounded-circle"
                                                 style={{
@@ -98,65 +177,116 @@ const SingleExamLeaderboard = () => {
                     {/* Leaderboard List */}
                     <div className="row">
                         <div className="col-12">
-                            <div className="card border-0 shadow-sm">
-                                <div className="card-body p-0">
-                                    {sortedData.length > 0 ? (
-                                        sortedData.map((user, index) => {
-                                            const isTopThree = user.rank <= 3
-                                            return (
-                                                <div
-                                                    key={user.id}
-                                                    className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(user.rank) : ''} ${index !== sortedData.length - 1 ? "border-bottom" : ""
-                                                        }`}
-                                                >
-                                                    <div className="me-3 position-relative">
-                                                        <img
-                                                            src={user.image || "/placeholder.svg"}
-                                                            alt={user.name}
-                                                            className="rounded-circle"
-                                                            style={{
-                                                                width: '50px',
-                                                                height: '50px',
-                                                                objectFit: 'cover',
-                                                                border: isTopThree ? '2px solid white' : 'none',
-                                                                boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="flex-grow-1">
-                                                        <div className="fw-semibold text-dark mb-1">
-                                                            {user.name}
-                                                            {isTopThree && (
-                                                                <span className="ms-2">{getMedal(user.rank)}</span>
-                                                            )}
-                                                        </div>
-                                                        <div className="small text-muted">{user.institution}</div>
-                                                    </div>
-                                                    <div className="text-end">
-                                                        <div className="d-flex align-items-center justify-content-end mb-1">
-                                                            <span className="fw-bold fs-5">
-                                                                #{user.rank}
-                                                            </span>
-                                                        </div>
-                                                        <div className="small">
-                                                            স্কোর: {user.score}
-                                                        </div>
-                                                        <div className="small text-muted">
-                                                            {user.completionTime}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    ) : (
-                                        <div className="p-3 text-center text-muted">
-                                            এই পরীক্ষার জন্য কোনো ডাটা পাওয়া যায়নি
+                            {isLoading ? (
+                                <div className="card border-0 shadow-sm">
+                                    <div className="card-body text-center py-5">
+                                        <div className="spinner-border text-primary" role="status">
+                                            <span className="visually-hidden">লোড হচ্ছে...</span>
                                         </div>
-                                    )}
+                                        <div className="mt-3 text-muted">লিডারবোর্ড ডাটা লোড হচ্ছে...</div>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="card border-0 shadow-sm">
+                                    <div className="card-body p-0">
+                                        {sortedData.length > 0 ? (
+                                            sortedData.map((user, index) => {
+                                                const rank = index + 1; // Simple index-based ranking
+                                                const isTopThree = rank <= 3
+                                                return (
+                                                    <div
+                                                        key={user.id}
+                                                        className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== sortedData.length - 1 ? "border-bottom" : ""
+                                                            }`}
+                                                    >
+                                                        <div className="me-3 position-relative">
+                                                            <img
+                                                                src={user.image || "/assets/images/user/avatar-1.png"}
+                                                                alt={user.student_name}
+                                                                className="rounded-circle"
+                                                                style={{
+                                                                    width: '50px',
+                                                                    height: '50px',
+                                                                    objectFit: 'cover',
+                                                                    border: isTopThree ? '2px solid white' : 'none',
+                                                                    boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div className="flex-grow-1">
+                                                            <div className="fw-semibold text-dark mb-1">
+                                                                {user.student_name}
+                                                                {isTopThree && (
+                                                                    <span className="ms-2">{getMedal(rank)}</span>
+                                                                )}
+                                                            </div>
+                                                            <div className="small text-muted">{user.student_institute || ""}</div>
+                                                        </div>
+                                                        <div className="text-end">
+                                                            <div className="d-flex align-items-center justify-content-end mb-1">
+                                                                <span className="fw-bold fs-5">
+                                                                    #{rank}
+                                                                </span>
+                                                            </div>
+                                                            <div className="small">
+                                                                স্কোর: {user.student_total_mark || 0}
+                                                            </div>
+                                                            <div className="small text-muted">
+                                                                {user.timeSpentFormatted || "--:--:--"}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div className="p-3 text-center text-muted">
+                                                এই পরীক্ষার জন্য কোনো ডাটা পাওয়া যায়নি
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
+
+                    {/* Pagination - Only show if has pagination links */}
+                    {!isLoading && leaderboardData.links.length > 0 && (
+                        <div className="row mt-4">
+                            <div className="col-12">
+                                <nav aria-label="Leaderboard pagination">
+                                    <div className="d-flex justify-content-center">
+                                        <ul className="pagination mb-0">
+                                            {leaderboardData.links.map((link, i) => (
+                                                <li
+                                                    key={i}
+                                                    className={`page-item ${link.active ? "active" : ""
+                                                        } ${!link.url ? "disabled" : ""
+                                                        }`}
+                                                >
+                                                    {link.url ? (
+                                                        <button
+                                                            className="page-link"
+                                                            onClick={() => handlePageChange(link.url)}
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: link.label,
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <span
+                                                            className="page-link"
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: link.label,
+                                                            }}
+                                                        />
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
 

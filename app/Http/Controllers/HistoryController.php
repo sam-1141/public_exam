@@ -101,8 +101,10 @@ class HistoryController extends Controller
         ]);
     }
 
-    public function loadSingleExamLeaderBoardPage()
+    public function loadSingleExamLeaderBoardPage($examSlug)
     {
-        return Inertia::render('Student/History/SingleExamLeaderboard');
+        return Inertia::render('Student/History/SingleExamLeaderboard', [
+            'examSlug' => $examSlug,
+        ]);
     }
 }
