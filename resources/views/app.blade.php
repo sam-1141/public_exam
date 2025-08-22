@@ -27,7 +27,7 @@
     <script src="{{ asset('assets/js/tech-stack.js') }}"></script>
 
     <!-- TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/p1p94i4tkyqaptpmtzevy6ef0iz8r2op83ggszitqmojgn5m/tinymce/7/tinymce.min.js"
+    <script src="https://cdn.tiny.cloud/1/7rgx34ulxurs02evc0b86y3yse1clzw3dmu3fh2ajar8kicq/tinymce/7/tinymce.min.js"
         referrerpolicy="origin"></script>
 
     <script>

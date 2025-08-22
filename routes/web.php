@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::controller(StudentLeaderboardController::class)->group(function () {
             Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
-            Route::get('/student/exam/{examSlug}/leaderboard/list', 'loadStudentLeaderBoardList')->name('admin.leaderboard.list');
+            Route::get('/student/exam/{examSlug}/leaderboard/list', 'loadStudentLeaderBoardList')->name('student.leaderboard.list');
         });
 
         Route::controller(TrialExamController::class)->group(function () {

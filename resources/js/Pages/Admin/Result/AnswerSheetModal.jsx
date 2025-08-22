@@ -166,8 +166,12 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
 
 // Question Item Component
 const QuestionItem = ({ question, index, studentAnswer }) => {
+    const options = JSON.parse(question.options || "[]");
+    const correctOptionIndex = options.findIndex((opt) => opt.ans === true);
+    const correctOptionKey = correctOptionIndex.toString();
+
     const isCorrect =
-        studentAnswer && studentAnswer.ans_given === question.correct_answer;
+        studentAnswer && studentAnswer.ans_given === correctOptionKey;
 
     return (
         <div
@@ -176,8 +180,12 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
             }`}
         >
             <div className="card-header d-flex justify-content-between align-items-center">
-                <h6 className="mb-0">
-                    Q{index + 1}: {question.question}
+                <h6 className="mb-0 d-flex align-items-center">
+                    <span className="me-2">Q{index + 1}:</span>
+                    <span
+                        className="text-truncate"
+                        dangerouslySetInnerHTML={{ __html: question.question }}
+                    />
                 </h6>
                 <span
                     className={`badge ${
@@ -188,34 +196,53 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                 </span>
             </div>
             <div className="card-body">
-                <div className="row">
-                    {["option_a", "option_b", "option_c", "option_d"].map(
-                        (optionKey) => (
+                <div className="row g-3 ">
+                    {options.map((option, idx) => {
+                        const optionKey = idx.toString();
+                        return (
                             <OptionItem
                                 key={optionKey}
-                                option={question[optionKey]}
+                                option={option.option}
                                 optionKey={optionKey}
-                                isCorrect={
-                                    question.correct_answer === optionKey
-                                }
+                                isCorrect={option.ans}
                                 isStudentAnswer={
                                     studentAnswer &&
                                     studentAnswer.ans_given === optionKey
                                 }
                             />
-                        )
-                    )}
+                        );
+                    })}
                 </div>
 
                 {!isCorrect && studentAnswer && (
-                    <div className="mt-3 p-2 bg-light rounded">
+                    <div className="mt-2 p-2 bg-light rounded">
                         <p className="mb-1">
                             <strong>Student's Answer:</strong>{" "}
-                            {studentAnswer.answer}
+                            {options[parseInt(studentAnswer.ans_given)]
+                                ?.option ? (
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: options[
+                                            parseInt(studentAnswer.ans_given)
+                                        ].option,
+                                    }}
+                                />
+                            ) : (
+                                "No answer provided"
+                            )}
                         </p>
                         <p className="mb-0">
                             <strong>Correct Answer:</strong>{" "}
-                            {question.correct_answer}
+                            {options[correctOptionIndex]?.option ? (
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: options[correctOptionIndex]
+                                            .option,
+                                    }}
+                                />
+                            ) : (
+                                "No correct answer"
+                            )}
                         </p>
                     </div>
                 )}
@@ -228,29 +255,30 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
 const OptionItem = ({ option, optionKey, isCorrect, isStudentAnswer }) => {
     if (!option) return null;
 
-    let optionClass = "col-md-6 mb-2 p-2 rounded ";
+    let optionClass =
+        "col-md-6 p-2 rounded d-flex align-items-center justify-content-between ";
     if (isCorrect) {
-        optionClass += "bg-success bg-opacity-10 border border-success ";
+        optionClass += "bg-light border border-success ";
     } else if (isStudentAnswer) {
-        optionClass += "bg-danger bg-opacity-10 border border-danger ";
+        optionClass += "bg-light border border-danger ";
     } else {
         optionClass += "bg-light ";
     }
 
     return (
         <div className={optionClass}>
-            <div className="d-flex align-items-center">
+            <div className="d-flex align-items-center ">
                 <span className="fw-bold me-2">
-                    {optionKey.replace("option_", "").toUpperCase()}.
+                    {String.fromCharCode(65 + parseInt(optionKey))}.
                 </span>
-                <span>{option}</span>
+                <span dangerouslySetInnerHTML={{ __html: option }} />
+            </div>
+            <div>
                 {isCorrect && (
                     <span className="badge bg-success ms-2">Correct</span>
                 )}
                 {isStudentAnswer && !isCorrect && (
-                    <span className="badge bg-danger ms-2">
-                        Student's Choice
-                    </span>
+                    <span className="badge bg-danger ms-2">Wrong</span>
                 )}
             </div>
         </div>

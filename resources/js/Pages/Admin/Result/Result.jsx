@@ -54,7 +54,6 @@ const ExamResult = ({ coursesInfo }) => {
     };
 
     const handleViewAnswerSheet = async (student) => {
-        setAnswerSheetLoading(true);
         try {
             const response = await axios.get(
                 route("admin.student.answer.sheet", {
