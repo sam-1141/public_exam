@@ -30,6 +30,7 @@ class StudentLeaderboardController extends Controller
             ->table('student_exam_attendance')
             ->join('ft_core.users as students', 'student_exam_attendance.student_id', '=', 'students.id') // lowercase 'coredb'
             ->where('student_exam_attendance.exam_id', $examInfo->id)
+            ->where('student_exam_attendance.result_publish_time', '<', now())
             ->orderBy('student_exam_attendance.student_total_mark', 'desc')
             ->select(
                 'student_exam_attendance.*',
