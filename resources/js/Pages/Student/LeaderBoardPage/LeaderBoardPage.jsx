@@ -8,10 +8,6 @@ const LeaderboardPage = ({ examsInfo }) => {
   const [leaderboardData, setLeaderboardData] = useState({data: [], links: []}) // dynamic data with pagination
   const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    console.log("Exams Info:", examsInfo);
-  }, [examsInfo]);
-
   // Get exam names from examsInfo (API data)
   const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))
 
@@ -121,12 +117,12 @@ const LeaderboardPage = ({ examsInfo }) => {
 
   // Mock user data - replace with actual user data from your application
   const currentUser = {
-    name: "আপনার নাম",
+    name: "নাম",
     image: "/assets/images/user/avatar-1.png",
-    institution: "আপনার প্রতিষ্ঠানের নাম",
+    institution: "প্রতিষ্ঠানের নাম",
     rank: 5,
-    score: 85,
-    completionTime: "00:25:45"
+    score: 2,
+    completionTime: "00:00:45"
   }
 
   return (
