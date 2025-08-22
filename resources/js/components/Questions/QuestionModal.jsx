@@ -212,9 +212,9 @@ const QuestionModal = ({
             className="modal fade show "
             style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
         >
-            <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-dialog modal-xl modal-dialog-centered ">
                 <div className="modal-content">
-                    <div className="modal-header border-bottom">
+                    <div className="modal-header ">
                         <h5 className="modal-title font-semibold text-xl mb-0">
                             {mode === "add"
                                 ? "Add New Question"
