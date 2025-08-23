@@ -76,9 +76,14 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.courseInfo
-                                            .map((course) => course.course_name)
-                                            .join(", ") || "No courses"}
+                                        {exam.courseInfo.length > 0
+                                            ? exam.courseInfo
+                                                  .map(
+                                                      (course) =>
+                                                          course.course_name
+                                                  )
+                                                  .join(", ")
+                                            : "No courses"}
                                     </small>
                                 </div>
                             </div>
@@ -94,9 +99,13 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                         className="text-truncate d-block"
                                         style={{ maxWidth: "150px" }}
                                     >
-                                        {exam.subjectInfo
-                                            .map((subject) => subject.name)
-                                            .join(", ") || "No subjects"}
+                                        {exam.subjectInfo.length > 0
+                                            ? exam.subjectInfo
+                                                  .map(
+                                                      (subject) => subject.name
+                                                  )
+                                                  .join(", ")
+                                            : "No subjects"}
                                     </small>
                                 </div>
                             </div>
@@ -112,7 +121,11 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Questions</div>
-                                        <small>{exam.totalQuestions}</small>
+                                        <small>
+                                            {exam.totalQuestions
+                                                ? exam.totalQuestions
+                                                : "No questions"}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -155,7 +168,8 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                                 Result Publish Time
                                             </div>
                                             <small>
-                                                {exam.resultPublishTime
+                                                {exam.resultPublishTime ||
+                                                exam.result_publish_time
                                                     ? exam.resultPublishTime ||
                                                       exam.result_publish_time
                                                     : "Not Set"}
@@ -186,7 +200,11 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Duration</div>
-                                        <small>{exam.duration}</small>
+                                        <small>
+                                            {exam.duration
+                                                ? exam.duration
+                                                : "Not Set"}
+                                        </small>
                                     </div>
                                 </div>
 

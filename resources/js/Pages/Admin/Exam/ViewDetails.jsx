@@ -138,7 +138,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Questions</div>
-                                        <small>{exam.totalQuestions}</small>
+                                        <small>
+                                            {exam.totalQuestions
+                                                ? exam.totalQuestions
+                                                : "No questions"}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -167,7 +171,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                             <div className="fw-bold">
                                                 Start Time
                                             </div>
-                                            <small>{exam.startTime}</small>
+                                            <small>
+                                                {exam.startTime
+                                                    ? exam.startTime
+                                                    : "Not Set"}
+                                            </small>
                                         </div>
                                     </div>
                                 )}
@@ -202,7 +210,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                         <div className="fw-bold">
                                             Total Marks
                                         </div>
-                                        <small>{exam.totalMarks}</small>
+                                        <small>
+                                            {exam.totalMarks
+                                                ? exam.totalMarks
+                                                : "Not Set"}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -212,7 +224,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     </div>
                                     <div>
                                         <div className="fw-bold">Duration</div>
-                                        <small>{exam.duration}</small>
+                                        <small>
+                                            {exam.duration
+                                                ? exam.duration
+                                                : "Not Set"}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -225,7 +241,11 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                             <div className="fw-bold">
                                                 End Time
                                             </div>
-                                            <small>{exam.endTime}</small>
+                                            <small>
+                                                {exam.endTime
+                                                    ? exam.endTime
+                                                    : "Not Set"}
+                                            </small>
                                         </div>
                                     </div>
                                 )}
