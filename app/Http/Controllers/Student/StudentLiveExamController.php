@@ -33,7 +33,9 @@ class StudentLiveExamController extends Controller
 
     public function loadExamMainPage(Request $request)
     {
+        $studentId = auth()->id();
         $examSlug = $request->query('examSlug');
+
         $exam = DB::table('live_exams')
             ->where('slug', $examSlug)
             ->firstOrFail();
@@ -42,13 +44,28 @@ class StudentLiveExamController extends Controller
             return redirect()->route('student.live.exam.list');
         }
 
+        $courseIds = DB::table('course_exam')
+            ->where('exam_id', $exam->id)
+            ->pluck('course_id')
+            ->unique()
+            ->values()
+            ->all();
+
+        $permittedCourse = DB::connection('Webapp')
+            ->table('course_student')
+            ->where('student_id', $studentId)
+            ->whereIn('course_id', $courseIds)
+            ->exists();
+
+        if (!$permittedCourse) {
+            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'You are not permitted to take this exam.']);
+        }
+
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
             ->where('exam_question.exam_id', $exam->id)
             ->select('questions.*')
             ->get();
-
-        $studentId = auth()->user()->id;
 
         $exists = DB::table('student_exam_attendance')
             ->where('student_id', $studentId)
@@ -81,8 +98,6 @@ class StudentLiveExamController extends Controller
             'updated_at' => now(),
         ]);
 
-//        dd($inserted);
-
         if($inserted){
             return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
                 'exam' => $exam,
@@ -91,8 +106,6 @@ class StudentLiveExamController extends Controller
         } else {
             return redirect()->route('student.live.exam.list')->withErrors(['error' => 'Failed to start the exam.']);
         }
-
-
     }
 
     public function submitExamMainPage(Request $request)
