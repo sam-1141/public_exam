@@ -11,7 +11,21 @@ class StudentLiveExamController extends Controller
 {
     public function loadExamNoticePage()
     {
-        $exam = DB::table('live_exams')->where('exam_type', 0)->get();
+        $userId = auth()->id();
+
+        $permittedCourses = DB::connection('Webapp')
+            ->table('course_student')
+            ->where('student_id', $userId)
+            ->pluck('course_id')
+            ->toArray();
+
+
+        $exam = DB::table('live_exams')
+            ->where('exam_type', 0)
+            ->whereIn('course_exam.course_id', $permittedCourses)
+            ->join('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
+            ->get();
+
         return Inertia::render('Student/Exam/LiveExam/ExamListPage', [
             'allExam' => $exam,
         ]);
