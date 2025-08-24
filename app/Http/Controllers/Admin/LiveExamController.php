@@ -384,6 +384,29 @@ class LiveExamController extends Controller
         }
     }
 
+    public function updateExamQuestion(Request $request, $id)
+    {
+        $data = $request->validate([
+            'question'   => ['required', 'string'],
+            'options'    => ['required', 'array'],
+            'explanation'=> ['nullable', 'string'],
+        ]);
+
+        try {
+            DB::table('questions')->where('id', $id)->update([
+                'question'    => $data['question'],
+                'options'     => json_encode($data['options']),
+                'explanation' => $data['explanation'],
+                'updated_at'  => now(),
+            ]);
+
+            return back()->with('success', 'Question updated.');
+        } catch (\Throwable $e) {
+            return back()->withErrors(['failed' => "Question couldn't be updated."]);
+        }
+    }
+
+
     public function destroyExamQuestion($id)
     {
         DB::table('questions')->where('id', $id)->delete();
