@@ -81,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/admin/live-exams/{slug}', 'getSingleExam')->name('get.single.exam');
             Route::put('/admin/live-exams/{slug}', 'updateExam')->name('update.single.exam');
             Route::post('/admin/live-exams/questions', 'storeExamQuestion')->name('admin.exam.questions.store');
+            Route::put('/admin/live-exams/questions/{id}/update', 'updateExamQuestion')->name('admin.exam.questions.update');
             Route::delete('/admin/live-exam/questions/{id}', 'destroyExamQuestion')->name('admin.exam.questions.destroy');
             Route::put('/exams/{id}/toggle-status', 'toggleExamStatus')->name('exams.status.toggle');
             Route::put('/exams/{id}/toggle-exam-type', 'toggleExamType')->name('exams.type.toggle');

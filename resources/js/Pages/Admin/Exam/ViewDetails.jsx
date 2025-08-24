@@ -16,10 +16,6 @@ const ExamDetails = ({ examType, exam, questions }) => {
         alert("Exam link copied to clipboard!");
     };
 
-    useEffect(() => {
-        // console.log("Exam Details:", exam);
-    }, [exam]);
-
     const toggleStatus = (id, currentStatus) => {
         router.put(route("exams.status.toggle", id), {
             publish: currentStatus ? 0 : 1,

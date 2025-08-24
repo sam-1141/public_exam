@@ -131,20 +131,26 @@ const QuestionModal = ({
                 },
             });
         } else {
-            // put(route("admin.exam.questions.update", questionData.id), {
-            //     data: submitData,
-            //     onSuccess: () => {
-            //         if (onSuccess) {
-            //             // Pass the updated question data to the callback
-            //             onSuccess({
-            //                 ...questionData,
-            //                 ...submitData,
-            //                 options: JSON.stringify(submitData.options),
-            //             });
-            //         }
-            //         onClose();
-            //     },
-            // });
+            if (questionData.id){
+                // console.log('Submitting updated question data:', questionData.id)
+                put(route("admin.exam.questions.update", questionData.id), {
+                    data: submitData,
+                    onSuccess: () => {
+                        if (onSuccess) {
+                            onSuccess({
+                                ...questionData,
+                                ...submitData,
+                                options: JSON.stringify(submitData.options),
+                            });
+                        }
+                        reset();
+                        onClose();
+                    },
+                });
+            }else{
+                alert('Something is missing for edit operation. Please reload the page and try again.');
+            }
+
             // console.log("Updated question data:", {
             //     ...questionData,
             //     ...submitData,

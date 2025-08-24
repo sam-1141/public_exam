@@ -17,7 +17,6 @@ const QuestionList = ({
     const [showQuestionModal, setShowQuestionModal] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(null);
 
-    // Update questions when initialQuestions changes
     useEffect(() => {
         setQuestions(initialQuestions);
     }, [initialQuestions]);
@@ -71,25 +70,21 @@ const QuestionList = ({
     };
 
     const handleQuestionAdded = (newQuestion) => {
-        // Add the new question to the list
         setQuestions([...questions, newQuestion]);
         setShowQuestionModal(false);
 
-        // Call the parent callback if provided
         if (onQuestionAdded) {
             onQuestionAdded(newQuestion);
         }
     };
 
     const handleQuestionUpdated = (updatedQuestion) => {
-        // Update the question in the list
         const updatedQuestions = questions.map((q) =>
             q.id === updatedQuestion.id ? updatedQuestion : q
         );
         setQuestions(updatedQuestions);
         setShowQuestionModal(false);
 
-        // Call the parent callback if provided
         if (onQuestionUpdated) {
             onQuestionUpdated(updatedQuestion);
         }
@@ -228,7 +223,6 @@ const QuestionList = ({
                                         )}
                                     </div>
 
-                                    {/* Options */}
                                     <div className="mb-4">
                                         <h4 className="font-medium mb-2">
                                             Options:
@@ -301,7 +295,6 @@ const QuestionList = ({
                 />
             )}
 
-            {/* Edit Question Modal */}
             {showQuestionModal && (
                 <QuestionModal
                     show={showQuestionModal}
