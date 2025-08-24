@@ -380,35 +380,36 @@ const EditExamModal = ({
                                         )}
                                     </div>
                                 </div>
-                                <div className={"col-md-6"}>
-                                    <div className={"mb-2"}>
-                                        <label className="form-label">
-                                            Question Type:
-                                        </label>
-                                        <select
-                                            className={`form-select ${
-                                                errors.question_type
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }`}
-                                            name="question_type"
-                                            value={formData.question_type}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="random">
-                                                Random
-                                            </option>
-                                            <option value="shuffle">
-                                                Shuffle
-                                            </option>
-                                        </select>
-                                        {errors.question_type && (
-                                            <div className="invalid-feedback">
-                                                {errors.question_type[0]}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                {/*this field is for future*/}
+                                {/*<div className={"col-md-6"}>*/}
+                                {/*    <div className={"mb-2"}>*/}
+                                {/*        <label className="form-label">*/}
+                                {/*            Question Type:*/}
+                                {/*        </label>*/}
+                                {/*        <select*/}
+                                {/*            className={`form-select ${*/}
+                                {/*                errors.question_type*/}
+                                {/*                    ? "is-invalid"*/}
+                                {/*                    : ""*/}
+                                {/*            }`}*/}
+                                {/*            name="question_type"*/}
+                                {/*            value={formData.question_type}*/}
+                                {/*            onChange={handleChange}*/}
+                                {/*        >*/}
+                                {/*            <option value="random">*/}
+                                {/*                Random*/}
+                                {/*            </option>*/}
+                                {/*            <option value="shuffle">*/}
+                                {/*                Shuffle*/}
+                                {/*            </option>*/}
+                                {/*        </select>*/}
+                                {/*        {errors.question_type && (*/}
+                                {/*            <div className="invalid-feedback">*/}
+                                {/*                {errors.question_type[0]}*/}
+                                {/*            </div>*/}
+                                {/*        )}*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
 
                                 <div className={"col-md-12"}>
                                     <div className={"mb-2"}>
@@ -521,71 +522,73 @@ const EditExamModal = ({
                                 Advanced Settings
                             </h6>
                             <div className={"row g-2"}>
-                                <div className="col-md-6">
-                                    <div className={"mb-2"}>
-                                        <label className="form-label">
-                                            Privacy:
-                                        </label>
-                                        <select
-                                            className={`form-select ${
-                                                errors.privacy
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }`}
-                                            name="privacy"
-                                            value={formData.privacy}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="everyone">
-                                                Everyone
-                                            </option>
-                                            <option value="link">
-                                                By Link Only
-                                            </option>
-                                        </select>
-                                        {errors.privacy && (
-                                            <div className="invalid-feedback">
-                                                {errors.privacy[0]}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="col-md-6">
-                                    <div className={"mb-2"}>
-                                        <label className="form-label">
-                                            Publish Instant?
-                                        </label>
-                                        <select
-                                            className={`form-select ${
-                                                errors.publish_instant
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }`}
-                                            name="publish_instant"
-                                            value={
-                                                formData.publish_instant
-                                                    ? "1"
-                                                    : "0"
-                                            }
-                                            onChange={(e) => {
-                                                setFormData({
-                                                    ...formData,
-                                                    publish_instant:
-                                                        e.target.value ===
-                                                        "1",
-                                                });
-                                            }}
-                                        >
-                                            <option value="0">NO</option>
-                                            <option value="1">YES</option>
-                                        </select>
-                                        {errors.publish_instant && (
-                                            <div className="invalid-feedback">
-                                                {errors.publish_instant[0]}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                {/*<div className="col-md-6">*/}
+                                {/*    <div className={"mb-2"}>*/}
+                                {/*        <label className="form-label">*/}
+                                {/*            Privacy:*/}
+                                {/*        </label>*/}
+                                {/*        <select*/}
+                                {/*            className={`form-select ${*/}
+                                {/*                errors.privacy*/}
+                                {/*                    ? "is-invalid"*/}
+                                {/*                    : ""*/}
+                                {/*            }`}*/}
+                                {/*            name="privacy"*/}
+                                {/*            value={formData.privacy}*/}
+                                {/*            onChange={handleChange}*/}
+                                {/*        >*/}
+                                {/*            <option value="everyone">*/}
+                                {/*                Everyone*/}
+                                {/*            </option>*/}
+                                {/*            <option value="link">*/}
+                                {/*                By Link Only*/}
+                                {/*            </option>*/}
+                                {/*        </select>*/}
+                                {/*        {errors.privacy && (*/}
+                                {/*            <div className="invalid-feedback">*/}
+                                {/*                {errors.privacy[0]}*/}
+                                {/*            </div>*/}
+                                {/*        )}*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
+
+                                {/*this field is for future*/}
+                                {/*<div className="col-md-6">*/}
+                                {/*    <div className={"mb-2"}>*/}
+                                {/*        <label className="form-label">*/}
+                                {/*            Publish Instant?*/}
+                                {/*        </label>*/}
+                                {/*        <select*/}
+                                {/*            className={`form-select ${*/}
+                                {/*                errors.publish_instant*/}
+                                {/*                    ? "is-invalid"*/}
+                                {/*                    : ""*/}
+                                {/*            }`}*/}
+                                {/*            name="publish_instant"*/}
+                                {/*            value={*/}
+                                {/*                formData.publish_instant*/}
+                                {/*                    ? "1"*/}
+                                {/*                    : "0"*/}
+                                {/*            }*/}
+                                {/*            onChange={(e) => {*/}
+                                {/*                setFormData({*/}
+                                {/*                    ...formData,*/}
+                                {/*                    publish_instant:*/}
+                                {/*                        e.target.value ===*/}
+                                {/*                        "1",*/}
+                                {/*                });*/}
+                                {/*            }}*/}
+                                {/*        >*/}
+                                {/*            <option value="0">NO</option>*/}
+                                {/*            <option value="1">YES</option>*/}
+                                {/*        </select>*/}
+                                {/*        {errors.publish_instant && (*/}
+                                {/*            <div className="invalid-feedback">*/}
+                                {/*                {errors.publish_instant[0]}*/}
+                                {/*            </div>*/}
+                                {/*        )}*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
                                 <div className="col-md-6">
                                     <div className={"mb-2"}>
                                         <label className="form-label">
