@@ -1,38 +1,41 @@
-import { useState, useEffect } from "react"
+import {useState, useEffect, useRef} from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
 import Layout from "../../../../layouts/Layout"
-import { router } from "@inertiajs/react"
 import FocusWarning from "../../../../components/FocusWarning"
 import { route } from "ziggy-js";
 
 const ExamMainPage = ({ exam, questions }) => {
+    const beforeUnloadRef = useRef(null);
+    const popStateRef = useRef(null);
   const [answers, setAnswers] = useState({})
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [showErrorModal, setShowErrorModal] = useState(false)
 
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      e.preventDefault()
-      e.returnValue = ""
-    }
 
-    const handlePopState = (e) => {
-      e.preventDefault()
-      window.history.pushState(null, "", window.location.href)
-    }
+    useEffect(() => {
+        beforeUnloadRef.current = (e) => {
+            e.preventDefault();
+            e.returnValue = "";
+        };
 
-    window.addEventListener("beforeunload", handleBeforeUnload)
-    window.addEventListener("popstate", handlePopState)
-    window.history.pushState(null, "", window.location.href)
+        popStateRef.current = (e) => {
+            e.preventDefault();
+            window.history.pushState(null, "", window.location.href);
+        };
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload)
-      window.removeEventListener("popstate", handlePopState)
-    }
-  }, [])
+        window.addEventListener("beforeunload", beforeUnloadRef.current);
+        window.addEventListener("popstate", popStateRef.current);
+        window.history.pushState(null, "", window.location.href);
 
-  const handleAnswerSelect = async (questionId, answerIndex) => {
+        return () => {
+            window.removeEventListener("beforeunload", beforeUnloadRef.current);
+            window.removeEventListener("popstate", popStateRef.current);
+        };
+    }, []);
+
+
+    const handleAnswerSelect = async (questionId, answerIndex) => {
     // Calculate the additional data points
     const question = questions.find(q => q.id === questionId);
     let parsedOptions = [];
@@ -78,6 +81,8 @@ const ExamMainPage = ({ exam, questions }) => {
   };
 
   const handleSubmitByStudent = async (submitStatus) => {
+      window.removeEventListener("beforeunload", beforeUnloadRef.current);
+      window.removeEventListener("popstate", popStateRef.current);
     try {
       const response = await axios.post(route('student.live.exam.main.submit'), {
         examId: exam.id,
@@ -85,12 +90,7 @@ const ExamMainPage = ({ exam, questions }) => {
       });
 
       if (response.data.type === 'success') {
-        // Use Inertia's router to redirect
-        router.visit(route('student.live.exam.success'), {
-          method: 'get',
-          preserveState: false,
-          replace: true
-        });
+          window.location.href = route('student.live.exam.success');
       }
 
     } catch (error) {
@@ -101,24 +101,21 @@ const ExamMainPage = ({ exam, questions }) => {
     }
   }
 
-  const handleSubmit = (isAuto = false) => {
+  const handleSubmit = async (isAuto = false) => {
+      window.removeEventListener("beforeunload", beforeUnloadRef.current);
+      window.removeEventListener("popstate", popStateRef.current);
     if (typeof isAuto !== 'boolean') {
       isAuto = false
     }
     if (!exam) return
-    router.get(route('student.live.exam.success'), {
-      preserveState: true,
-      onBefore: async () => {
-        const response = await axios.post(route('student.live.exam.main.submit'), {
+      const response = await axios.post(route('student.live.exam.main.submit'), {
           examId: exam.id,
           submit_status: 3,
-        });
+      });
 
-        if (response.data.type === 'success') {
-          // console.log(response.data.message);
-        }
+      if (response.data.type === 'success') {
+          window.location.href = route('student.live.exam.success');
       }
-    })
   }
 
   if (!exam) {
