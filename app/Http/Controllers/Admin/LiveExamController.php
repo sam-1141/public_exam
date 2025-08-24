@@ -106,7 +106,7 @@ class LiveExamController extends Controller
             'publish_instant' => 'nullable|boolean',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'result_publish_time' => 'required|date|after:end_time',
+            'result_publish_time' => 'nullable|date|after:end_time',
         ]);
 
         $slug = Str::slug($validated['name']);
@@ -200,6 +200,7 @@ class LiveExamController extends Controller
                     'publishInstant' => $exam->publish,
                     'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                     'endTime'   => optional($exam->end_time)->format('Y-m-d H:i'),
+                    'resultPublishTime'   => optional($exam->result_publish_time)->format('Y-m-d H:i'),
                     'examUrl' => $exam->exam_url,
                     'status'  => $exam->status,
                     'exam_type' => $exam->exam_type,
@@ -273,7 +274,7 @@ class LiveExamController extends Controller
             'publish_instant' => 'nullable|boolean',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'result_publish_time' => 'required|date|after:end_time',
+            'result_publish_time' => 'nullable|date|after:end_time',
         ]);
 
         $updateSlug = Str::slug($validated['name']);
