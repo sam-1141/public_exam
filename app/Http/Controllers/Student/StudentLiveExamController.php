@@ -22,6 +22,7 @@ class StudentLiveExamController extends Controller
 
         $exam = DB::table('live_exams')
             ->where('exam_type', 0)
+            ->where('publish', 1)
             ->whereIn('course_exam.course_id', $permittedCourses)
             ->join('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
             ->get();
