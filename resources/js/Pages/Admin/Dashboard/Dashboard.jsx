@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import { Link } from "@inertiajs/react";
 import axios from "axios";
+import CourseWiseExams from "./CourseWiseExams";
 
 function AdminDashboard() {
     const [liveExams, setLiveExams] = useState([]);
@@ -42,8 +43,8 @@ function AdminDashboard() {
                     Array.isArray(res.data.exams?.data)
                         ? res.data.exams.data
                         : Array.isArray(res.data.exams)
-                            ? res.data.exams
-                            : []
+                        ? res.data.exams
+                        : []
                 );
             })
             .catch(() => {
@@ -53,6 +54,8 @@ function AdminDashboard() {
                 setLoading((prev) => ({ ...prev, practice: false }))
             );
     }, []);
+
+    console.log({ liveExams, practiceExams });
 
     // Show only 5 items initially, or all if showAll is true
     const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
@@ -101,6 +104,9 @@ function AdminDashboard() {
                     </div>
                 </div> */}
             </div>
+
+            {/*Course Wise Exams Component */}
+            {/* <CourseWiseExams liveExams={liveExams} loading={loading} /> */}
 
             {/* Exams Section */}
             {/* Live Exams Section */}

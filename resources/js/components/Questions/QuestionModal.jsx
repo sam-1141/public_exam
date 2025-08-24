@@ -368,7 +368,9 @@ const QuestionModal = ({
                                                                     "insertdatetime media table paste wordcount",
                                                                 ],
                                                                 toolbar:
-                                                                    "undo redo | bold italic underline | forecolor | alignleft aligncenter alignright | bullist numlist | link image | code",
+                                                                    "undo redo | formatselect | bold italic underline | forecolor backcolor | \
+                                                alignleft aligncenter alignright alignjustify | \
+                                                bullist numlist outdent indent | link image | removeformat | code preview",
                                                                 content_style:
                                                                     "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; }",
                                                             }}

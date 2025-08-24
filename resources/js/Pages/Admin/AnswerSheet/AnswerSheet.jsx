@@ -1,59 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { Link, router, usePage } from "@inertiajs/react";
-import Layout from "../../../layouts/Layout";
-import { route } from "ziggy-js";
-import QuestionList from "./QuestionList/QuiestionList";
-import QuestionModal from "../../../components/Questions/QuestionModal";
-import { formatDateTime } from "./EditExam";
+import React, { useEffect } from "react";
 
-const ExamDetails = ({ examType, exam, questions }) => {
-    const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
-
+const AnswerSheet = ({ examType, exam, questions }) => {
     const isPracticeExam = examType === "practice";
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-        alert("Exam link copied to clipboard!");
-    };
-
     useEffect(() => {
-        // console.log("Exam Details:", exam);
-    }, [exam]);
+        console.log("Answer Sheet - Questions:", questions);
+    }, [exam, questions]);
 
-    const toggleStatus = (id, currentStatus) => {
-        router.put(route("exams.status.toggle", id), {
-            publish: currentStatus ? 0 : 1,
-        });
-    };
-
-    const toggleExamType = (id, currentExamType) => {
-        router.put(route("exams.type.toggle", id), {
-            examType: currentExamType ? 0 : 1,
-        });
+    // Helper function to parse options
+    const parseOptions = (optionsString) => {
+        try {
+            return JSON.parse(optionsString);
+        } catch (e) {
+            console.error("Error parsing options:", e);
+            return [];
+        }
     };
 
     return (
         <div className="container py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <Link
-                    href={route(
-                        isPracticeExam
-                            ? "admin.add.practice.exam"
-                            : "admin.add.live.exam"
-                    )}
-                    className="btn btn-sm"
-                >
-                    <i className="fas fa-arrow-left me-1"></i>Back
-                </Link>
-                <h2 className="mb-0 h4 font-semibold">Exam Details</h2>
-                {exam.exam_type === 1 && (
-                    <span className="badge bg-info text-dark">
-                        Practice Exam
-                    </span>
-                )}
+                <h2 className="mb-0 h4 font-semibold">Answer Sheet</h2>
             </div>
 
-            {/* Exam Card  */}
+            {/* Exam Info Card - Same as ExamDetails */}
             <div className="card shadow-sm mb-4">
                 <div className="card-body d-flex flex-column">
                     <div className="mb-3">
@@ -66,22 +36,9 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     {exam.description}
                                 </p>
                             </div>
-
-                            {exam.publishInstant === 1 ? (
-                                <>
-                                    <span className="badge bg-success">
-                                        Published
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    <span className="badge bg-danger">
-                                        Unpublished
-                                    </span>
-                                </>
-                            )}
                         </div>
                     </div>
+
                     {/* Course and Subject display */}
                     <div className="row mt-2 mb-3">
                         <div className="col-6">
@@ -182,7 +139,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                 {!isPracticeExam && (
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
-                                            <i className="fas fa-hourglass-half  fa-lg text-gray-600"></i>
+                                            <i className="fas fa-hourglass-half fa-lg text-gray-600"></i>
                                         </div>
                                         <div>
                                             <div className="fw-bold">
@@ -255,90 +212,132 @@ const ExamDetails = ({ examType, exam, questions }) => {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="d-flex flex-wrap gap-2 mb-4">
-                <button
-                    className={`btn btn-${
-                        exam.publishInstant ? "warning" : "success"
-                    } btn-sm`}
-                    onClick={() => toggleStatus(exam.id, exam.publishInstant)}
-                >
-                    {exam.publishInstant === 1 ? (
-                        <>
-                            <i className="fas fa-eye-slash me-1"></i>Unpublish
-                        </>
-                    ) : (
-                        <>
-                            <i className="fas fa-eye me-1"></i>Publish
-                        </>
-                    )}
-                </button>
-                <button
-                    className={`btn btn-success btn-sm`}
-                    onClick={() => toggleExamType(exam.id, exam.exam_type)}
-                >
-                    {exam.exam_type === 1 ? (
-                        <>
-                            <i className="fas fa-copy me-1"></i>Make it Live
-                            Exam
-                        </>
-                    ) : (
-                        <>
-                            <i className="fas fa-copy me-1"></i>Make it Practice
-                            Exam
-                        </>
-                    )}
-                </button>
-                {!isPracticeExam && (
-                    <>
-                        {/*<button className="btn btn-info btn-sm">*/}
-                        {/*    <i className="fas fa-sync-alt me-1"></i>Update*/}
-                        {/*    Results*/}
-                        {/*</button>*/}
+            {/* Questions with Answers  */}
+            <div className="card shadow-sm">
+                <div className="card-header bg-light">
+                    <h5 className="mb-0">
+                        <i className="fas fa-list-alt me-2"></i>Questions &
+                        Answers
+                    </h5>
+                </div>
+                <div className="card-body">
+                    {questions && questions.length > 0 ? (
+                        <div className="questions-container">
+                            {questions.map((question, index) => {
+                                const options = parseOptions(question.options);
 
-                        <button
-                            className="btn btn-outline-primary btn-sm"
-                            onClick={() => copyToClipboard(exam.examUrl ?? ``)}
-                        >
-                            <i className="fas fa-link me-1"></i>Copy Link
-                        </button>
-                        {/*<button className="btn btn-outline-warning btn-sm">*/}
-                        {/*    <i className="fas fa-trophy me-1"></i>Leaderboard*/}
-                        {/*</button>*/}
-                        <button
-                            onClick={() => setShowAddQuestionModal(true)}
-                            className="btn btn-warning btn-sm"
-                        >
-                            <i className="fas fa-plus-circle me-1"></i>Add
-                            Question
-                        </button>
+                                return (
+                                    <div
+                                        key={question.id}
+                                        className="question-item mb-2 pb-2 border-bottom"
+                                    >
+                                        <div className="d-flex justify-content-between align-items-start mb-2">
+                                            <div className="text-lg question-number mb-0 d-flex align-items-start">
+                                                <span className="me-2 font-medium">
+                                                    Q{index + 1}:
+                                                </span>
+                                                <div
+                                                    className="text-lg font-semibold"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: question.question,
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
 
-                        <Link
-                            href={route("admin.answer.sheet", {
-                                type: examType,
-                                examSlug: exam.slug,
+                                        {/* Options */}
+                                        <div className="options mb-3">
+                                            <h6 className="font-medium mb-2">
+                                                Options:
+                                            </h6>
+                                            {options.length > 0 ? (
+                                                <ul className="list-group ">
+                                                    {options.map(
+                                                        (option, optIndex) => (
+                                                            <li
+                                                                key={optIndex}
+                                                                className={`list-group-item m-1 ${
+                                                                    option.ans
+                                                                        ? "border-2 border-success "
+                                                                        : "border-1"
+                                                                }`}
+                                                            >
+                                                                <div className="d-flex align-items-center">
+                                                                    <span className="font-medium me-2">
+                                                                        {String.fromCharCode(
+                                                                            65 +
+                                                                                optIndex
+                                                                        )}
+                                                                        :
+                                                                    </span>
+                                                                    {option.option.startsWith(
+                                                                        "<img"
+                                                                    ) ? (
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{
+                                                                                __html: option.option,
+                                                                            }}
+                                                                        />
+                                                                    ) : (
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{
+                                                                                __html: option.option,
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                    {option.ans && (
+                                                                        <span className="ms-auto badge bg-success text-white">
+                                                                            Correct
+                                                                            Answer
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            ) : (
+                                                <p className="text-muted">
+                                                    No options available
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Explanation (if available) */}
+                                        {question.explanation && (
+                                            <div className="explanation">
+                                                <h6 className="text-info mb-2">
+                                                    <i className="fas fa-lightbulb me-1"></i>
+                                                    Explanation
+                                                </h6>
+                                                <div className="p-3 bg-info bg-opacity-10 rounded">
+                                                    <div
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: question.explanation,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
                             })}
-                            className="btn btn-info btn-sm"
-                        >
-                            <i className="fas fa-file-alt me-1"></i>View
-                            AnswerSheet
-                        </Link>
-                    </>
-                )}
+                        </div>
+                    ) : (
+                        <div className="text-center py-5">
+                            <i className="fas fa-question-circle fa-3x text-muted mb-3"></i>
+                            <h5 className="text-muted">
+                                No Questions Available
+                            </h5>
+                            <p className="text-muted">
+                                This exam doesn't have any questions yet.
+                            </p>
+                        </div>
+                    )}
+                </div>
             </div>
-
-            <QuestionList questions={questions} examType={examType} />
-
-            <QuestionModal
-                show={showAddQuestionModal}
-                onClose={() => setShowAddQuestionModal(false)}
-                examId={exam.id}
-                examType={examType}
-                mode="add"
-            />
         </div>
     );
 };
 
-ExamDetails.layout = (page) => <Layout children={page} />;
-export default ExamDetails;
+export default AnswerSheet;

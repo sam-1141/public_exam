@@ -65,6 +65,8 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(AdminLeaderboardController::class)->group(function () {
             Route::get('/admin/leaderboard', 'loadAdminLeaderBoardPage')->name('admin.leaderboard');
             Route::get('/admin/exam/{examSlug}/leaderboard/list', 'loadAdminLeaderBoardList')->name('admin.leaderboard.list');
+
+            
         });
 
         Route::controller(ResultController::class)->group(function () {
@@ -86,6 +88,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
             Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
             Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+            Route::get('/exam/{type}/{examSlug}/answer-sheet', 'loadAdminAnswerSheet')->name('admin.answer.sheet');
         });
 
         Route::controller(PractiseExamController::class)->group(function () {
