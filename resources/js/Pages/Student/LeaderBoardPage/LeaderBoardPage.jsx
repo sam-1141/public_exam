@@ -158,7 +158,7 @@ const LeaderboardPage = ({ examsInfo }) => {
           </div>
 
           {/* User Info Section */}
-          {selectedExam && (
+          {/* {selectedExam && (
             <div className="row mb-4">
               <div className="col-12">
                 <div className="card border-0 shadow-sm">
@@ -167,7 +167,6 @@ const LeaderboardPage = ({ examsInfo }) => {
                   </div>
                   <div className="card-body">
                     <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start">
-                      {/* User Image - Top center on small devices */}
                       <div className="mb-3 mb-md-0 me-md-3">
                         <img
                           src={currentUser.image || "/assets/images/user/avatar-1.png"}
@@ -182,7 +181,6 @@ const LeaderboardPage = ({ examsInfo }) => {
                         />
                       </div>
 
-                      {/* User Details */}
                       <div className="flex-grow-1">
                         <div className="row">
                           <div className="col-md-3 mb-2 mb-md-0">
@@ -208,7 +206,7 @@ const LeaderboardPage = ({ examsInfo }) => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Leaderboard List */}
           <div className="row">
