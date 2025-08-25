@@ -124,7 +124,7 @@ const SingleExamLeaderboard = ({ examSlug }) => {
             <main className="flex-grow-1 p-1 bg-light">
                 <div className="container-fluid">
                     {/* User Info Section */}
-                    <div className="row mb-4">
+                    {/* <div className="row mb-4">
                         <div className="col-12">
                             <div className="card border-0 shadow-sm">
                                 <div className="card-header bg-primary text-white py-3">
@@ -132,7 +132,6 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                 </div>
                                 <div className="card-body">
                                     <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start text-center text-md-start">
-                                        {/* User Image - Top center on small devices */}
                                         <div className="mb-3 mb-md-0 me-md-3">
                                             <img
                                                 src={currentUser.image || "/assets/images/user/avatar-1.png"}
@@ -147,7 +146,6 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                             />
                                         </div>
 
-                                        {/* User Details */}
                                         <div className="flex-grow-1">
                                             <div className="row">
                                                 <div className="col-md-3 mb-2 mb-md-0">
@@ -172,7 +170,7 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Leaderboard List */}
                     <div className="row">
