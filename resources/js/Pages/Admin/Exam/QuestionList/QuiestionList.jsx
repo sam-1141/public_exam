@@ -111,16 +111,16 @@ const QuestionList = ({
                 <h3 className="text-xl font-semibold text-center">
                     Questions ({questions.length})
                 </h3>
-                <div className="flex gap-2">
-                    {questions.length > 1 && (
-                        <button
-                            onClick={() => setShowReorderModal(true)}
-                            className="btn btn-sm btn-outline-primary"
-                        >
-                            Reorder Questions
-                        </button>
-                    )}
-                </div>
+                {/*<div className="flex gap-2">*/}
+                {/*    {questions.length > 1 && (*/}
+                {/*        <button*/}
+                {/*            onClick={() => setShowReorderModal(true)}*/}
+                {/*            className="btn btn-sm btn-outline-primary"*/}
+                {/*        >*/}
+                {/*            Reorder Questions*/}
+                {/*        </button>*/}
+                {/*    )}*/}
+                {/*</div>*/}
             </div>
 
             <div className="accordion" id="questionsAccordion">
@@ -241,21 +241,21 @@ const QuestionList = ({
                                                         <span className="font-medium me-2">
                                                             Option {index + 1}:
                                                         </span>
-                                                        {option.option.startsWith(
-                                                            "<img"
-                                                        ) ? (
+                                                        {/*{option.option.startsWith(*/}
+                                                        {/*    "<img"*/}
+                                                        {/*) ? (*/}
+                                                        {/*    <div*/}
+                                                        {/*        dangerouslySetInnerHTML={{*/}
+                                                        {/*            __html: option.option,*/}
+                                                        {/*        }}*/}
+                                                        {/*    />*/}
+                                                        {/*) : (*/}
                                                             <div
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: option.option,
                                                                 }}
                                                             />
-                                                        ) : (
-                                                            <div
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: option.option,
-                                                                }}
-                                                            />
-                                                        )}
+                                                        {/*)}*/}
                                                         {option.ans && (
                                                             <span className="ms-auto badge bg-success text-white">
                                                                 Correct
