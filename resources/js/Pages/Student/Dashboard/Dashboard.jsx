@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import Layout from "../../../layouts/Layout"
-import { 
-  ClipboardList, 
-  Clock, 
-  CalendarCheck, 
-  CalendarX, 
+import {
+  ClipboardList,
+  Clock,
+  CalendarCheck,
+  CalendarX,
   PlayCircle,
   Award,
   AlertTriangle
@@ -24,9 +24,9 @@ const StatCard = ({ icon: Icon, title, value, color, progress, children }) => (
       </div>
       {progress && (
         <div className="progress rounded-pill" style={{ height: '8px' }}>
-          <div 
-            className={`progress-bar bg-${color}`} 
-            role="progressbar" 
+          <div
+            className={`progress-bar bg-${color}`}
+            role="progressbar"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -48,37 +48,29 @@ const ActivityItem = ({ icon: Icon, title, status, score, color }) => (
   </div>
 );
 
-const Dashboard = () => {
-  const [stats] = useState({
-    totalHeld: 24,
-    totalAttended: 18,
-    totalMissed: 6,
-    runningExams: 3,
-    upcomingExams: 5
-  });
-
-  const attendanceRate = Math.round((stats.totalAttended / stats.totalHeld) * 100);
+const Dashboard = ({ totalExam, totalAttended, runningExams, upcomingExams }) => {
+    const attendanceRate = Math.round((totalAttended / totalExam) * 100);
 
   return (
     <div className="container py-4 font-baloo">
       <h2 className="mb-4 fw-bold">ড্যাশবোর্ড</h2>
-      
+
       <div className="row g-4 mb-4">
         <div className="col-md-6 col-lg-4">
-          <StatCard 
-            icon={ClipboardList} 
-            title="মোট পরীক্ষা" 
-            value={stats.totalHeld} 
+          <StatCard
+            icon={ClipboardList}
+            title="মোট পরীক্ষা"
+            value={totalExam}
             color="primary"
             progress={100}
           />
         </div>
 
         <div className="col-md-6 col-lg-4">
-          <StatCard 
-            icon={CalendarCheck} 
-            title="পরীক্ষায় অংশগ্রহণ" 
-            value={stats.totalAttended} 
+          <StatCard
+            icon={CalendarCheck}
+            title="পরীক্ষায় অংশগ্রহণ"
+            value={totalAttended}
             color="success"
             progress={attendanceRate}
           >
@@ -87,20 +79,20 @@ const Dashboard = () => {
         </div>
 
         <div className="col-md-6 col-lg-4">
-          <StatCard 
-            icon={CalendarX} 
-            title="পরীক্ষা মিস" 
-            value={stats.totalMissed} 
+          <StatCard
+            icon={CalendarX}
+            title="পরীক্ষা মিস"
+            value={totalExam - totalAttended}
             color="danger"
-            progress={(stats.totalMissed/stats.totalHeld)*100}
+            progress={100 - attendanceRate}
           />
         </div>
 
         <div className="col-md-6 col-lg-6">
-          <StatCard 
-            icon={PlayCircle} 
-            title="চলমান পরীক্ষা" 
-            value={stats.runningExams} 
+          <StatCard
+            icon={PlayCircle}
+            title="চলমান পরীক্ষা"
+            value={runningExams}
             color="warning"
           >
             <span className="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
@@ -110,10 +102,10 @@ const Dashboard = () => {
         </div>
 
         <div className="col-md-6 col-lg-6">
-          <StatCard 
-            icon={Clock} 
-            title="আসন্ন পরীক্ষা" 
-            value={stats.upcomingExams} 
+          <StatCard
+            icon={Clock}
+            title="আসন্ন পরীক্ষা"
+            value={upcomingExams}
             color="info"
           >
             <span className="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
