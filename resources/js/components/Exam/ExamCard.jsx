@@ -230,12 +230,12 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                     </div>
 
                     <div className="d-flex justify-content-between mt-auto pt-3">
-                        <button
-                            onClick={() => handleDeleteExam(exam.slug)}
-                            className="btn btn-outline-danger btn-sm me-2"
-                        >
-                            <i className="fas fa-trash me-1"></i> Delete
-                        </button>
+                        {/*<button*/}
+                        {/*    onClick={() => handleDeleteExam(exam.slug)}*/}
+                        {/*    className="btn btn-outline-danger btn-sm me-2"*/}
+                        {/*>*/}
+                        {/*    <i className="fas fa-trash me-1"></i> Delete*/}
+                        {/*</button>*/}
                         <div>
                             {!isPracticeExam && (
                                 <button
