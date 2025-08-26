@@ -1,246 +1,337 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
 
-function CourseWiseExams({ liveExams, loading }) {
+function CourseWiseExams({ liveExams, practiceExams, loading }) {
+    // State management
     const [expandedCourses, setExpandedCourses] = useState({});
+    const [selectedCourse, setSelectedCourse] = useState("all");
+    const [examType, setExamType] = useState("live");
 
-    // Function to check if live exam is still active
-    const isExamLive = (endTime) => {
-        if (!endTime) return true;
-        const now = new Date();
-        const examEndTime = new Date(endTime);
-        return now < examEndTime;
-    };
+    // Get current exam list based on type (with null safety)
+    const currentExams =
+        examType === "live" ? liveExams || [] : practiceExams || [];
 
-    // Filter live exams to only show active ones
-    const activeLiveExams = liveExams.filter((exam) =>
-        isExamLive(exam.endTime)
-    );
+    // Extract unique courses and subjects for filters
+    const { courses, subjects } = useMemo(() => {
+        const courseSet = new Set();
+        const subjectSet = new Set();
 
-    // Group active live exams by course
-    const groupExamsByCourse = (exams) => {
+        // Ensure currentExams is an array before iterating
+        if (Array.isArray(currentExams)) {
+            currentExams.forEach((exam) => {
+                // Extract course information
+                if (exam.courseInfo && exam.courseInfo.length > 0) {
+                    exam.courseInfo.forEach((course) => {
+                        courseSet.add(course.course_name);
+                    });
+                }
+
+                // Extract subject information
+                if (exam.subjectInfo && exam.subjectInfo.length > 0) {
+                    exam.subjectInfo.forEach((subject) => {
+                        subjectSet.add(subject.name);
+                    });
+                }
+            });
+        }
+
+        return {
+            courses: Array.from(courseSet).sort(),
+            subjects: Array.from(subjectSet).sort(),
+        };
+    }, [currentExams]);
+
+    // Filter exams based on selected course
+    const filteredExams = useMemo(() => {
+        if (!Array.isArray(currentExams)) {
+            return [];
+        }
+
+        if (selectedCourse === "all") {
+            return currentExams;
+        }
+
+        return currentExams.filter((exam) => {
+            return (
+                exam.courseInfo &&
+                exam.courseInfo.some(
+                    (course) => course.course_name === selectedCourse
+                )
+            );
+        });
+    }, [currentExams, selectedCourse]);
+
+    // Group exams by course
+    const groupedExams = useMemo(() => {
         const grouped = {};
 
-        exams.forEach((exam) => {
-            const courseInfo =
+        filteredExams.forEach((exam) => {
+            // Handle course grouping
+            const courses =
                 exam.courseInfo && exam.courseInfo.length > 0
-                    ? exam.courseInfo[0]
-                    : { course_name: "Uncategorized", id: "uncategorized" };
+                    ? exam.courseInfo
+                    : [{ id: "uncategorized", course_name: "Uncategorized" }];
 
-            const courseKey = courseInfo.course_name || "Uncategorized";
+            courses.forEach((course) => {
+                const courseKey = course.course_name;
 
-            if (!grouped[courseKey]) {
-                grouped[courseKey] = {
-                    courseId: courseInfo.id,
-                    courseName: courseKey,
-                    exams: [],
-                };
-            }
+                if (!grouped[courseKey]) {
+                    grouped[courseKey] = {
+                        courseId: course.id,
+                        courseName: courseKey,
+                        exams: [],
+                    };
+                }
 
-            grouped[courseKey].exams.push(exam);
+                grouped[courseKey].exams.push(exam);
+            });
         });
 
         return grouped;
-    };
-
-    const liveExamsByCourse = groupExamsByCourse(activeLiveExams);
+    }, [filteredExams]);
 
     // Toggle course expansion
-    const toggleCourseExpansion = (courseName) => {
+    const toggleCourseExpansion = (courseKey) => {
         setExpandedCourses((prev) => ({
             ...prev,
-            [courseName]: !prev[courseName],
+            [courseKey]: !prev[courseKey],
         }));
     };
 
-    // Render course section
-    const renderCourseSection = () => {
-        const courseNames = Object.keys(liveExamsByCourse);
+    // Reset filters
+    const resetFilters = () => {
+        setSelectedCourse("all");
+    };
 
-        if (loading.live) {
-            return (
-                <div className="text-center py-4">
-                    <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            );
+    // Calculate total exam count
+    const totalExams = Object.values(groupedExams).reduce((total, course) => {
+        return total + course.exams.length;
+    }, 0);
+
+    // Get subject names for an exam
+    const getSubjectNames = (exam) => {
+        if (exam.subjectInfo && exam.subjectInfo.length > 0) {
+            return exam.subjectInfo.map((subject) => subject.name).join(", ");
         }
+        return "No Subject";
+    };
 
-        if (courseNames.length === 0) {
-            return (
-                <div className="text-center py-5 text-muted">
-                    <i className="fas fa-inbox fa-2x mb-3 d-block"></i>
-                    No courses have any live exams right now
-                </div>
-            );
-        }
+    // Render individual exam item
+    const renderExamItem = (exam) => {
+        return (
+            <Link
+                key={exam.id}
+                href={route("admin.exam.details", {
+                    exam: exam.slug,
+                    type: examType,
+                })}
+                className="list-group-item list-group-item-action border-0 py-3"
+            >
+                <div className="d-flex justify-content-between align-items-start">
+                    <div className="flex-grow-1">
+                        {/* Exam Title */}
+                        <h6 className="fw-semibold text-dark mb-1">
+                            {exam.name}
+                        </h6>
 
-        return courseNames.map((courseName) => {
-            const courseData = liveExamsByCourse[courseName];
-            const isExpanded = expandedCourses[courseName];
-            const displayedExams = isExpanded
-                ? courseData.exams
-                : courseData.exams.slice(0, 3);
-
-            return (
-                <div key={courseName} className="mb-3 border rounded">
-                    {/* Course Header */}
-                    <div
-                        className="bg-light p-3 border-bottom cursor-pointer d-flex justify-content-between align-items-center"
-                        onClick={() => toggleCourseExpansion(courseName)}
-                        style={{ cursor: "pointer" }}
-                    >
-                        <div className="d-flex align-items-center">
-                            <div>
-                                <h6 className="mb-1 font-semibold text-primary">
-                                    {courseData.courseName}
-                                </h6>
-                                <small className="text-muted">
-                                    {courseData.exams.length} live exam
-                                    {courseData.exams.length !== 1 ? "s" : ""}
-                                </small>
-                            </div>
+                        {/* Subject Name */}
+                        <div className="mb-2">
+                            <span className="badge bg-info text-dark text-sm me-2 ">
+                                {getSubjectNames(exam)}
+                            </span>
                         </div>
-                        <i
-                            className={`fas fa-chevron-${
-                                isExpanded ? "up" : "down"
-                            } text-muted`}
-                        ></i>
+
+                        {/* Exam Description */}
+                        {exam.description && (
+                            <p className="text-muted mb-0 ">
+                                {exam.description}
+                            </p>
+                        )}
                     </div>
 
-                    {/* Exams List */}
+                    {/* Arrow Icon */}
+                    <div className="ms-3">
+                        <i className="fas fa-chevron-right text-muted"></i>
+                    </div>
+                </div>
+            </Link>
+        );
+    };
+
+    // Render course section
+    const renderCourseSection = (courseKey, courseData) => {
+        const isCourseExpanded = expandedCourses[courseKey];
+        const displayedExams = isCourseExpanded
+            ? courseData.exams
+            : courseData.exams.slice(0, 3);
+
+        return (
+            <div key={courseKey} className="mb-3 border rounded">
+                {/* Course Header */}
+                <div
+                    className=" p-3 cursor-pointer d-flex justify-content-between align-items-center"
+                    onClick={() => toggleCourseExpansion(courseKey)}
+                    style={{ cursor: "pointer" }}
+                >
+                    <div>
+                        <h5 className="h5 mb-1 fw-bold">
+                            Course: {courseData.courseName}
+                        </h5>
+                        <small className="opacity-75">
+                            {courseData.exams.length} exam
+                            {courseData.exams.length !== 1 ? "s" : ""}
+                        </small>
+                    </div>
+                    <i
+                        className={`fas fa-chevron-${
+                            isCourseExpanded ? "up" : "down"
+                        }`}
+                    ></i>
+                </div>
+
+                {/* Exams List  */}
+                {isCourseExpanded && (
                     <div className="list-group list-group-flush">
-                        {displayedExams.map((exam) => (
-                            <Link
-                                key={exam.id}
-                                href={route("admin.exam.details", {
-                                    exam: exam.slug,
-                                    type: "live",
-                                })}
-                                className="list-group-item list-group-item-action border-0"
-                            >
-                                <div className="d-flex w-100 justify-content-between align-items-start">
-                                    <div className="flex-grow-1">
-                                        <div className="d-flex align-items-center mb-1">
-                                            {/* <div className="me-3">
-                                                <span className="position-relative">
-                                                    <span className="position-absolute top-0 start-0 badge bg-danger rounded-pill animate-pulse fs-6">
-                                                        <i className="fas fa-circle opacity-75 me-1"></i>
-                                                        LIVE
-                                                    </span>
-                                                </span>
-                                            </div> */}
-                                            <h6 className="font-semibold text-gray-700 mb-0">
-                                                {exam.name}
-                                            </h6>
-                                        </div>
-
-                                        <p className="text-muted mb-1 small">
-                                            {exam.description?.substring(
-                                                0,
-                                                80
-                                            ) || "No description available"}
-                                            {exam.description?.length > 80
-                                                ? "..."
-                                                : ""}
-                                        </p>
-                                        <div className="d-flex gap-3 text-xs text-muted">
-                                            <span>
-                                                <i className="fas fa-question-circle me-1"></i>
-                                                {exam.totalQuestions || 0}{" "}
-                                                questions
-                                            </span>
-                                            <span>
-                                                <i className="fas fa-bullseye me-1"></i>
-                                                {exam.totalMarks || 0} marks
-                                            </span>
-                                            <span>
-                                                <i className="fas fa-clock me-1"></i>
-                                                {exam.duration || 0} min
-                                            </span>
-                                            {exam.startTime && (
-                                                <span>
-                                                    <i className="fas fa-calendar me-1"></i>
-                                                    {new Date(
-                                                        exam.startTime
-                                                    ).toLocaleDateString()}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <small className="text-muted ms-3">
-                                        <i className="fas fa-chevron-right"></i>
-                                    </small>
-                                </div>
-                            </Link>
-                        ))}
+                        {displayedExams.map(renderExamItem)}
                     </div>
+                )}
 
-                    {/* Show More Button */}
-                    {courseData.exams.length > 3 && !isExpanded && (
+                {/* Show More Button  */}
+                {isCourseExpanded &&
+                    courseData.exams.length > 3 &&
+                    displayedExams.length < courseData.exams.length && (
                         <div className="text-center p-2 bg-light border-top">
                             <button
                                 className="btn btn-link btn-sm text-decoration-none"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    toggleCourseExpansion(courseName);
+                                    setExpandedCourses((prev) => ({
+                                        ...prev,
+                                        [courseKey]: "full",
+                                    }));
                                 }}
                             >
                                 Show {courseData.exams.length - 3} more exams
                             </button>
                         </div>
                     )}
+            </div>
+        );
+    };
+
+    // Main render function
+    const renderMainContent = () => {
+        const isLoading =
+            (examType === "live" && loading?.live) ||
+            (examType === "practice" && loading?.practice);
+
+        if (isLoading) {
+            return (
+                <div className="text-center py-5">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <p className="mt-3 text-muted">
+                        Loading {examType} exams...
+                    </p>
                 </div>
             );
-        });
+        }
+
+        const courseKeys = Object.keys(groupedExams);
+
+        if (courseKeys.length === 0) {
+            return (
+                <div className="text-center py-5">
+                    <i className="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <h5 className="text-muted">No {examType} exams found</h5>
+                    <p className="text-muted">
+                        {selectedCourse !== "all"
+                            ? "No exams found for the selected course"
+                            : `No ${examType} exams are available at the moment`}
+                    </p>
+                </div>
+            );
+        }
+
+        return courseKeys.map((courseKey) =>
+            renderCourseSection(courseKey, groupedExams[courseKey])
+        );
     };
 
     return (
         <div className="mb-4">
-            <div className="card">
-                <div className="card-header">
+            <div className="card shadow-sm">
+                {/* Header */}
+                <div className="card-header bg-white">
                     <div className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                            <h2 className="text-xl font-semibold mb-0">
-                                Course Wise Live Exams
+                        <div>
+                            <h2 className="h4 mb-1 fw-bold text-dark">
+                                Course Wise Exams
                             </h2>
                         </div>
+                        <span
+                            className={`badge fs-6 ${
+                                examType === "live" ? "bg-danger" : "bg-success"
+                            }`}
+                        >
+                            {totalExams}{" "}
+                            {examType === "live" ? "Live" : "Practice"} Exam
+                            {totalExams !== 1 ? "s" : ""}
+                        </span>
+                    </div>
+                </div>
 
-                        {/* Live Exam Count */}
-                        <div>
-                            <span className="badge bg-danger">
-                                {activeLiveExams.length} Active
-                            </span>
+                {/* Filters */}
+                <div className="card-body border-bottom bg-light">
+                    <div className="row g-3">
+                        {/* Course Filter */}
+                        <div className="col-md-3">
+                            <select
+                                className="form-select"
+                                value={selectedCourse}
+                                onChange={(e) =>
+                                    setSelectedCourse(e.target.value)
+                                }
+                            >
+                                <option value="all">All Courses</option>
+                                {courses.map((course, index) => (
+                                    <option key={index} value={course}>
+                                        {course}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Exam Type Filter */}
+                        <div className="col-md-3">
+                            <select
+                                className="form-select"
+                                value={examType}
+                                onChange={(e) => setExamType(e.target.value)}
+                            >
+                                <option value="live">Live Exams</option>
+                                <option value="practice">Practice Exams</option>
+                            </select>
+                        </div>
+
+                        {/* Clear Filters Button */}
+                        <div className="col-md-3">
+                            <button
+                                className="btn btn-outline-secondary w-100"
+                                onClick={resetFilters}
+                                disabled={selectedCourse === "all"}
+                            >
+                                <i className="fas fa-times me-1"></i>
+                                Clear Filters
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div className="card-body p-3">
-                    {renderCourseSection()}
 
-                    {/* Custom CSS for pulse animation */}
-                    <style jsx>{`
-                        @keyframes pulse {
-                            0% {
-                                transform: scale(1);
-                                opacity: 1;
-                            }
-                            50% {
-                                transform: scale(1.1);
-                                opacity: 0.7;
-                            }
-                            100% {
-                                transform: scale(1.2);
-                                opacity: 0;
-                            }
-                        }
-
-                        .animate-pulse {
-                            animation: pulse 2s infinite;
-                        }
-                    `}</style>
-                </div>
+                {/* Main Content */}
+                <div className="card-body p-4">{renderMainContent()}</div>
             </div>
         </div>
     );
