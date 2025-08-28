@@ -429,11 +429,11 @@ const EditExamModal = ({
                                                     setFormData({
                                                         ...formData,
                                                         has_negative_marks:
-                                                        e.target.checked,
+                                                            e.target.checked,
                                                         negative_marks_value: e
                                                             .target.checked
                                                             ? formData.negative_marks_value ||
-                                                            "0.25"
+                                                              "0.25"
                                                             : "",
                                                     });
                                                 }}
@@ -461,7 +461,7 @@ const EditExamModal = ({
                                                             ? "is-invalid"
                                                             : ""
                                                     }`}
-                                                    min="0"
+                                                    min="0.25"
                                                     step="0.25"
                                                     value={
                                                         formData.negative_marks_value
@@ -470,7 +470,7 @@ const EditExamModal = ({
                                                         setFormData({
                                                             ...formData,
                                                             negative_marks_value:
-                                                            e.target.value,
+                                                                e.target.value,
                                                         })
                                                     }
                                                     placeholder="0.25"
@@ -650,18 +650,13 @@ const EditExamModal = ({
                                                     : ""
                                             }`}
                                             name="result_publish_time"
-                                            value={
-                                                formData.result_publish_time
-                                            }
+                                            value={formData.result_publish_time}
                                             onChange={handleChange}
                                         />
 
                                         {errors.result_publish_time && (
                                             <div className="invalid-feedback">
-                                                {
-                                                    errors
-                                                        .result_publish_time[0]
-                                                }
+                                                {errors.result_publish_time[0]}
                                             </div>
                                         )}
                                     </div>

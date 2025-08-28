@@ -356,7 +356,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                             ? "is-invalid"
                                                             : ""
                                                     }`}
-                                                    min="0.0"
+                                                    min="0.25"
                                                     step="0.25"
                                                     value={
                                                         formData.negative_marks_value

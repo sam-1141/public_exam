@@ -5,7 +5,7 @@ import { route } from "ziggy-js";
 function CourseWiseExams({ liveExams, practiceExams, loading }) {
     // State management
     const [expandedCourses, setExpandedCourses] = useState({});
-    const [selectedCourse, setSelectedCourse] = useState("all");
+    const [selectedCourse, setSelectedCourse] = useState(""); // Changed from "all" to empty string
     const [examType, setExamType] = useState("live");
 
     // Get current exam list based on type (with null safety)
@@ -45,6 +45,11 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
     // Filter exams based on selected course
     const filteredExams = useMemo(() => {
         if (!Array.isArray(currentExams)) {
+            return [];
+        }
+
+        // If no course is selected, return empty array
+        if (!selectedCourse) {
             return [];
         }
 
@@ -101,7 +106,7 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
 
     // Reset filters
     const resetFilters = () => {
-        setSelectedCourse("all");
+        setSelectedCourse("");
     };
 
     // Calculate total exam count
@@ -239,6 +244,40 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
             );
         }
 
+        // Show selection prompt if no course is selected
+        if (!selectedCourse) {
+            return (
+                <div className="text-center py-5">
+                    <i className="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                    <h5 className="text-dark mb-3">
+                        Select a Course to View Exams
+                    </h5>
+                    <p className="text-muted mb-4">
+                        Please select a specific course or "All Courses" from
+                        the dropdown above to view available {examType} exams.
+                    </p>
+                    <div className="d-flex justify-content-center gap-2">
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => setSelectedCourse("all")}
+                        >
+                            <i className="fas fa-list me-2"></i>
+                            View All Courses
+                        </button>
+                        {/* {courses.length > 0 && (
+                            <button
+                                className="btn btn-outline-primary"
+                                onClick={() => setSelectedCourse(courses[0])}
+                            >
+                                <i className="fas fa-book me-2"></i>
+                                Select {courses[0]}
+                            </button>
+                        )} */}
+                    </div>
+                </div>
+            );
+        }
+
         const courseKeys = Object.keys(groupedExams);
 
         if (courseKeys.length === 0) {
@@ -271,15 +310,19 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
                                 Course Wise Exams
                             </h2>
                         </div>
-                        <span
-                            className={`badge fs-6 ${
-                                examType === "live" ? "bg-danger" : "bg-success"
-                            }`}
-                        >
-                            {totalExams}{" "}
-                            {examType === "live" ? "Live" : "Practice"} Exam
-                            {totalExams !== 1 ? "s" : ""}
-                        </span>
+                        {selectedCourse && (
+                            <span
+                                className={`badge fs-6 ${
+                                    examType === "live"
+                                        ? "bg-danger"
+                                        : "bg-success"
+                                }`}
+                            >
+                                {totalExams}{" "}
+                                {examType === "live" ? "Live" : "Practice"} Exam
+                                {totalExams !== 1 ? "s" : ""}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -295,6 +338,7 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
                                     setSelectedCourse(e.target.value)
                                 }
                             >
+                                <option value="">Select a Course</option>
                                 <option value="all">All Courses</option>
                                 {courses.map((course, index) => (
                                     <option key={index} value={course}>
@@ -321,10 +365,10 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
                             <button
                                 className="btn btn-outline-secondary w-100"
                                 onClick={resetFilters}
-                                disabled={selectedCourse === "all"}
+                                disabled={!selectedCourse}
                             >
                                 <i className="fas fa-times me-1"></i>
-                                Clear Filters
+                                Clear Selection
                             </button>
                         </div>
                     </div>

@@ -2,11 +2,28 @@
 <html lang="en">
 
 <head>
+    <!-- Title -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FVT0N0KXK7"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FVT0N0KXK7');
+    </script>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description"
+        content="This is Exam Website For Fahad's Tutorial " />
+    <meta name="keywords"
+        content="Fahad's Tutorial, FT Academy, Fahad Sir, Exam" />
+    <meta name="author" content="Fahad's Tutorial" />
+    <title>Exam | Fahad's Tutorial</title>
+    
+   
     <!-- [Favicon] icon -->
     <link rel="icon" href="{{ asset('assets/images/logo/favicon.webp') }}" type="image/x-icon" />
     <!-- [Font] Family -->
@@ -69,6 +86,8 @@
     @viteReactRefresh
     @vite('resources/js/app.jsx')
     @inertiaHead
+
+   
 </head>
 
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
