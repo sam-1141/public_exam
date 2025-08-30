@@ -7,14 +7,16 @@ import { router } from "@inertiajs/react";
 import LiveExamSection from "./LiveExamSection"; // Import the new component
 import UpcomingExamSection from "./UpcomingExamSection"; // Import the new component
 
-const ExamListPage = ({ allExam }) => {
+const ExamListPage = ({ allExam, errors }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [currentExam, setCurrentExam] = useState(null);
   const [examState, setExamState] = useState("notice");
   const [error, setError] = useState(null);
 
-  console.log("ExamNoticePage props:", { allExam });
+    useEffect(() => {
+        console.log('errors:', errors);
+    }, [errors]);
 
   const handleExamClick = (exam) => {
     setSelectedExam(exam);
@@ -24,7 +26,7 @@ const ExamListPage = ({ allExam }) => {
 
   // Categorize exams into live and upcoming
   const now = new Date();
-  
+
   const liveExams = allExam
     .filter((exam) => {
       const start = new Date(exam.start_time);
@@ -52,7 +54,6 @@ const ExamListPage = ({ allExam }) => {
           setShowModal(false);
         },
         onError: (errors) => {
-          console.error("Exam participation error:", errors);
           setError(errors.error || "Failed to join exam");
           setShowModal(false);
         },
@@ -65,9 +66,20 @@ const ExamListPage = ({ allExam }) => {
       {error && (
         <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
           আপনি ইতিমধ্যে এই পরীক্ষাটি দিয়েছেন
-          <button 
-            type="button" 
-            className="btn-close" 
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setError(null)}
+            aria-label="Close"
+          ></button>
+        </div>
+      )}
+      {errors && (
+        <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+            {errors.errors}
+          <button
+            type="button"
+            className="btn-close"
             onClick={() => setError(null)}
             aria-label="Close"
           ></button>
@@ -76,7 +88,7 @@ const ExamListPage = ({ allExam }) => {
       <main className="flex-grow-1 p-1 bg-light mt-2">
         {/* Live Exams Section */}
         <LiveExamSection exams={liveExams} onExamClick={handleExamClick} />
-        
+
         {/* Upcoming Exams Section */}
         <UpcomingExamSection exams={upcomingExams} onExamClick={handleExamClick} />
       </main>

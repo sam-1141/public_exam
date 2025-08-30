@@ -39,10 +39,10 @@ class StudentLiveExamController extends Controller
 
         $exam = DB::table('live_exams')
             ->where('slug', $examSlug)
-            ->firstOrFail();
+            ->first();
 
         if (!$exam) {
-            return redirect()->route('student.live.exam.list');
+            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Exam not found.']);
         }
 
         $courseIds = DB::table('course_exam')
@@ -59,7 +59,7 @@ class StudentLiveExamController extends Controller
             ->exists();
 
         if (!$permittedCourse) {
-            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'You are not permitted to take this exam.']);
+            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'You are not permitted to take this exam.']);
         }
 
         $questions = DB::table('questions')
@@ -74,7 +74,7 @@ class StudentLiveExamController extends Controller
             ->exists();
 
         if($exists) {
-            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'Already give this exam.']);
+            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Already give this exam.']);
         }
 
         $inserted = DB::table('student_exam_attendance')->insert([
@@ -105,7 +105,7 @@ class StudentLiveExamController extends Controller
                 'questions' => $questions,
             ]);
         } else {
-            return redirect()->route('student.live.exam.list')->withErrors(['error' => 'Failed to start the exam.']);
+            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Failed to start the exam.']);
         }
     }
 
