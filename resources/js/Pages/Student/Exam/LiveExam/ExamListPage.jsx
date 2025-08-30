@@ -14,10 +14,6 @@ const ExamListPage = ({ allExam, errors }) => {
   const [examState, setExamState] = useState("notice");
   const [error, setError] = useState(null);
 
-    useEffect(() => {
-        console.log('errors:', errors);
-    }, [errors]);
-
   const handleExamClick = (exam) => {
     setSelectedExam(exam);
     setShowModal(true);
@@ -74,7 +70,7 @@ const ExamListPage = ({ allExam, errors }) => {
           ></button>
         </div>
       )}
-      {errors && (
+      {errors.errors && (
         <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
             {errors.errors}
           <button
