@@ -11,8 +11,6 @@ const HistoryPage = ({ courses, examsInfo }) => {
   const itemsPerPage = 10
 
   useEffect(() => {
-    console.log("All exams Info:", courses, examsInfo);
-
     // Set initial selected course to the first available course from exams
     if (examsInfo.length > 0 && courses.length > 0) {
       const firstCourseId = getAvailableCourses()[0]?.id;

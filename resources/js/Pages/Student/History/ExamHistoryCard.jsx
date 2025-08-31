@@ -3,9 +3,6 @@ import {route} from "ziggy-js";
 import {useEffect} from "react";
 
 const ExamHistoryCard = ({ exam, date }) => {
-    useEffect(() => {
-        console.log("Exam History Card Data:", exam);
-    }, [exam]);
     
   const getScoreColor = (score, total) => {
     const percentage = (score / total) * 100

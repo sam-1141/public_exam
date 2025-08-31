@@ -5,10 +5,6 @@ import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import {useEffect} from "react";
 
 const AnswerSheetPage = ({ info }) => {
-    useEffect(() => {
-        console.log("AnswerSheetPage mounted", info);
-    }, [info]);
-
   // Transform backend data to frontend format
   const transformExamData = () => {
     const attendance = info.studentExamsAttendance;
