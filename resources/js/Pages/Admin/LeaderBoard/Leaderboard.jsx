@@ -98,9 +98,6 @@ const Leaderboard = ({ examsInfo }) => {
         itemsPerPage
     );
 
-    // Calculate statistics - use pagination info for total count
-    const totalParticipants = paginationInfo.total || 0;
-
     // Calculate statistics
     const totalParticipants = paginationInfo.total || rankedData.length;
 
