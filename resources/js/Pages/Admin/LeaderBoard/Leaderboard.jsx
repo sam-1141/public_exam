@@ -16,6 +16,10 @@ const Leaderboard = ({ examsInfo }) => {
     const [paginationInfo, setPaginationInfo] = useState({});
     const itemsPerPage = 10;
 
+    useEffect(() => {
+        console.log("leaderboardData:", leaderboardData);
+    }, [leaderboardData]);
+
     const handleExamSelect = (e) => {
         setSelectedExam(e.target.value);
         setCurrentPage(1);
@@ -94,8 +98,6 @@ const Leaderboard = ({ examsInfo }) => {
 
     // Calculate statistics
     const totalParticipants = paginationInfo.total || rankedData.length;
-    const topScore =
-        rankedData.length > 0 ? rankedData[0].student_total_mark : 0;
 
     const downloadAsCSV = () => {
         if (rankedData.length === 0) {
@@ -103,7 +105,20 @@ const Leaderboard = ({ examsInfo }) => {
             return;
         }
 
-        exportLeaderboardToCSV(rankedData, selectedExamDetails?.name);
+        axios
+            .get(
+                route("admin.leaderboard.list.export", {
+                    examSlug: selectedExam,
+                })
+            )
+            .then((res) => {
+                exportLeaderboardToCSV(res.data.attendanceInfo?.data, selectedExamDetails?.name);
+            })
+            .catch(() => {
+                alert('Failed to fetch leaderboard data for CSV export.');
+            });
+
+
     };
 
     const handlePageChange = (page) => {
@@ -182,7 +197,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                             Top Score:
                                                         </span>
                                                         <span className="fw-bold ms-2">
-                                                            {topScore}
+                                                            {}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -204,7 +219,7 @@ const Leaderboard = ({ examsInfo }) => {
                                 </div>
 
                                 {/* Leaderboard Table */}
-                                {rankedData.length > 0 ? (
+                                {leaderboardData.length > 0 ? (
                                     <>
                                         <div className="table-responsive border rounded shadow-sm">
                                             <table className="table align-middle">
@@ -242,7 +257,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {rankedData.map(
+                                                    {leaderboardData.map(
                                                         (item, index) => (
                                                             <tr
                                                                 key={item?.serial}
@@ -269,44 +284,45 @@ const Leaderboard = ({ examsInfo }) => {
                                                             >
                                                                 <td>
                                                                     <div className="d-flex align-items-center gap-2">
-                                                                        {item.rank ===
-                                                                            1 && (
-                                                                            <Icon
-                                                                                icon="emojione:1st-place-medal"
-                                                                                className={`${styles.medalIcon} ${styles.gold}`}
-                                                                            />
-                                                                        )}
-                                                                        {item.rank ===
-                                                                            2 && (
-                                                                            <Icon
-                                                                                icon="emojione:2nd-place-medal"
-                                                                                className={`${styles.medalIcon} ${styles.silver}`}
-                                                                            />
-                                                                        )}
-                                                                        {item.rank ===
-                                                                            3 && (
-                                                                            <Icon
-                                                                                icon="emojione:3rd-place-medal"
-                                                                                className={`${styles.medalIcon} ${styles.bronze}`}
-                                                                            />
-                                                                        )}
+
                                                                         <span
                                                                             className={`fw-bold ${
-                                                                                item.rank <=
+                                                                                item?.serial <=
                                                                                 3
                                                                                     ? "fs-5"
                                                                                     : ""
                                                                             }`}
                                                                         >
                                                                             {
-                                                                                item.rank
+                                                                                item?.serial
                                                                             }
                                                                         </span>
+                                                                        {item?.serial ===
+                                                                            1 && (
+                                                                            <Icon
+                                                                                icon="emojione:1st-place-medal"
+                                                                                className={`${styles.medalIcon} ${styles.gold}`}
+                                                                            />
+                                                                        )}
+                                                                        {item?.serial ===
+                                                                            2 && (
+                                                                            <Icon
+                                                                                icon="emojione:2nd-place-medal"
+                                                                                className={`${styles.medalIcon} ${styles.silver}`}
+                                                                            />
+                                                                        )}
+                                                                        {item?.serial ===
+                                                                            3 && (
+                                                                            <Icon
+                                                                                icon="emojione:3rd-place-medal"
+                                                                                className={`${styles.medalIcon} ${styles.bronze}`}
+                                                                            />
+                                                                        )}
                                                                     </div>
                                                                 </td>
                                                                 <td
                                                                     className={`${
-                                                                        item.rank <=
+                                                                        item?.serial <=
                                                                         3
                                                                             ? "fw-bold"
                                                                             : ""
@@ -319,14 +335,14 @@ const Leaderboard = ({ examsInfo }) => {
 
                                                                 <td
                                                                     className={`fw-bold ${
-                                                                        item.rank <=
+                                                                        item.serial <=
                                                                         3
                                                                             ? "fs-5"
                                                                             : ""
                                                                     }`}
                                                                 >
                                                                     {
-                                                                        item.student_total_mark
+                                                                        item.student_total_mark ?? 0
                                                                     }
                                                                     /
                                                                     {
@@ -335,7 +351,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                                 </td>
                                                                 <td>
                                                                     {
-                                                                        item.submit_time
+                                                                        item.submit_time ?? "N/A"
                                                                     }
                                                                 </td>
                                                             </tr>
