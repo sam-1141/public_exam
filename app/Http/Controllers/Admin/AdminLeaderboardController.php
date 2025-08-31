@@ -73,12 +73,9 @@ class AdminLeaderboardController extends Controller
             )
             ->get();
 
-        //  Serial number logic
-        $serialStart = ($attendanceInfo->currentPage() - 1) * $attendanceInfo->perPage() + 1;
-
         // Add serial number to each item
         foreach ($attendanceInfo as $index => $item) {
-            $item->serial = $serialStart + $index;
+            $item->serial = $index;
         }
 
         return response()->json([
