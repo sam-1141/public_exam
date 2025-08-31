@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react"
 import Layout from "../../../layouts/Layout"
+import "./LeaderboardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import axios from "axios"
 
@@ -325,53 +326,6 @@ const LeaderboardPage = ({ examsInfo }) => {
       </main>
 
       {/* Add custom CSS for top three colors */}
-      <style jsx>{`
-        .bg-gold {
-          background-color: rgba(255, 215, 0, 0.2);  /* 20% opacity gold */
-          color: #8B7500;  /* Dark gold text */
-          border-left: 4px solid #FFD700;  /* Gold accent border */
-        }
-        .bg-silver {
-          background-color: rgba(192, 192, 192, 0.2);  /* 20% opacity silver */
-          color: #696969;  /* Dark gray text */
-          border-left: 4px solid #C0C0C0;  /* Silver accent border */
-        }
-        .bg-bronze {
-          background-color: rgba(205, 127, 50, 0.2);  /* 20% opacity bronze */
-          color: #8B4513;  /* Dark bronze text */
-          border-left: 4px solid #CD7F32;  /* Bronze accent border */
-        }
-        .bg-gold, .bg-silver, .bg-bronze {
-          transition: all 0.3s ease;
-        }
-        .bg-gold:hover {
-          background-color: rgba(255, 215, 0, 0.3);  /* Slightly darker on hover */
-        }
-        .bg-silver:hover {
-          background-color: rgba(192, 192, 192, 0.3);
-        }
-        .bg-bronze:hover {
-          background-color: rgba(205, 127, 50, 0.3);
-        }
-        .top-three-badge {
-          font-size: 0.8rem;
-          padding: 2px 6px;
-          border-radius: 12px;
-          font-weight: bold;
-        }
-        .gold-badge {
-          background-color: #FFD700;
-          color: #5E4B00;
-        }
-        .silver-badge {
-          background-color: #C0C0C0;
-          color: #4A4A4A;
-        }
-        .bronze-badge {
-          background-color: #CD7F32;
-          color: #5E3000;
-        }
-      `}</style>
     </div>
   )
 }
