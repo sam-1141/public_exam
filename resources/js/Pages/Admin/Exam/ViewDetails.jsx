@@ -88,8 +88,8 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                 <div>
                                     <div className="fw-bold">Courses</div>
                                     <small
-                                        className="text-truncate d-block"
-                                        style={{ maxWidth: "150px" }}
+                                        className=" d-block"
+                                        // style={{ maxWidth: "150px" }}
                                     >
                                         {exam.courseInfo
                                             ? exam?.courseInfo
@@ -309,16 +309,18 @@ const ExamDetails = ({ examType, exam, questions }) => {
                             Question
                         </button>
 
-                        <Link
+                        <a
                             href={route("admin.answer.sheet", {
                                 type: examType,
                                 examSlug: exam.slug,
                             })}
                             className="btn btn-info btn-sm"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <i className="fas fa-file-alt me-1"></i>View
                             AnswerSheet
-                        </Link>
+                        </a>
                     </>
                 )}
             </div>

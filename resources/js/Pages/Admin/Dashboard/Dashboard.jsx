@@ -5,7 +5,7 @@ import { Link } from "@inertiajs/react";
 import axios from "axios";
 import CourseWiseExams from "./CourseWiseExams";
 
-function AdminDashboard() {
+function AdminDashboard({ courseInfo }) {
     const [liveExams, setLiveExams] = useState([]);
     const [practiceExams, setPracticeExams] = useState([]);
     const [loading, setLoading] = useState({
@@ -55,7 +55,7 @@ function AdminDashboard() {
             );
     }, []);
 
-    console.log({ liveExams, practiceExams });
+    console.log({ liveExams, practiceExams, courseInfo });
 
     // Show only 5 items initially, or all if showAll is true
     const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
@@ -84,29 +84,26 @@ function AdminDashboard() {
                 </div>
 
                 {/* Stats Cards */}
-                <div className="col-lg-3 col-md-6">
-                    <div className="card card-statistic bg-primary text-white">
-                        <div className="card-body">
-                            <h5 className="card-title">Total Questions</h5>
-                            <h2 className="mb-0">{totalQuestions}</h2>
-                        </div>
-                    </div>
-                </div>
-
-                {/* <div className="col-lg-3 col-md-6 ">
-                    <div className="card card-statistic bg-success text-white">
-                        <div className="card-body">
-                            <h5 className="card-title">Total Exams</h5>
-                            <h2 className="mb-0">
-                                {liveExams.length + practiceExams.length}
+                <div className="col-12">
+                    <div className="card card-statistic bg-blue-400 ">
+                        <div className="card-body d-flex justify-content-between align-items-center">
+                            <h5 className="h5 card-title text-white">
+                                Total Questions
+                            </h5>
+                            <h2 className="mb-0 text-white">
+                                {totalQuestions}
                             </h2>
                         </div>
                     </div>
-                </div> */}
+                </div>
             </div>
 
             {/*Course Wise Exams Component */}
-            {/* <CourseWiseExams liveExams={liveExams} loading={loading} /> */}
+            <CourseWiseExams
+                liveExams={liveExams}
+                practiceExams={practiceExams}
+                loading={loading}
+            />
 
             {/* Exams Section */}
             {/* Live Exams Section */}

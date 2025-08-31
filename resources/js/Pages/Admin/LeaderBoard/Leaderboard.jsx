@@ -14,6 +14,7 @@ const Leaderboard = ({ examsInfo }) => {
     const [leaderboardData, setLeaderboardData] = useState([]);
     const [examInfo, setExamInfo] = useState(null);
     const [paginationInfo, setPaginationInfo] = useState({});
+    const [allRankedData, setAllRankedData] = useState([]); // Store all ranked data
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -24,6 +25,7 @@ const Leaderboard = ({ examsInfo }) => {
         setSelectedExam(e.target.value);
         setCurrentPage(1);
         setLeaderboardData([]); // Clear previous data
+        setAllRankedData([]); // Clear all ranked data when exam changes
     };
 
     useEffect(() => {}, [examsInfo]);
@@ -42,7 +44,7 @@ const Leaderboard = ({ examsInfo }) => {
                 .get(
                     route("admin.leaderboard.list", {
                         examSlug: selectedExam,
-                        page: currentPage, // Add pagination parameter
+                        page: currentPage,
                     })
                 )
                 .then((res) => {
@@ -69,23 +71,19 @@ const Leaderboard = ({ examsInfo }) => {
                     setIsLoading(false);
                 });
         }
-    }, [selectedExam, currentPage]); // Add currentPage as dependency
+    }, [selectedExam, currentPage]);
 
-    // Calculate rank based on score and time
-    const calculateRanks = (data) => {
-        // Sort by score (descending) and then by submit time (ascending)
-        const sortedData = [...data].sort((a, b) => {
-            if (b.student_total_mark !== a.student_total_mark) {
-                return b.student_total_mark - a.student_total_mark;
-            }
-            // If scores are equal, the one who submitted earlier gets better rank
-            return new Date(a.submit_time) - new Date(b.submit_time);
-        });
+    // Calculate global ranks based on the current page and pagination info
+    const calculateRanks = (data, page, itemsPerPage) => {
+        if (!data.length) return [];
 
-        // Add rank property
-        return sortedData.map((item, index) => ({
+        // Calculate the starting rank for this page
+        const startRank = (page - 1) * itemsPerPage + 1;
+
+        // Add rank property starting from the correct position
+        return data.map((item, index) => ({
             ...item,
-            rank: index + 1,
+            rank: startRank + index,
         }));
     };
 
@@ -93,8 +91,15 @@ const Leaderboard = ({ examsInfo }) => {
     const selectedExamDetails =
         examInfo || examsInfo.find((exam) => exam.slug === selectedExam);
 
-    // Calculate ranks for the current data
-    const rankedData = calculateRanks(leaderboardData);
+    // Calculate ranks for the current page data
+    const rankedData = calculateRanks(
+        leaderboardData,
+        currentPage,
+        itemsPerPage
+    );
+
+    // Calculate statistics - use pagination info for total count
+    const totalParticipants = paginationInfo.total || 0;
 
     // Calculate statistics
     const totalParticipants = paginationInfo.total || rankedData.length;
@@ -197,7 +202,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                             Top Score:
                                                         </span>
                                                         <span className="fw-bold ms-2">
-                                                            {}
+                                                          {'00'}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -239,7 +244,6 @@ const Leaderboard = ({ examsInfo }) => {
                                                         >
                                                             Name
                                                         </th>
-
                                                         <th
                                                             style={{
                                                                 width: "20%",
@@ -332,7 +336,6 @@ const Leaderboard = ({ examsInfo }) => {
                                                                         item.student_name
                                                                     }
                                                                 </td>
-
                                                                 <td
                                                                     className={`fw-bold ${
                                                                         item.serial <=

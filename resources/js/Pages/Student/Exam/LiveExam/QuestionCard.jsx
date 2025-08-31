@@ -25,7 +25,7 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
             <div key={index} className="col-12 col-md-6">
               <button
                 className={`btn w-100 text-start p-3 border rounded-3 ${
-                  selectedAnswer === index ? "btn-success text-white" : "btn-outline-secondary"
+                  selectedAnswer === index ? "border-success" : "btn-outline-secondary"
                 }`}
                 onClick={() => onAnswerSelect(question.id, index)}
               >

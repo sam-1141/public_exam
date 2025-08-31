@@ -49,8 +49,8 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                 <div>
                                     <div className="fw-bold">Courses</div>
                                     <small
-                                        className="text-truncate d-block"
-                                        style={{ maxWidth: "150px" }}
+                                        className=" d-block"
+                                        // style={{ maxWidth: "150px" }}
                                     >
                                         {exam.courseInfo
                                             ? exam?.courseInfo
