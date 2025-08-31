@@ -65,8 +65,9 @@ Route::middleware(['auth'])->group(function () {
         Route::controller(AdminLeaderboardController::class)->group(function () {
             Route::get('/admin/leaderboard', 'loadAdminLeaderBoardPage')->name('admin.leaderboard');
             Route::get('/admin/exam/{examSlug}/leaderboard/list', 'loadAdminLeaderBoardList')->name('admin.leaderboard.list');
+            Route::get('/admin/exam/{examSlug}/leaderboard/export/list', 'loadAdminLeaderBoardListForExcel')->name('admin.leaderboard.list.export');
 
-            
+
         });
 
         Route::controller(ResultController::class)->group(function () {
