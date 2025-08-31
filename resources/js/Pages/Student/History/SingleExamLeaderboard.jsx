@@ -12,7 +12,7 @@ const SingleExamLeaderboard = ({ examSlug }) => {
         if (examSlug) {
             setIsLoading(true)
             axios
-                .get(`/student/exam/${examSlug}/leaderboard/list`)
+                .get(route("student.leaderboard.list", examSlug))
                 .then(res => {
                     // Process the data to calculate time spent
                     const processedData = processLeaderboardData(res.data.attendanceInfo.data)

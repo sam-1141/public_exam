@@ -15,7 +15,7 @@ const LeaderboardPage = ({ examsInfo }) => {
     if (selectedExam) {
       setIsLoading(true)
       axios
-        .get(`/student/exam/${selectedExam}/leaderboard/list`)
+        .get(route("student.leaderboard.list", selectedExam))
         .then(res => {
           setLeaderboardData({
             data: res?.data?.attendanceInfo?.data,

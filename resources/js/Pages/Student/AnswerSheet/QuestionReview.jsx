@@ -1,5 +1,3 @@
-import {useEffect} from "react";
-
 const QuestionReview = ({ question, questionNumber }) => {
   const getQuestionBgColor = () => {
     if (question.userAnswer === null) return " border-warning" // Skipped
