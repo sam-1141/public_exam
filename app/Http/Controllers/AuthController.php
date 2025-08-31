@@ -246,7 +246,10 @@ class AuthController extends Controller
                         return redirect()->route('dashboard')->withCookie($cookie);
                     }
                 }
-                return redirect()->route('dashboard')->withCookie($cookie);
+
+                $intended_redirect_url = session()->get('url.intended', route('dashboard'));
+                session(['url.intended' => route('dashboard')]);
+                return redirect($intended_redirect_url)->withCookie($cookie);
             } else {
                 $forgetCookie = Cookie::forget('ft_roar');
                 Auth::logout();

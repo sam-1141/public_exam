@@ -25,7 +25,8 @@ class AuthMiddleware
                 $user = User::where('id', $token)->first();
                 if ($user) {
                     Auth::login($user);
-                }else{
+                } else {
+                    session(['url.intended' => $request->fullUrl()]);
                     return to_route('auth.login')->with('error', 'Please login!');
                 }
 
@@ -48,6 +49,7 @@ class AuthMiddleware
 
             return to_route('auth.login')->with('error', 'Your account is deactivated. Please contact the administrator.')->withCookie($forgetCookie);
         }
+        session(['url.intended' => $request->fullUrl()]);
         return to_route('auth.login')->with('error', 'Please login!');
 
     }
