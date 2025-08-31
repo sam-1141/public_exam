@@ -8,6 +8,10 @@ const LeaderboardPage = ({ examsInfo }) => {
   const [leaderboardData, setLeaderboardData] = useState({data: [], links: []}) // dynamic data with pagination
   const [isLoading, setIsLoading] = useState(false)
 
+    useEffect(() => {
+        console.log('leaderboardData', leaderboardData)
+    }, [leaderboardData]);
+
   // Get exam names from examsInfo (API data)
   const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))
 
@@ -18,10 +22,9 @@ const LeaderboardPage = ({ examsInfo }) => {
       axios
         .get(`/student/exam/${selectedExam}/leaderboard/list`)
         .then(res => {
-          // Process the data to calculate time spent
-          const processedData = processLeaderboardData(res.data.attendanceInfo.data)
+            console.log('res?.data?.attendanceInfo?.data', res?.data?.attendanceInfo?.data)
           setLeaderboardData({
-            data: processedData,
+            data: res?.data?.attendanceInfo?.data,
             links: res.data.attendanceInfo.links || []
           })
           setIsLoading(false)
@@ -37,15 +40,13 @@ const LeaderboardPage = ({ examsInfo }) => {
   // Handle pagination page change
   const handlePageChange = (url) => {
     if (!url) return;
-    
+
     setIsLoading(true)
     axios
       .get(url)
       .then(res => {
-        // Process the data to calculate time spent
-        const processedData = processLeaderboardData(res.data.attendanceInfo.data)
         setLeaderboardData({
-          data: processedData,
+          data: res.data.attendanceInfo.data,
           links: res.data.attendanceInfo.links || []
         })
         setIsLoading(false)
@@ -60,13 +61,13 @@ const LeaderboardPage = ({ examsInfo }) => {
   // Process leaderboard data to calculate time spent
   const processLeaderboardData = (data) => {
     if (!data || !Array.isArray(data)) return []
-    
+
     // Calculate time spent for each student
     return data.map(student => {
       const startTime = new Date(student.student_exam_start_time)
       const endTime = new Date(student.submit_time)
       const timeSpentMs = endTime - startTime
-      
+
       return {
         ...student,
         timeSpentMs,
@@ -78,18 +79,17 @@ const LeaderboardPage = ({ examsInfo }) => {
   // Helper function to format time spent
   const formatTimeSpent = (ms) => {
     if (!ms || ms <= 0) return "--:--:--"
-    
+
     const seconds = Math.floor(ms / 1000)
     const hours = Math.floor(seconds / 3600)
     const minutes = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
-    
+
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
   // FilteredData now comes from our processed data
   const filteredData = leaderboardData.data || []
-  console.log("Filtered Data", filteredData)
 
   const handleExamChange = (examSlug) => {
     setSelectedExam(examSlug)
@@ -223,54 +223,54 @@ const LeaderboardPage = ({ examsInfo }) => {
               ) : selectedExam ? (
                 <div className="card border-0 shadow-sm">
                   <div className="card-body p-0">
-                    {filteredData.length > 0 ? (
-                      filteredData.map((user, index) => {
-                        const rank = index + 1; // Simple index-based ranking
-                        const isTopThree = rank <= 3
-                        return (
-                          <div
-                            key={user.id}
-                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== filteredData.length - 1 ? "border-bottom" : ""
-                              }`}
-                          >
-                            <div className="me-3 position-relative">
-                              <img
-                                src={user.image || "/assets/images/user/avatar-1.png"}
-                                alt={user.student_name}
-                                className="rounded-circle"
-                                style={{
-                                  width: '50px',
-                                  height: '50px',
-                                  objectFit: 'cover',
-                                  border: isTopThree ? '2px solid white' : 'none',
-                                  boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
-                                }}
-                              />
-                            </div>
-                            <div className="flex-grow-1">
-                              <div className="fw-semibold text-dark mb-1">
-                                {user.student_name}
-                                {isTopThree && (
-                                  <span className="ms-2">{getMedal(rank)}</span>
-                                )}
+                    {leaderboardData?.data?.length > 0 ? (
+                        leaderboardData?.data?.map((user, index) => {
+                            const rank = user?.serial;
+                            const isTopThree = rank <= 3
+                            return (
+                              <div
+                                key={user.id}
+                                className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== filteredData.length - 1 ? "border-bottom" : ""
+                                  }`}
+                              >
+                                <div className="me-3 position-relative">
+                                  <img
+                                    src={user.image || "/assets/images/user/avatar-1.png"}
+                                    alt={user.student_name}
+                                    className="rounded-circle"
+                                    style={{
+                                      width: '50px',
+                                      height: '50px',
+                                      objectFit: 'cover',
+                                      border: isTopThree ? '2px solid white' : 'none',
+                                      boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
+                                    }}
+                                  />
+                                </div>
+                                <div className="flex-grow-1">
+                                  <div className="fw-semibold text-dark mb-1">
+                                    {user.student_name}
+                                    {isTopThree && (
+                                      <span className="ms-2">{getMedal(rank)}</span>
+                                    )}
+                                  </div>
+                                  <div className="small text-muted">{user.student_institute || ""}</div>
+                                </div>
+                                <div className="text-end">
+                                  <div className="d-flex align-items-center justify-content-end mb-1">
+                                    <span className="fw-bold fs-5">
+                                      #{rank}
+                                    </span>
+                                  </div>
+                                  <div className="small">
+                                    স্কোর: {user.student_total_mark || 0}
+                                  </div>
+                                  <div className="small text-muted">
+                                    {user.timeSpentFormatted || "--:--:--"}
+                                  </div>
+                                </div>
                               </div>
-                              <div className="small text-muted">{user.student_institute || ""}</div>
-                            </div>
-                            <div className="text-end">
-                              <div className="d-flex align-items-center justify-content-end mb-1">
-                                <span className="fw-bold fs-5">
-                                  #{rank}
-                                </span>
-                              </div>
-                              <div className="small">
-                                স্কোর: {user.student_total_mark || 0}
-                              </div>
-                              <div className="small text-muted">
-                                {user.timeSpentFormatted || "--:--:--"}
-                              </div>
-                            </div>
-                          </div>
-                        )
+                            )
                       })
                     ) : (
                       <div className="p-3 text-center text-muted">
