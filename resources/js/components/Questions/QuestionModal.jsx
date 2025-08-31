@@ -13,17 +13,22 @@ const QuestionModal = ({
     onSuccess,
 }) => {
     const [noCorrectAnswerError, setNoCorrectAnswerError] = useState(false);
+
+    // Define default options structure
+    const defaultOptions = [
+        { option: "", ans: false },
+        { option: "", ans: false },
+        { option: "", ans: false },
+        { option: "", ans: false },
+    ];
+
     const { data, setData, post, put, processing, errors, reset } = useForm({
         examId,
         question: "",
-        options: [
-            { option: "", ans: false },
-            { option: "", ans: false },
-            { option: "", ans: false },
-            { option: "", ans: false },
-        ],
+        options: defaultOptions,
         explanation: "",
     });
+
     const [loading, setLoading] = useState(true);
 
     // Parse options from string to array if needed
@@ -36,20 +41,10 @@ const QuestionModal = ({
             if (typeof options === "string") {
                 return JSON.parse(options);
             }
-            return [
-                { option: "", ans: false },
-                { option: "", ans: false },
-                { option: "", ans: false },
-                { option: "", ans: false },
-            ];
+            return defaultOptions;
         } catch (e) {
             console.error("Error parsing options:", e);
-            return [
-                { option: "", ans: false },
-                { option: "", ans: false },
-                { option: "", ans: false },
-                { option: "", ans: false },
-            ];
+            return defaultOptions;
         }
     };
 
@@ -57,8 +52,10 @@ const QuestionModal = ({
     useEffect(() => {
         if (show) {
             setLoading(true);
+            setNoCorrectAnswerError(false); // Clear any previous error state
 
             if (mode === "edit" && questionData) {
+                // For edit mode, set the question data
                 setData({
                     examId,
                     question: questionData.question || "",
@@ -66,16 +63,11 @@ const QuestionModal = ({
                     explanation: questionData.explanation || "",
                 });
             } else {
-                // Reset to default for add mode
-                reset({
+                // For add mode, reset to default
+                setData({
                     examId,
                     question: "",
-                    options: [
-                        { option: "", ans: false },
-                        { option: "", ans: false },
-                        { option: "", ans: false },
-                        { option: "", ans: false },
-                    ],
+                    options: [...defaultOptions],
                     explanation: "",
                 });
             }
@@ -87,7 +79,21 @@ const QuestionModal = ({
 
             return () => clearTimeout(timer);
         }
-    }, [show, questionData, mode]);
+    }, [show, questionData, mode, examId]); // Added dependencies
+
+    // Also reset when modal closes
+    useEffect(() => {
+        if (!show) {
+            setNoCorrectAnswerError(false);
+            // Reset form
+            reset({
+                examId,
+                question: "",
+                options: [...defaultOptions],
+                explanation: "",
+            });
+        }
+    }, [show, examId]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -121,18 +127,23 @@ const QuestionModal = ({
                     if (onSuccess) {
                         // Pass the new question data to the callback
                         onSuccess({
-                            id: Math.random(), // Temporary ID until real one comes from server
+                            id: Math.random(), // Temporary ID
                             ...submitData,
                             options: JSON.stringify(submitData.options),
                         });
                     }
-                    reset();
+                    // Reset form after successful submission
+                    reset({
+                        examId,
+                        question: "",
+                        options: [...defaultOptions],
+                        explanation: "",
+                    });
                     onClose();
                 },
             });
         } else {
             if (questionData.id) {
-                // console.log('Submitting updated question data:', questionData.id)
                 put(route("admin.exam.questions.update", questionData.id), {
                     data: submitData,
                     onSuccess: () => {
@@ -143,7 +154,13 @@ const QuestionModal = ({
                                 options: JSON.stringify(submitData.options),
                             });
                         }
-                        reset();
+                        // Reset form after successful submission
+                        reset({
+                            examId,
+                            question: "",
+                            options: [...defaultOptions],
+                            explanation: "",
+                        });
                         onClose();
                     },
                 });
@@ -152,12 +169,6 @@ const QuestionModal = ({
                     "Something is missing for edit operation. Please reload the page and try again."
                 );
             }
-
-            // console.log("Updated question data:", {
-            //     ...questionData,
-            //     ...submitData,
-            //     options: JSON.stringify(submitData.options),
-            // });
         }
     };
 
@@ -173,22 +184,6 @@ const QuestionModal = ({
         const updatedOptions = [...data.options];
         updatedOptions[index].ans = !updatedOptions[index].ans;
         setData("options", updatedOptions);
-    };
-
-    // Add new option
-    const addOption = () => {
-        if (data.options.length < 6) {
-            setData("options", [...data.options, { option: "", ans: false }]);
-        }
-    };
-
-    // Remove option
-    const removeOption = (index) => {
-        if (data.options.length > 2) {
-            const updatedOptions = [...data.options];
-            updatedOptions.splice(index, 1);
-            setData("options", updatedOptions);
-        }
     };
 
     if (!show) return null;
@@ -281,15 +276,6 @@ const QuestionModal = ({
                                     <h5 className="fw-semibold mb-0">
                                         Options
                                     </h5>
-                                    {/* <button
-                                        type="button"
-                                        onClick={addOption}
-                                        className="btn btn-sm btn-outline-primary"
-                                        disabled={data.options.length >= 6}
-                                    >
-                                        <i className="fas fa-plus me-1"></i>
-                                        Add Option
-                                    </button> */}
                                 </div>
                                 <div className="space-y-4">
                                     {Array.isArray(data.options) &&
@@ -377,25 +363,6 @@ const QuestionModal = ({
                                                                     "body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 14px; }",
                                                             }}
                                                         />
-                                                        {data.options.length >
-                                                            2 && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    removeOption(
-                                                                        index
-                                                                    )
-                                                                }
-                                                                className="btn btn-sm btn-outline-danger position-absolute"
-                                                                style={{
-                                                                    top: 5,
-                                                                    right: 5,
-                                                                }}
-                                                                title="Remove option"
-                                                            >
-                                                                <i className="fas fa-times"></i>
-                                                            </button>
-                                                        )}
                                                     </div>
                                                 </div>
 
