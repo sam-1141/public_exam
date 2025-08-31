@@ -245,22 +245,22 @@ const Leaderboard = ({ examsInfo }) => {
                                                     {rankedData.map(
                                                         (item, index) => (
                                                             <tr
-                                                                key={item.id}
+                                                                key={item?.serial}
                                                                 className={`
                                                                 ${
-                                                                    item.rank ===
+                                                                    item?.serial ===
                                                                     1
                                                                         ? styles.goldRow
                                                                         : ""
                                                                 }
                                                                 ${
-                                                                    item.rank ===
+                                                                    item?.serial ===
                                                                     2
                                                                         ? styles.silverRow
                                                                         : ""
                                                                 }
                                                                 ${
-                                                                    item.rank ===
+                                                                    item?.serial ===
                                                                     3
                                                                         ? styles.bronzeRow
                                                                         : ""
