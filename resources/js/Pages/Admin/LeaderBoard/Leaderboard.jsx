@@ -17,10 +17,6 @@ const Leaderboard = ({ examsInfo }) => {
     const [allRankedData, setAllRankedData] = useState([]); // Store all ranked data
     const itemsPerPage = 10;
 
-    useEffect(() => {
-        console.log("leaderboardData:", leaderboardData);
-    }, [leaderboardData]);
-
     const handleExamSelect = (e) => {
         setSelectedExam(e.target.value);
         setCurrentPage(1);
@@ -114,13 +110,11 @@ const Leaderboard = ({ examsInfo }) => {
                 })
             )
             .then((res) => {
-                exportLeaderboardToCSV(res.data.attendanceInfo?.data, selectedExamDetails?.name);
+                exportLeaderboardToCSV(res.data.attendanceInfo, selectedExamDetails?.name);
             })
             .catch(() => {
                 alert('Failed to fetch leaderboard data for CSV export.');
             });
-
-
     };
 
     const handlePageChange = (page) => {
