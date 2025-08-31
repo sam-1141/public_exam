@@ -17,10 +17,6 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-
-
-
-
     /**
      * Global send_sms function for this controller
      */
