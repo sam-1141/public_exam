@@ -175,9 +175,8 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
             <div key={courseKey} className="mb-3 border rounded">
                 {/* Course Header */}
                 <div
-                    className=" p-3 cursor-pointer d-flex justify-content-between align-items-center"
+                    className="p-3 d-flex justify-content-between align-items-center pe-auto"
                     onClick={() => toggleCourseExpansion(courseKey)}
-                    style={{ cursor: "pointer" }}
                 >
                     <div>
                         <h5 className="h5 mb-1 fw-bold">
@@ -264,15 +263,6 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
                             <i className="fas fa-list me-2"></i>
                             View All Courses
                         </button>
-                        {/* {courses.length > 0 && (
-                            <button
-                                className="btn btn-outline-primary"
-                                onClick={() => setSelectedCourse(courses[0])}
-                            >
-                                <i className="fas fa-book me-2"></i>
-                                Select {courses[0]}
-                            </button>
-                        )} */}
                     </div>
                 </div>
             );
@@ -330,7 +320,7 @@ function CourseWiseExams({ liveExams, practiceExams, loading }) {
                 <div className="card-body border-bottom bg-light">
                     <div className="row g-3">
                         {/* Course Filter */}
-                        <div className="col-md-3">
+                        <div className="col-md-6">
                             <select
                                 className="form-select"
                                 value={selectedCourse}

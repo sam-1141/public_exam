@@ -2,8 +2,7 @@ import { Link, usePage } from "@inertiajs/react";
 import React, { useEffect, useRef, useState } from "react";
 import { useRoute } from "ziggy-js";
 import useAuthRoles from "../helper/Helper";
-
-import "./navbar.css"; // Assuming you have a CSS file for styles
+import "./navbar.css";
 import StudentNavLinks from "./Student/PageHeader/StudentsNavLinks";
 import AdminNavLinks from "./Admin/AdminNavLinks";
 
@@ -91,7 +90,6 @@ function Navbar() {
                             href={route("dashboard")}
                             className="b-brand text-primary "
                         >
-                            {/* ========   Change your logo from here   ============ */}
                             <img
                                 src="/assets/images/logo/ftlogo.png"
                                 className="img-fluid"

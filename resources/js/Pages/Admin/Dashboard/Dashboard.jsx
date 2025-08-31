@@ -55,8 +55,6 @@ function AdminDashboard({ courseInfo }) {
             );
     }, []);
 
-    console.log({ liveExams, practiceExams, courseInfo });
-
     // Show only 5 items initially, or all if showAll is true
     const displayedLiveExams = showAllLive ? liveExams : liveExams.slice(0, 5);
     const displayedPracticeExams = showAllPractice
@@ -204,43 +202,38 @@ function AdminDashboard({ courseInfo }) {
                         ) : (
                             <>
                                 <div className="list-group list-group-flush">
-                                    {displayedPracticeExams.map(
-                                        (exam, index) => (
-                                            <Link
-                                                key={exam.id}
-                                                href={route(
-                                                    "admin.exam.details",
-                                                    {
-                                                        exam: exam.slug,
-                                                        type: "practice",
-                                                    }
-                                                )}
-                                                className="list-group-item list-group-item-action border-0"
-                                            >
-                                                <div className="d-flex w-100 justify-content-between align-items-start ">
-                                                    <div className="flex-grow-1">
-                                                        <h5 className="font-semibold text-lg text-gray-700">
-                                                            {exam.name}
-                                                        </h5>
-                                                        <p className="text-muted mb-0">
-                                                            {exam.description?.substring(
-                                                                0,
-                                                                100
-                                                            ) ||
-                                                                "No description available"}
-                                                            {exam.description
-                                                                ?.length > 100
-                                                                ? "..."
-                                                                : ""}
-                                                        </p>
-                                                    </div>
-                                                    <small className="text-muted ms-3">
-                                                        <i className="fas fa-chevron-right"></i>
-                                                    </small>
+                                    {displayedPracticeExams.map((exam) => (
+                                        <Link
+                                            key={exam.id}
+                                            href={route("admin.exam.details", {
+                                                exam: exam.slug,
+                                                type: "practice",
+                                            })}
+                                            className="list-group-item list-group-item-action border-0"
+                                        >
+                                            <div className="d-flex w-100 justify-content-between align-items-start ">
+                                                <div className="flex-grow-1">
+                                                    <h5 className="font-semibold text-lg text-gray-700">
+                                                        {exam.name}
+                                                    </h5>
+                                                    <p className="text-muted mb-0">
+                                                        {exam.description?.substring(
+                                                            0,
+                                                            100
+                                                        ) ||
+                                                            "No description available"}
+                                                        {exam.description
+                                                            ?.length > 100
+                                                            ? "..."
+                                                            : ""}
+                                                    </p>
                                                 </div>
-                                            </Link>
-                                        )
-                                    )}
+                                                <small className="text-muted ms-3">
+                                                    <i className="fas fa-chevron-right"></i>
+                                                </small>
+                                            </div>
+                                        </Link>
+                                    ))}
                                 </div>
 
                                 {practiceExams.length > 5 && (

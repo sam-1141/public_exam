@@ -48,10 +48,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                 </div>
                                 <div>
                                     <div className="fw-bold">Courses</div>
-                                    <small
-                                        className=" d-block"
-                                        // style={{ maxWidth: "150px" }}
-                                    >
+                                    <small className=" d-block">
                                         {exam.courseInfo
                                             ? exam?.courseInfo
                                                   .map((c) => c.course_name)
@@ -68,10 +65,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                 </div>
                                 <div>
                                     <div className="fw-bold">Subjects</div>
-                                    <small
-                                        className="text-truncate d-block"
-                                        style={{ maxWidth: "150px" }}
-                                    >
+                                    <small className="text-truncate d-block">
                                         {exam.subjectInfo
                                             ? exam?.subjectInfo
                                                   .map(
@@ -270,21 +264,13 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                                                         )}
                                                                         :
                                                                     </span>
-                                                                    {option.option.startsWith(
-                                                                        "<img"
-                                                                    ) ? (
-                                                                        <div
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html: option.option,
-                                                                            }}
-                                                                        />
-                                                                    ) : (
-                                                                        <div
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html: option.option,
-                                                                            }}
-                                                                        />
-                                                                    )}
+
+                                                                    <div
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: option.option,
+                                                                        }}
+                                                                    />
+
                                                                     {option.ans && (
                                                                         <span className="ms-auto badge bg-success text-white">
                                                                             Correct

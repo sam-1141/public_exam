@@ -7,9 +7,8 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
 
     return (
         <div
-            className="modal fade show d-block"
+            className="modal fade show d-block bg-dark bg-opacity-50 "
             tabIndex="-1"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
             <div className="modal-dialog modal-lg modal-dialog-scrollable">
                 <div className="modal-content">

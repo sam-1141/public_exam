@@ -72,10 +72,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                 </div>
                                 <div>
                                     <div className="fw-bold">Courses</div>
-                                    <small
-                                        className="text-truncate d-block"
-                                        style={{ maxWidth: "150px" }}
-                                    >
+                                    <small className="text-truncate d-block truncate-small">
                                         {exam.courseInfo.length > 0
                                             ? exam.courseInfo
                                                   .map(
@@ -95,10 +92,7 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                 </div>
                                 <div>
                                     <div className="fw-bold">Subjects</div>
-                                    <small
-                                        className="text-truncate d-block"
-                                        style={{ maxWidth: "150px" }}
-                                    >
+                                    <small className="text-truncate d-block truncate-small">
                                         {exam.subjectInfo.length > 0
                                             ? exam.subjectInfo
                                                   .map(

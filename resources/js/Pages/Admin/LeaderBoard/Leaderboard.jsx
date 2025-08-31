@@ -224,30 +224,30 @@ const Leaderboard = ({ examsInfo }) => {
                                                 <thead className="table-light">
                                                     <tr>
                                                         <th
-                                                            style={{
-                                                                width: "15%",
-                                                            }}
+                                                            className={
+                                                                styles.rank
+                                                            }
                                                         >
                                                             Rank
                                                         </th>
                                                         <th
-                                                            style={{
-                                                                width: "25%",
-                                                            }}
+                                                            className={
+                                                                styles.name
+                                                            }
                                                         >
                                                             Name
                                                         </th>
                                                         <th
-                                                            style={{
-                                                                width: "20%",
-                                                            }}
+                                                            className={
+                                                                styles.score
+                                                            }
                                                         >
                                                             Score
                                                         </th>
                                                         <th
-                                                            style={{
-                                                                width: "15%",
-                                                            }}
+                                                            className={
+                                                                styles.submit
+                                                            }
                                                         >
                                                             Submit Time
                                                         </th>
@@ -255,7 +255,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                 </thead>
                                                 <tbody>
                                                     {leaderboardData.map(
-                                                        (item, index) => (
+                                                        (item) => (
                                                             <tr
                                                                 key={
                                                                     item?.serial

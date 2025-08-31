@@ -85,10 +85,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
     if (!show) return null;
 
     return (
-        <div
-            className="modal fade show"
-            style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
+        <div className="modal fade show d-block bg-dark bg-opacity-50">
             <div className="modal-dialog modal-lg modal-dialog-centered">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -304,7 +301,7 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         </label>
                                         <div className="form-check form-switch">
                                             <input
-                                                className="form-check-input mb-2"
+                                                className="form-check-input mb-2 checkbox-large"
                                                 type="checkbox"
                                                 id="negativeMarksSwitch"
                                                 checked={
@@ -333,10 +330,6 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                     }
                                                 }}
                                                 name="has_negative_marks"
-                                                style={{
-                                                    width: "3em",
-                                                    height: "1.5em",
-                                                }}
                                             />
                                             <label
                                                 className="form-check-label ml-2"
@@ -401,10 +394,10 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                         </div>
                                     )}
                                 </div>
-                                <div className={"col-md-6"}></div>
+
+                                <hr className="my-4" />
                                 <div className="col-12">
-                                    <hr />
-                                    <h6 className="my-3 font-semibold text-lg">
+                                    <h6 className="font-semibold text-lg">
                                         Advanced Settings
                                     </h6>
                                 </div>
