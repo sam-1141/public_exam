@@ -22,8 +22,9 @@
         content="Fahad's Tutorial, FT Academy, Fahad Sir, Exam" />
     <meta name="author" content="Fahad's Tutorial" />
     <title>Exam | Fahad's Tutorial</title>
-    
-   
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
     <!-- [Favicon] icon -->
     <link rel="icon" href="{{ asset('assets/images/logo/favicon.webp') }}" type="image/x-icon" />
     <!-- [Font] Family -->
@@ -87,7 +88,7 @@
     @vite('resources/js/app.jsx')
     @inertiaHead
 
-   
+
 </head>
 
 <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="ltr"
