@@ -8,21 +8,14 @@ const LeaderboardPage = ({ examsInfo }) => {
   const [leaderboardData, setLeaderboardData] = useState({data: [], links: []}) // dynamic data with pagination
   const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        console.log('leaderboardData', leaderboardData)
-    }, [leaderboardData]);
-
-  // Get exam names from examsInfo (API data)
   const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))
 
-  // Fetch leaderboard data when exam changes
   useEffect(() => {
     if (selectedExam) {
       setIsLoading(true)
       axios
         .get(`/student/exam/${selectedExam}/leaderboard/list`)
         .then(res => {
-            console.log('res?.data?.attendanceInfo?.data', res?.data?.attendanceInfo?.data)
           setLeaderboardData({
             data: res?.data?.attendanceInfo?.data,
             links: res.data.attendanceInfo.links || []
@@ -37,7 +30,6 @@ const LeaderboardPage = ({ examsInfo }) => {
     }
   }, [selectedExam])
 
-  // Handle pagination page change
   const handlePageChange = (url) => {
     if (!url) return;
 
@@ -58,11 +50,7 @@ const LeaderboardPage = ({ examsInfo }) => {
       })
   }
 
-  // Process leaderboard data to calculate time spent
-  const processLeaderboardData = (data) => {
-    if (!data || !Array.isArray(data)) return []
-
-    // Calculate time spent for each student
+  const processLeaderboardData = (start_time, end_time) => {
     return data.map(student => {
       const startTime = new Date(student.student_exam_start_time)
       const endTime = new Date(student.submit_time)
@@ -71,22 +59,22 @@ const LeaderboardPage = ({ examsInfo }) => {
       return {
         ...student,
         timeSpentMs,
-        timeSpentFormatted: formatTimeSpent(timeSpentMs)
+        timeSpentFormatted: formatTimeSpent(new Date(student.student_exam_start_time) - new Date(student.submit_time))
       }
     })
   }
 
   // Helper function to format time spent
-  const formatTimeSpent = (ms) => {
-    if (!ms || ms <= 0) return "--:--:--"
+    const formatTimeSpent = (ms) => {
+        if (!ms || ms <= 0) return "--:--:--";
 
-    const seconds = Math.floor(ms / 1000)
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
+        const seconds = Math.floor(ms / 1000);
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
 
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
 
   // FilteredData now comes from our processed data
   const filteredData = leaderboardData.data || []
@@ -266,7 +254,10 @@ const LeaderboardPage = ({ examsInfo }) => {
                                     স্কোর: {user.student_total_mark || 0}
                                   </div>
                                   <div className="small text-muted">
-                                    {user.timeSpentFormatted || "--:--:--"}
+                                      {user.submit_time ?
+                                          formatTimeSpent(new Date(user.submit_time) - new Date(user.student_exam_start_time))
+                                          : 'N/A'
+                                      }
                                   </div>
                                 </div>
                               </div>

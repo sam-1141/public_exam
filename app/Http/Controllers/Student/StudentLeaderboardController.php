@@ -29,9 +29,8 @@ class StudentLeaderboardController extends Controller
         $perPage = 10;
         $attendanceInfo = DB::connection('ExamDB')
             ->table('student_exam_attendance')
-            ->join('ft_core.users as students', 'student_exam_attendance.student_id', '=', 'students.id') // lowercase 'coredb'
+            ->join('ft_core.users as students', 'student_exam_attendance.student_id', '=', 'students.id')
             ->where('student_exam_attendance.exam_id', $examInfo->id)
-            ->where('student_exam_attendance.result_publish_time', '<', now())
             ->orderBy('student_exam_attendance.student_total_mark', 'desc')
             ->select(
                 'student_exam_attendance.*',
