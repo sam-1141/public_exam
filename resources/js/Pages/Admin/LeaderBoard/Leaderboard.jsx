@@ -44,7 +44,6 @@ const Leaderboard = ({ examsInfo }) => {
                     })
                 )
                 .then((res) => {
-                    console.log("Full API Response:", res.data);
                     // Set exam info
                     setExamInfo(res.data.examInfo);
                     // Set leaderboard data
@@ -110,10 +109,13 @@ const Leaderboard = ({ examsInfo }) => {
                 })
             )
             .then((res) => {
-                exportLeaderboardToCSV(res.data.attendanceInfo, selectedExamDetails?.name);
+                exportLeaderboardToCSV(
+                    res.data.attendanceInfo,
+                    selectedExamDetails?.name
+                );
             })
             .catch(() => {
-                alert('Failed to fetch leaderboard data for CSV export.');
+                alert("Failed to fetch leaderboard data for CSV export.");
             });
     };
 
@@ -193,7 +195,7 @@ const Leaderboard = ({ examsInfo }) => {
                                                             Top Score:
                                                         </span>
                                                         <span className="fw-bold ms-2">
-                                                          {'00'}
+                                                            {"00"}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -255,7 +257,9 @@ const Leaderboard = ({ examsInfo }) => {
                                                     {leaderboardData.map(
                                                         (item, index) => (
                                                             <tr
-                                                                key={item?.serial}
+                                                                key={
+                                                                    item?.serial
+                                                                }
                                                                 className={`
                                                                 ${
                                                                     item?.serial ===
@@ -279,7 +283,6 @@ const Leaderboard = ({ examsInfo }) => {
                                                             >
                                                                 <td>
                                                                     <div className="d-flex align-items-center gap-2">
-
                                                                         <span
                                                                             className={`fw-bold ${
                                                                                 item?.serial <=
@@ -335,18 +338,16 @@ const Leaderboard = ({ examsInfo }) => {
                                                                             : ""
                                                                     }`}
                                                                 >
-                                                                    {
-                                                                        item.student_total_mark ?? 0
-                                                                    }
+                                                                    {item.student_total_mark ??
+                                                                        0}
                                                                     /
                                                                     {
                                                                         item.exam_total_mark
                                                                     }
                                                                 </td>
                                                                 <td>
-                                                                    {
-                                                                        item.submit_time ?? "N/A"
-                                                                    }
+                                                                    {item.submit_time ??
+                                                                        "N/A"}
                                                                 </td>
                                                             </tr>
                                                         )

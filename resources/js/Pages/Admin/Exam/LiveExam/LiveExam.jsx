@@ -27,7 +27,6 @@ const LiveExam = ({ courses, subjects }) => {
         axios
             .get(requestUrl)
             .then((res) => {
-                console.log('res.data.exams', res.data.exams);
                 setExams(res.data.exams || []);
             })
             .catch(() => {
