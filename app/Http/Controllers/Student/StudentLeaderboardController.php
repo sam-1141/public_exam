@@ -26,6 +26,7 @@ class StudentLeaderboardController extends Controller
             ->select('id', 'name', 'slug')
             ->first();
 
+        $perPage = 10;
         $attendanceInfo = DB::connection('ExamDB')
             ->table('student_exam_attendance')
             ->join('ft_core.users as students', 'student_exam_attendance.student_id', '=', 'students.id') // lowercase 'coredb'
@@ -37,7 +38,15 @@ class StudentLeaderboardController extends Controller
                 'students.name as student_name',
                 'students.institute as student_institute',
             )
-            ->paginate(10);
+            ->paginate($perPage);
+
+        // Serial number logic
+        $serialStart = ($attendanceInfo->currentPage() - 1) * $attendanceInfo->perPage() + 1;
+
+        // Add serial number to each item
+        foreach ($attendanceInfo as $index => $item) {
+            $item->serial = $serialStart + $index;
+        }
 
         return response()->json([
             'examInfo' => $examInfo,
