@@ -15,15 +15,7 @@ import {
 function AdminNavLinks() {
     return (
         <>
-            <ul
-                className="pc-navbar"
-                style={{
-                    height: "auto",
-                    maxHeight: "none",
-                    overflow: "visible",
-                    paddingBottom: "20px",
-                }}
-            >
+            <ul className="pc-navbar pb-3">
                 <li className="pc-item">
                     {/* Admin */}
 

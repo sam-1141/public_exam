@@ -75,3 +75,20 @@ body.modal-open .pc-sidebar {
     background-color: #c1c1c1;
     border-radius: 3px;
 }
+
+/* Add exam input */
+.checkbox-large.form-check-input {
+    width: 3em;
+    height: 1.5em;
+}
+
+.checkbox-large.form-check-input::before {
+    width: 3em;
+    height: 1.5em;
+    border-radius: 1em;
+}
+
+/* Exam card */
+.truncate-small {
+    max-width: 150px;
+}

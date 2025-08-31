@@ -55,36 +55,16 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
 
     return (
         <div
-            className="modal fade show"
+            className="modal fade show d-block bg-dark bg-opacity-50 position-fixed top-0 start-0 w-100 h-100 overflow-hidden"
             style={{
-                display: "block",
-                backgroundColor: "rgba(0,0,0,0.5)",
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                overflow: "hidden",
                 zIndex: 1050,
             }}
         >
-            <div
-                className="modal-dialog modal-xl"
-                style={{
-                    height: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    margin: "0 auto",
-                    maxWidth: "1140px",
-                    padding: "20px",
-                }}
-            >
+            <div className="modal-dialog modal-xl h-100 d-flex align-items-center mx-auto p-3">
                 <div
-                    className="modal-content"
+                    className="modal-content d-flex flex-column"
                     style={{
                         height: "90vh",
-                        display: "flex",
-                        flexDirection: "column",
                     }}
                 >
                     <div className="modal-header border-bottom">
@@ -98,10 +78,7 @@ const QuestionReorderModal = ({ questions, onClose, onSave }) => {
                         ></button>
                     </div>
 
-                    <div
-                        className="modal-body p-0"
-                        style={{ flex: 1, overflowY: "auto" }}
-                    >
+                    <div className="modal-body p-0 flex-fill overflow-auto">
                         <div className="p-3 border-bottom">
                             <div className="alert alert-info py-2 mb-0">
                                 <i className="fas fa-arrows-alt me-2"></i>

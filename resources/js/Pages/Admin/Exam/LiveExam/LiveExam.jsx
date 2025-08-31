@@ -104,15 +104,8 @@ const LiveExam = ({ courses, subjects }) => {
             </div>
 
             {loading ? (
-                <div
-                    className="d-flex justify-content-center align-items-center"
-                    style={{ minHeight: 200 }}
-                >
-                    <div
-                        className="spinner-border text-primary"
-                        style={{ width: "3rem", height: "3rem" }}
-                        role="status"
-                    >
+                <div className="d-flex justify-content-center align-items-center vh-25">
+                    <div className="spinner-border text-primary" role="status">
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 </div>

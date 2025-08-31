@@ -49,3 +49,17 @@
     transform: translateX(2px);
     transition: transform 0.2s ease;
 }
+
+/* Table leaderboard */
+.rank {
+    width: 15%;
+}
+.name {
+    width: 25%;
+}
+.score {
+    width: 20%;
+}
+.submit {
+    width: 15%;
+}

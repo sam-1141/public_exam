@@ -131,7 +131,7 @@ const QuestionModal = ({
                 },
             });
         } else {
-            if (questionData.id){
+            if (questionData.id) {
                 // console.log('Submitting updated question data:', questionData.id)
                 put(route("admin.exam.questions.update", questionData.id), {
                     data: submitData,
@@ -147,8 +147,10 @@ const QuestionModal = ({
                         onClose();
                     },
                 });
-            }else{
-                alert('Something is missing for edit operation. Please reload the page and try again.');
+            } else {
+                alert(
+                    "Something is missing for edit operation. Please reload the page and try again."
+                );
             }
 
             // console.log("Updated question data:", {
@@ -193,10 +195,7 @@ const QuestionModal = ({
 
     if (loading) {
         return (
-            <div
-                className="modal fade show"
-                style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
-            >
+            <div className="modal fade show d-block bg-dark bg-opacity-50 ">
                 <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <div className="modal-body d-flex justify-content-center align-items-center py-5">
@@ -214,10 +213,7 @@ const QuestionModal = ({
     }
 
     return (
-        <div
-            className="modal fade show "
-            style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
+        <div className="modal fade show d-block bg-dark bg-opacity-50 ">
             <div className="modal-dialog modal-xl modal-dialog-centered ">
                 <div className="modal-content">
                     <div className="modal-header ">
@@ -236,8 +232,8 @@ const QuestionModal = ({
 
                     <form onSubmit={handleSubmit}>
                         <div
-                            className="modal-body"
-                            style={{ maxHeight: "70vh", overflowY: "auto" }}
+                            className="modal-body overflow-auto"
+                            style={{ maxHeight: "70vh" }}
                         >
                             {/* Question Section */}
                             <div className="mb-4">
