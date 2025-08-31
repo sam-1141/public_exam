@@ -6,7 +6,7 @@ import axios from "axios"
 
 const LeaderboardPage = ({ examsInfo }) => {
   const [selectedExam, setSelectedExam] = useState("")
-  const [leaderboardData, setLeaderboardData] = useState({data: [], links: []}) // dynamic data with pagination
+  const [leaderboardData, setLeaderboardData] = useState({data: [], links: []})
   const [isLoading, setIsLoading] = useState(false)
 
   const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))

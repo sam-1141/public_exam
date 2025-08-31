@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Layout from "../../../layouts/Layout"
 import {
   ClipboardList,
@@ -6,8 +5,7 @@ import {
   CalendarCheck,
   CalendarX,
   PlayCircle,
-  Award,
-  AlertTriangle
+  ListTodo
 } from 'lucide-react';
 
 const StatCard = ({ icon: Icon, title, value, color, progress, children }) => (
@@ -36,20 +34,8 @@ const StatCard = ({ icon: Icon, title, value, color, progress, children }) => (
   </div>
 );
 
-const ActivityItem = ({ icon: Icon, title, status, score, color }) => (
-  <div className="d-flex align-items-center mb-3">
-    <span className={`badge bg-${color}-subtle text-${color} me-3`}>
-      <Icon size={16} />
-    </span>
-    <div>
-      <span className="fw-semibold">{title}</span>
-      <small className="text-muted ms-2">{status} {score && `| ${score}%`}</small>
-    </div>
-  </div>
-);
-
 const Dashboard = ({ totalExam, totalAttended, runningExams, upcomingExams }) => {
-    const attendanceRate = Math.round((totalAttended / totalExam) * 100);
+  const attendanceRate = Math.round((totalAttended / totalExam) * 100);
 
   return (
     <div className="container py-4 font-baloo">
@@ -95,8 +81,8 @@ const Dashboard = ({ totalExam, totalAttended, runningExams, upcomingExams }) =>
             value={runningExams}
             color="warning"
           >
-            <span className="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
-              <Clock size={16} className="me-1" /> এখনই অংশগ্রহণ করুন
+            <span className="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1 fs-6">
+              <Clock size={16}/> এখনই অংশগ্রহণ করুন
             </span>
           </StatCard>
         </div>
@@ -108,9 +94,10 @@ const Dashboard = ({ totalExam, totalAttended, runningExams, upcomingExams }) =>
             value={upcomingExams}
             color="info"
           >
-            <span className="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
-              প্রস্তুতি নিন
+            <span className="badge bg-info-subtle text-info px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1 fs-6">
+              <ListTodo size={16} /> প্রস্তুতি নিন
             </span>
+
           </StatCard>
         </div>
       </div>

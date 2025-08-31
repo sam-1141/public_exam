@@ -37,7 +37,7 @@ const PracticeExamResult = () => {
                     options: options.map(opt => opt.option),
                     correctAnswer: options.findIndex(opt => opt.ans === true),
                     userAnswer: submission.answers[question.id],
-                    marks: 5, // Default marks per question
+                    marks: 1, // Default marks per question
                     explanation: question.explanation
                 }
             })
@@ -100,10 +100,6 @@ const PracticeExamResult = () => {
                                         <div className="col-12 mb-4">
                                             <h3 className="fw-bold text-dark mb-2">{examData.examName}</h3>
                                             <div className="d-flex flex-wrap gap-4 text-muted">
-                                                {/* <div className="d-flex align-items-center">
-                          <span className="me-2">⏰</span>
-                          <span>মোট সময়: {examData.totalGivenTime} মিনিট</span>
-                        </div> */}
                                                 <div className="d-flex align-items-center">
                                                     <span className="me-2">⏰</span>
                                                     <span>সময় লেগেছে: {formatTime(examData.timeSpent)}</span>
@@ -176,12 +172,6 @@ const PracticeExamResult = () => {
                                 >
                                     প্র্যাকটিস লিস্টে ফিরে যান
                                 </button>
-                                {/* <button
-                                    className="btn btn-primary px-4 py-2"
-                                    onClick={() => router.visit(route('student.practice.exam', { exam: submission.examId }))}
-                                >
-                                    আবার চেষ্টা করুন
-                                </button> */}
                             </div>
                         </div>
                     </div>
@@ -285,19 +275,6 @@ const QuestionReview = ({ question, questionNumber }) => {
                                         </span>
                                     </div>
                                 </div>
-                                {/* <div className="col-12 col-md-6">
-                                    <div className="small">
-                                        <span className="text-muted">আপনার উত্তর:</span>
-                                        {question.userAnswer !== undefined && question.userAnswer !== null ? (
-                                            <span className={`fw-semibold ms-2 ${getStatusColor()}`}>
-                                                {String.fromCharCode(65 + question.userAnswer)}.
-                                                <span dangerouslySetInnerHTML={{ __html: question.options[question.userAnswer] }}></span>
-                                            </span>
-                                        ) : (
-                                            <span className="fw-semibold text-warning ms-2">স্কিপ করা</span>
-                                        )}
-                                    </div>
-                                </div> */}
                             </div>
 
                             {/* Explanation Section - Only shown if explanation exists */}

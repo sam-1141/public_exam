@@ -1,6 +1,5 @@
 import { router } from "@inertiajs/react"
 import {route} from "ziggy-js";
-import {useEffect} from "react";
 
 const ExamHistoryCard = ({ exam, date }) => {
     

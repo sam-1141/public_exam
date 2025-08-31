@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
