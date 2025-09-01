@@ -1,5 +1,3 @@
-"use client"
-
 const ParticipationModal = ({ show, onHide, exam, onConfirm }) => {
   if (!show || !exam) return null
 

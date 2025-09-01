@@ -1,4 +1,3 @@
-"use client"
 import ExamHistoryCard from "./ExamHistoryCard"
 
 const DateSection = ({ date, exams }) => {

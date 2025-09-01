@@ -42,7 +42,6 @@ const ExamMainPage = ({ exam, questions }) => {
     try {
       parsedOptions = JSON.parse(question.options || "[]");
     } catch (error) {
-      // console.error("Invalid options JSON", error);
     }
 
     // Find correct answers (can be multiple)

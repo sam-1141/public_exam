@@ -1,0 +1,62 @@
+.bg-gold {
+    background-color: rgba(255, 215, 0, 0.2);
+    color: #8B7500;
+    border-left: 4px solid #FFD700;
+}
+
+.bg-silver {
+    background-color: rgba(192, 192, 192, 0.2);
+    color: #696969;
+    border-left: 4px solid #C0C0C0;
+}
+
+.bg-bronze {
+    background-color: rgba(205, 127, 50, 0.2);
+    color: #8B4513;
+    border-left: 4px solid #CD7F32;
+}
+
+.bg-gold,
+.bg-silver,
+.bg-bronze {
+    transition: all 0.3s ease;
+}
+
+.bg-gold:hover {
+    background-color: rgba(255, 215, 0, 0.3);
+}
+
+.bg-silver:hover {
+    background-color: rgba(192, 192, 192, 0.3);
+}
+
+.bg-bronze:hover {
+    background-color: rgba(205, 127, 50, 0.3);
+}
+
+.top-three-badge {
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.gold-badge {
+    background-color: #FFD700;
+    color: #5E4B00;
+}
+
+.silver-badge {
+    background-color: #C0C0C0;
+    color: #4A4A4A;
+}
+
+.bronze-badge {
+    background-color: #CD7F32;
+    color: #5E3000;
+}
+
+.image-size {
+    height: 50px;
+    width: 50px;
+}

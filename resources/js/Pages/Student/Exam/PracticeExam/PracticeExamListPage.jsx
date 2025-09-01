@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
-import { courses, subjectsByCourse } from "../../../../utils/ExamQuestion/PracticeExamQuestions"
 
 const PracticeExamListPage = ({allExam}) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [expandedCourses, setExpandedCourses] = useState({})
     const examsPerPage = 9
 
-    // Sort exams from newest to oldest (assuming newer exams have higher IDs)
     const sortedExams = [...allExam].sort((a, b) => b.id - a.id)
 
     // Group exams by course
@@ -45,19 +43,6 @@ const PracticeExamListPage = ({allExam}) => {
             ...prev,
             [courseId]: !prev[courseId]
         }));
-    }
-
-    const getDifficultyColor = (difficulty) => {
-        switch (difficulty) {
-            case "সহজ":
-                return "success"
-            case "মধ্যম":
-                return "warning"
-            case "কঠিন":
-                return "danger"
-            default:
-                return "primary"
-        }
     }
 
     return (
@@ -106,14 +91,10 @@ const PracticeExamListPage = ({allExam}) => {
                                                                         <div className="card-body p-4">
                                                                             <div className="d-flex justify-content-between align-items-start mb-3">
                                                                                 <h5 className="card-title fw-bold mb-0">{exam.name}</h5>
-                                                                                {/* <span className={`badge bg-${getDifficultyColor(exam.difficulty)}`}>
-                                                                                    {exam.difficulty}
-                                                                                </span> */}
                                                                             </div>
 
                                                                             <div className="mb-3">
                                                                                 <div className="mb-2">
-                                                                                    {/* <p className="text-muted small mb-1">বর্ণনা:</p> */}
                                                                                     <p className="mb-0 text-wrap" style={{ fontSize: '0.9rem' }}>
                                                                                         {exam.description}
                                                                                     </p>

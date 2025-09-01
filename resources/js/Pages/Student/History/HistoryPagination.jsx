@@ -1,5 +1,3 @@
-"use client"
-
 const HistoryPagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPerPage }) => {
   const startItem = (currentPage - 1) * itemsPerPage + 1
   const endItem = Math.min(currentPage * itemsPerPage, totalItems)

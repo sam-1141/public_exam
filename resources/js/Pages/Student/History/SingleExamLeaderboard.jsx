@@ -1,17 +1,18 @@
 import Layout from "../../../layouts/Layout"
+import "./../LeaderBoardPage/LeaderBoardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
 const SingleExamLeaderboard = ({ examSlug }) => {
-    const [leaderboardData, setLeaderboardData] = useState({ data: [], links: [] }) // dynamic data with pagination
+    const [leaderboardData, setLeaderboardData] = useState({ data: [], links: [] })
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         if (examSlug) {
             setIsLoading(true)
             axios
-                .get(`/student/exam/${examSlug}/leaderboard/list`)
+                .get(route("student.leaderboard.list", examSlug))
                 .then(res => {
                     // Process the data to calculate time spent
                     const processedData = processLeaderboardData(res.data.attendanceInfo.data)
@@ -189,7 +190,7 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                     <div className="card-body p-0">
                                         {sortedData.length > 0 ? (
                                             sortedData.map((user, index) => {
-                                                const rank = index + 1; // Simple index-based ranking
+                                                const rank = index + 1;
                                                 const isTopThree = rank <= 3
                                                 return (
                                                     <div
@@ -201,14 +202,8 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                                             <img
                                                                 src={user.image || "/assets/images/user/avatar-1.png"}
                                                                 alt={user.student_name}
-                                                                className="rounded-circle"
-                                                                style={{
-                                                                    width: '50px',
-                                                                    height: '50px',
-                                                                    objectFit: 'cover',
-                                                                    border: isTopThree ? '2px solid white' : 'none',
-                                                                    boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
-                                                                }}
+                                                                className={`rounded-circle ${isTopThree ? 'border border-white shadow-sm' : ''} object-fit-cover image-size`}
+                                                                
                                                             />
                                                         </div>
                                                         <div className="flex-grow-1">
@@ -287,37 +282,6 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                     )}
                 </div>
             </main>
-
-            {/* Add custom CSS for top three colors */}
-            <style jsx>{`
-                .bg-gold {
-                    background-color: rgba(255, 215, 0, 0.2);
-                    color: #8B7500;
-                    border-left: 4px solid #FFD700;
-                }
-                .bg-silver {
-                    background-color: rgba(192, 192, 192, 0.2);
-                    color: #696969;
-                    border-left: 4px solid #C0C0C0;
-                }
-                .bg-bronze {
-                    background-color: rgba(205, 127, 50, 0.2);
-                    color: #8B4513;
-                    border-left: 4px solid #CD7F32;
-                }
-                .bg-gold, .bg-silver, .bg-bronze {
-                    transition: all 0.3s ease;
-                }
-                .bg-gold:hover {
-                    background-color: rgba(255, 215, 0, 0.3);
-                }
-                .bg-silver:hover {
-                    background-color: rgba(192, 192, 192, 0.3);
-                }
-                .bg-bronze:hover {
-                    background-color: rgba(205, 127, 50, 0.3);
-                }
-            `}</style>
         </div>
     )
 }

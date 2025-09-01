@@ -1,7 +1,6 @@
 import Layout from "../../../layouts/Layout"
 import { useState, useMemo, useEffect } from "react"
 import HistoryPagination from "./HistoryPagination"
-import { examHistory } from "../../../utils/ExamHistory/ExamHistory"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import ExamHistoryCard from "./ExamHistoryCard"
 
@@ -11,8 +10,6 @@ const HistoryPage = ({ courses, examsInfo }) => {
   const itemsPerPage = 10
 
   useEffect(() => {
-    console.log("All exams Info:", courses, examsInfo);
-
     // Set initial selected course to the first available course from exams
     if (examsInfo.length > 0 && courses.length > 0) {
       const firstCourseId = getAvailableCourses()[0]?.id;

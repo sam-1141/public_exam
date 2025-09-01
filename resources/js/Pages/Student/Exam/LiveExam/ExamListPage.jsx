@@ -1,11 +1,9 @@
 import Layout from "../../../../layouts/Layout";
-import LiveExamCard from "./LiveExamCard";
 import ParticipationModal from "./ParticipationModal";
-import PageHeader from "../../../../components/Student/PageHeader/PageHeader";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { router } from "@inertiajs/react";
-import LiveExamSection from "./LiveExamSection"; // Import the new component
-import UpcomingExamSection from "./UpcomingExamSection"; // Import the new component
+import LiveExamSection from "./LiveExamSection"; 
+import UpcomingExamSection from "./UpcomingExamSection";
 
 const ExamListPage = ({ allExam, errors }) => {
   const [showModal, setShowModal] = useState(false);
