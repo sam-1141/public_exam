@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react"
+import { useEffect, useState } from "react"
 import Layout from "../../../layouts/Layout"
 import "./LeaderboardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
@@ -6,7 +6,7 @@ import axios from "axios"
 
 const LeaderboardPage = ({ examsInfo }) => {
   const [selectedExam, setSelectedExam] = useState("")
-  const [leaderboardData, setLeaderboardData] = useState({data: [], links: []})
+  const [leaderboardData, setLeaderboardData] = useState({ data: [], links: [] })
   const [isLoading, setIsLoading] = useState(false)
 
   const examNames = examsInfo.map(item => ({ name: item.name, slug: item.slug }))
@@ -25,7 +25,7 @@ const LeaderboardPage = ({ examsInfo }) => {
         })
         .catch(err => {
           console.error("Failed to fetch leaderboard:", err)
-          setLeaderboardData({data: [], links: []})
+          setLeaderboardData({ data: [], links: [] })
           setIsLoading(false)
         })
     }
@@ -46,7 +46,7 @@ const LeaderboardPage = ({ examsInfo }) => {
       })
       .catch(err => {
         console.error("Failed to fetch leaderboard:", err)
-        setLeaderboardData({data: [], links: []})
+        setLeaderboardData({ data: [], links: [] })
         setIsLoading(false)
       })
   }
@@ -66,16 +66,16 @@ const LeaderboardPage = ({ examsInfo }) => {
   }
 
   // Helper function to format time spent
-    const formatTimeSpent = (ms) => {
-        if (!ms || ms <= 0) return "--:--:--";
+  const formatTimeSpent = (ms) => {
+    if (!ms || ms <= 0) return "--:--:--";
 
-        const seconds = Math.floor(ms / 1000);
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
+    const seconds = Math.floor(ms / 1000);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
 
   // FilteredData now comes from our processed data
   const filteredData = leaderboardData.data || []
@@ -213,56 +213,49 @@ const LeaderboardPage = ({ examsInfo }) => {
                 <div className="card border-0 shadow-sm">
                   <div className="card-body p-0">
                     {leaderboardData?.data?.length > 0 ? (
-                        leaderboardData?.data?.map((user, index) => {
-                            const rank = user?.serial;
-                            const isTopThree = rank <= 3
-                            return (
-                              <div
-                                key={user.id}
-                                className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== filteredData.length - 1 ? "border-bottom" : ""
-                                  }`}
-                              >
-                                <div className="me-3 position-relative">
-                                  <img
-                                    src={user.image || "/assets/images/user/avatar-1.png"}
-                                    alt={user.student_name}
-                                    className="rounded-circle"
-                                    style={{
-                                      width: '50px',
-                                      height: '50px',
-                                      objectFit: 'cover',
-                                      border: isTopThree ? '2px solid white' : 'none',
-                                      boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
-                                    }}
-                                  />
-                                </div>
-                                <div className="flex-grow-1">
-                                  <div className="fw-semibold text-dark mb-1">
-                                    {user.student_name}
-                                    {isTopThree && (
-                                      <span className="ms-2">{getMedal(rank)}</span>
-                                    )}
-                                  </div>
-                                  <div className="small text-muted">{user.student_institute || ""}</div>
-                                </div>
-                                <div className="text-end">
-                                  <div className="d-flex align-items-center justify-content-end mb-1">
-                                    <span className="fw-bold fs-5">
-                                      #{rank}
-                                    </span>
-                                  </div>
-                                  <div className="small">
-                                    স্কোর: {user.student_total_mark || 0}
-                                  </div>
-                                  <div className="small text-muted">
-                                      {user.submit_time ?
-                                          formatTimeSpent(new Date(user.submit_time) - new Date(user.student_exam_start_time))
-                                          : 'N/A'
-                                      }
-                                  </div>
-                                </div>
+                      leaderboardData?.data?.map((user, index) => {
+                        const rank = user?.serial;
+                        const isTopThree = rank <= 3
+                        return (
+                          <div
+                            key={user.id}
+                            className={`d-flex align-items-center p-3 ${isTopThree ? getBackgroundColor(rank) : ''} ${index !== filteredData.length - 1 ? "border-bottom" : ""
+                              }`}
+                          >
+                            <div className="me-3 position-relative">
+                              <img
+                                src={user.image || "/assets/images/user/avatar-1.png"}
+                                alt={user.student_name}
+                                className={`rounded-circle ${isTopThree ? 'border border-white shadow-sm' : ''} object-fit-cover image-size`}
+                              />
+                            </div>
+                            <div className="flex-grow-1">
+                              <div className="fw-semibold text-dark mb-1">
+                                {user.student_name}
+                                {isTopThree && (
+                                  <span className="ms-2">{getMedal(rank)}</span>
+                                )}
                               </div>
-                            )
+                              <div className="small text-muted">{user.student_institute || ""}</div>
+                            </div>
+                            <div className="text-end">
+                              <div className="d-flex align-items-center justify-content-end mb-1">
+                                <span className="fw-bold fs-5">
+                                  #{rank}
+                                </span>
+                              </div>
+                              <div className="small">
+                                স্কোর: {user.student_total_mark || 0}
+                              </div>
+                              <div className="small text-muted">
+                                {user.submit_time ?
+                                  formatTimeSpent(new Date(user.submit_time) - new Date(user.student_exam_start_time))
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        )
                       })
                     ) : (
                       <div className="p-3 text-center text-muted">
@@ -292,11 +285,9 @@ const LeaderboardPage = ({ examsInfo }) => {
                       {leaderboardData.links.map((link, i) => (
                         <li
                           key={i}
-                          className={`page-item ${
-                            link.active ? "active" : ""
-                          } ${
-                            !link.url ? "disabled" : ""
-                          }`}
+                          className={`page-item ${link.active ? "active" : ""
+                            } ${!link.url ? "disabled" : ""
+                            }`}
                         >
                           {link.url ? (
                             <button

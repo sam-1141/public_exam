@@ -202,14 +202,8 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                                             <img
                                                                 src={user.image || "/assets/images/user/avatar-1.png"}
                                                                 alt={user.student_name}
-                                                                className="rounded-circle"
-                                                                style={{
-                                                                    width: '50px',
-                                                                    height: '50px',
-                                                                    objectFit: 'cover',
-                                                                    border: isTopThree ? '2px solid white' : 'none',
-                                                                    boxShadow: isTopThree ? '0 0 8px rgba(0,0,0,0.2)' : 'none'
-                                                                }}
+                                                                className={`rounded-circle ${isTopThree ? 'border border-white shadow-sm' : ''} object-fit-cover image-size`}
+                                                                
                                                             />
                                                         </div>
                                                         <div className="flex-grow-1">
