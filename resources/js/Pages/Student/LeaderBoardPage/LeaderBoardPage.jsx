@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Layout from "../../../layouts/Layout"
-import "./LeaderboardPage.css"
+import "./LeaderBoardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import axios from "axios"
 
