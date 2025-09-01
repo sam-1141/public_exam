@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import {route} from "ziggy-js";
 
 /**
  * FocusWarning handles anti-cheat focus change warnings.
@@ -10,7 +11,8 @@ import React, { useState, useEffect } from 'react'
 const FocusWarning = ({
   maxWarnings = 3,
   active = true,
-  onMaxWarnings = () => {}
+  onMaxWarnings = () => {},
+  examId,
 }) => {
   const [warningCount, setWarningCount] = useState(0)
   const [lastWarningReason, setLastWarningReason] = useState(null)
@@ -22,10 +24,15 @@ const FocusWarning = ({
     let lastEventAt = 0
     let maxTriggered = false
 
+      const violationData = async () => {
+          const response = await axios.post(route('student.live.exam.tab.switch.count', { exam: examId }));
+      }
+
     const triggerWarning = (reason) => {
       const now = Date.now()
       if (now - lastEventAt < 800) return
       lastEventAt = now
+        const submitData = violationData();
       setWarningCount(prev => {
         const next = prev + 1
         setLastWarningReason(reason)

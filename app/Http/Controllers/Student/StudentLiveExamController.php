@@ -231,4 +231,16 @@ class StudentLiveExamController extends Controller
 
         return response()->json(['ok' => true]);
     }
+
+    public function submitTabSwitchCount($exam)
+    {
+        $studentId = auth()->id();
+
+        DB::table('student_exam_attendance')
+            ->where('student_id', $studentId)
+            ->where('exam_id', $exam)
+            ->increment('tab_switch_count');
+
+        return response()->json(['ok' => true]);
+    }
 }

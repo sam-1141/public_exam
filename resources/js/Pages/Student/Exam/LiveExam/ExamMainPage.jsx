@@ -277,6 +277,7 @@ const ExamMainPage = ({ exam, questions }) => {
         maxWarnings={3}
         active={!!exam}
         onMaxWarnings={() => handleSubmit(true)}
+        examId={exam.id}
       />
     </div>
   )
