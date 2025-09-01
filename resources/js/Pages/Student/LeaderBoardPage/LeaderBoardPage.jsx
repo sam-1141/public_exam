@@ -51,20 +51,6 @@ const LeaderboardPage = ({ examsInfo }) => {
       })
   }
 
-  const processLeaderboardData = (start_time, end_time) => {
-    return data.map(student => {
-      const startTime = new Date(student.student_exam_start_time)
-      const endTime = new Date(student.submit_time)
-      const timeSpentMs = endTime - startTime
-
-      return {
-        ...student,
-        timeSpentMs,
-        timeSpentFormatted: formatTimeSpent(new Date(student.student_exam_start_time) - new Date(student.submit_time))
-      }
-    })
-  }
-
   // Helper function to format time spent
   const formatTimeSpent = (ms) => {
     if (!ms || ms <= 0) return "--:--:--";
