@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Layout from "../../../layouts/Layout"
-import "./LeaderboardPage.css"
+import "./LeaderBoardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import axios from "axios"
 
@@ -49,20 +49,6 @@ const LeaderboardPage = ({ examsInfo }) => {
         setLeaderboardData({ data: [], links: [] })
         setIsLoading(false)
       })
-  }
-
-  const processLeaderboardData = (start_time, end_time) => {
-    return data.map(student => {
-      const startTime = new Date(student.student_exam_start_time)
-      const endTime = new Date(student.submit_time)
-      const timeSpentMs = endTime - startTime
-
-      return {
-        ...student,
-        timeSpentMs,
-        timeSpentFormatted: formatTimeSpent(new Date(student.student_exam_start_time) - new Date(student.submit_time))
-      }
-    })
   }
 
   // Helper function to format time spent
