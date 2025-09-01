@@ -3,10 +3,6 @@ import React, { useEffect } from "react";
 const AnswerSheet = ({ examType, exam, questions }) => {
     const isPracticeExam = examType === "practice";
 
-    useEffect(() => {
-        console.log("Answer Sheet - Questions:", questions);
-    }, [exam, questions]);
-
     // Helper function to parse options
     const parseOptions = (optionsString) => {
         try {

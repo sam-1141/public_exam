@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
             Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
             Route::post('/student/live-exam/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
+            Route::post('/student/{exam}/violation/rules', 'submitTabSwitchCount')->name('student.live.exam.tab.switch.count');
             Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
             Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
         });
