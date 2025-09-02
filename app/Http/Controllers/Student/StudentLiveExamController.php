@@ -20,11 +20,25 @@ class StudentLiveExamController extends Controller
             ->toArray();
 
 
+//        $exam = DB::table('live_exams')
+//            ->where('exam_type', 0)
+//            ->where('publish', 1)
+//            ->whereIn('course_exam.course_id', $permittedCourses)
+//            ->join('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
+//            ->get();
+
         $exam = DB::table('live_exams')
-            ->where('exam_type', 0)
-            ->where('publish', 1)
-            ->whereIn('course_exam.course_id', $permittedCourses)
-            ->join('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
+            ->leftJoin('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
+            ->where('live_exams.exam_type', 0)
+            ->where('live_exams.publish', 1)
+            ->where('live_exams.by_link', 0)
+            ->where(function ($query) use ($permittedCourses) {
+                $query->where('live_exams.for_all_student', 1)
+                    ->orWhere(function ($subQuery) use ($permittedCourses) {
+                        $subQuery->where('live_exams.for_all_student', 0)
+                            ->whereIn('course_exam.course_id', $permittedCourses);
+                    });
+            })
             ->get();
 
         return Inertia::render('Student/Exam/LiveExam/ExamListPage', [
