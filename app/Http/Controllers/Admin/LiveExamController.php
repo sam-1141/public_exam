@@ -87,7 +87,6 @@ class LiveExamController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
         if (!Auth::check()) {
             return back()->with('error', 'You must be logged in to create an exam.');
         }
@@ -468,9 +467,6 @@ class LiveExamController extends Controller
                 ->where('exam_question.exam_id', $exam->id)
                 ->select('questions.*')
                 ->get();
-
-
-                // dd($questions);
 
             return Inertia::render('Admin/AnswerSheet/AnswerSheet', [
                 'exam' => [
