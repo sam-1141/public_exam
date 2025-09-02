@@ -19,6 +19,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
         start_time: "",
         end_time: "",
         result_publish_time: "",
+        for_all_student: false,
+        by_link: false,
     });
     const [errors, setErrors] = useState({});
     const [submitting, setSubmitting] = useState(false);
@@ -61,6 +63,8 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                 start_time: "",
                 end_time: "",
                 result_publish_time: "",
+                for_all_student: false,
+                by_link: false,
             });
             onClose();
             if (onSuccess) onSuccess();
@@ -532,6 +536,46 @@ const AddLiveExamModal = ({ show, onClose, onSuccess, courses, subjects }) => {
                                                     }
                                                 </div>
                                             )}
+                                        </div>
+                                    </div>
+                                    <div className={"col-md-12"}>
+                                        <div className="form-check form-switch">
+                                            <input
+                                                className="form-check-input mb-2 checkbox-large"
+                                                type="checkbox"
+                                                id="for_all_student"
+                                                checked={
+                                                    formData.for_all_student
+                                                }
+                                                onChange={handleChange}
+                                                name="for_all_student"
+                                            />
+                                            <label
+                                                className="form-check-label ml-2"
+                                                htmlFor="for_all_student"
+                                            >
+                                                {"For all students (Listed)"}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div className={"col-md-12"}>
+                                        <div className="form-check form-switch">
+                                            <input
+                                                className="form-check-input mb-2 checkbox-large"
+                                                type="checkbox"
+                                                id="by_link"
+                                                checked={
+                                                    formData.by_link
+                                                }
+                                                onChange={handleChange}
+                                                name="by_link"
+                                            />
+                                            <label
+                                                className="form-check-label ml-2"
+                                                htmlFor="by_link"
+                                            >
+                                                {"By link only (unlisted)"}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
