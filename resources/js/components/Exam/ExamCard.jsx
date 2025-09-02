@@ -1,9 +1,13 @@
 import { Link } from "@inertiajs/react";
-import React from "react";
+import React, {useEffect} from "react";
 import { route } from "ziggy-js";
 
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
     const isPracticeExam = examType === "practice";
+
+    useEffect(() => {
+        console.log('exams', exam.byLink);
+    }, [exam]);
 
     const negativeMarksDisplay = exam.hasNegativeMarks
         ? exam.negativeMarksValue !== null &&
@@ -42,19 +46,27 @@ const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
                                     </span>
                                 )}
                             </div>
-                            {exam.publishInstant === 1 ? (
-                                <>
+                            <div>
+                                {exam.forAllStudent == 1 ? (
+                                    <span className="badge bg-success me-1">
+                                        For All
+                                    </span>
+                                ) : ''}
+                                {exam.byLink == 1 ? (
+                                    <span className="badge bg-success me-1">
+                                        By Link
+                                    </span>
+                                ) : ''}
+                                {exam.publishInstant === 1 ? (
                                     <span className="badge bg-success">
                                         Published
                                     </span>
-                                </>
-                            ) : (
-                                <>
+                                ) : (
                                     <span className="badge bg-danger">
                                         Unpublished
                                     </span>
-                                </>
-                            )}
+                                )}
+                            </div>
                         </div>
                         {exam.description && (
                             <p className="card-text text-muted mt-2 text-truncate-2">

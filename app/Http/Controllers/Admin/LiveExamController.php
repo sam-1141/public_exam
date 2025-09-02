@@ -87,6 +87,7 @@ class LiveExamController extends Controller
 
     public function store(Request $request)
     {
+//        dd($request->all());
         if (!Auth::check()) {
             return back()->with('error', 'You must be logged in to create an exam.');
         }
@@ -134,6 +135,8 @@ class LiveExamController extends Controller
                 'result_publish_time' => $request->result_publish_time ? $request->result_publish_time : $request->end_time,
                 'exam_url'            => $examUrl,
                 'created_by'          => Auth::id(),
+                'for_all_student'  => $request->for_all_student ?? false,
+                'by_link'  => $request->by_link ?? false,
                 'created_at'          => now(),
                 'updated_at'          => now(),
             ]);
@@ -204,6 +207,8 @@ class LiveExamController extends Controller
                     'examUrl' => $exam->exam_url,
                     'status'  => $exam->status,
                     'exam_type' => $exam->exam_type,
+                    'forAllStudent' => $exam->for_all_student,
+                    'byLink' => $exam->by_link,
                 ];
             });
 
