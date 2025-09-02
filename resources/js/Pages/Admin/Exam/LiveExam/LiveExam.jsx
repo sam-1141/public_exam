@@ -20,10 +20,6 @@ const LiveExam = ({ courses, subjects }) => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
 
-    useEffect(() => {
-        console.log('exams', exams);
-    }, [exams]);
-
     const fetchExams = (url = null) => {
         setLoading(true);
         const requestUrl = url ?? route("show.exam.list");
