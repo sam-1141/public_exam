@@ -59,22 +59,28 @@ class StudentLiveExamController extends Controller
             return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Exam not found.']);
         }
 
-        $courseIds = DB::table('course_exam')
-            ->where('exam_id', $exam->id)
-            ->pluck('course_id')
-            ->unique()
-            ->values()
-            ->all();
+//        dd($exam);
 
-        $permittedCourse = DB::connection('Webapp')
-            ->table('course_student')
-            ->where('student_id', $studentId)
-            ->whereIn('course_id', $courseIds)
-            ->exists();
+        if($exam->by_link == 0 && $exam->for_all_student == 0){
+            $courseIds = DB::table('course_exam')
+                ->where('exam_id', $exam->id)
+                ->pluck('course_id')
+                ->unique()
+                ->values()
+                ->all();
 
-        if (!$permittedCourse) {
-            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'You are not permitted to take this exam.']);
+            $permittedCourse = DB::connection('Webapp')
+                ->table('course_student')
+                ->where('student_id', $studentId)
+                ->whereIn('course_id', $courseIds)
+                ->exists();
+
+            if (!$permittedCourse) {
+                return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'You are not permitted to take this exam.']);
+            }
         }
+
+
 
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
