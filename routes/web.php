@@ -3,7 +3,7 @@
 use App\Http\Controllers\Admin\AdminLeaderboardController;
 use App\Http\Controllers\Admin\LiveExamController;
 use App\Http\Controllers\Admin\ResultController;
-use App\Http\Controllers\admin\PractiseExamController;
+use App\Http\Controllers\Admin\PractiseExamController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ProgressReportController;
 use App\Http\Controllers\Student\PracticeExamController;
