@@ -70,7 +70,7 @@ const PracticeExamPage = ({ exam, questions }) => {
       preserveState: false,
       onSuccess: () => { },
       onError: (errors) => {
-        console.error('Submission failed:', errors)
+        // console.error('Submission failed:', errors)
       }
     })
   }

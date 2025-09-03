@@ -24,7 +24,6 @@ const LeaderboardPage = ({ examsInfo }) => {
           setIsLoading(false)
         })
         .catch(err => {
-          console.error("Failed to fetch leaderboard:", err)
           setLeaderboardData({ data: [], links: [] })
           setIsLoading(false)
         })
@@ -45,7 +44,6 @@ const LeaderboardPage = ({ examsInfo }) => {
         setIsLoading(false)
       })
       .catch(err => {
-        console.error("Failed to fetch leaderboard:", err)
         setLeaderboardData({ data: [], links: [] })
         setIsLoading(false)
       })

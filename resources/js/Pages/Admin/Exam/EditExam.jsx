@@ -135,7 +135,6 @@ const EditExamModal = ({
             onClose();
             if (onSuccess) onSuccess();
         } catch (err) {
-            console.error("Submission error:", err);
             if (err.response) {
                 if (err.response.status === 422) {
                     setErrors(err.response.data.errors);

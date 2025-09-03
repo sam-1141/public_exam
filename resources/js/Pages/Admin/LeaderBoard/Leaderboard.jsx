@@ -60,9 +60,6 @@ const Leaderboard = ({ examsInfo }) => {
                     setIsLoading(false);
                 })
                 .catch((err) => {
-                    console.error("Failed to fetch leaderboard:", err);
-                    console.error("Error details:", err.response?.data);
-                    console.error("Error status:", err.response?.status);
                     setIsLoading(false);
                 });
         }

@@ -56,7 +56,6 @@ const AnswerSheetPage = ({ info }) => {
           return tempDiv.textContent || tempDiv.innerText || '';
         });
       } catch (error) {
-        console.error("Error parsing options:", error);
         options = ["Option 1", "Option 2", "Option 3", "Option 4"];
       }
 
@@ -66,7 +65,7 @@ const AnswerSheetPage = ({ info }) => {
         const parsedOptions = JSON.parse(question.options);
         correctAnswerIndex = parsedOptions.findIndex(opt => opt.ans === true);
       } catch (error) {
-        console.error("Error finding correct answer:", error);
+        // console.error("Error finding correct answer:", error);
       }
 
       return {

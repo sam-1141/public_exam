@@ -65,7 +65,6 @@ function Registration({ flash, errors }) {
             },
             {
                 onSuccess: () => reset(),
-                onError: (errors) => console.error(errors),
             }
         );
     };

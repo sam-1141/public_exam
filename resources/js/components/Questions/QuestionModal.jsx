@@ -43,7 +43,6 @@ const QuestionModal = ({
             }
             return defaultOptions;
         } catch (e) {
-            console.error("Error parsing options:", e);
             return defaultOptions;
         }
     };

@@ -23,7 +23,6 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                     setIsLoading(false)
                 })
                 .catch(err => {
-                    console.error("Failed to fetch leaderboard:", err)
                     setLeaderboardData({ data: [], links: [] })
                     setIsLoading(false)
                 })
@@ -47,7 +46,6 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                 setIsLoading(false)
             })
             .catch(err => {
-                console.error("Failed to fetch leaderboard:", err)
                 setLeaderboardData({ data: [], links: [] })
                 setIsLoading(false)
             })

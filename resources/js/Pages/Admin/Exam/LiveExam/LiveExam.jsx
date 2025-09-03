@@ -58,7 +58,6 @@ const LiveExam = ({ courses, subjects }) => {
     }, [refresh, filters]);
 
     const handleFilterChange = (newFilters) => {
-        console.log("New Filters:", newFilters);
         setFilters(newFilters);
     };
 
