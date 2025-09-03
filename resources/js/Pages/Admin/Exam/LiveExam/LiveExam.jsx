@@ -11,12 +11,11 @@ import EditExamModal from "../../../../Pages/Admin/Exam/EditExam.jsx";
 import ExamSearch from "../../../../components/Exam/ExamSearch.jsx";
 
 const LiveExam = ({ courses, subjects }) => {
-    console.log({ courses, subjects });
-
     const [showAddModal, setShowAddModal] = useState(false);
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
+
     const [editExamSlug, setEditExamSlug] = useState(null);
     const [editExamData, setEditExamData] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -54,13 +53,12 @@ const LiveExam = ({ courses, subjects }) => {
             .finally(() => setLoading(false));
     };
 
-    console.log("live exams:", exams);
-
     useEffect(() => {
         fetchExams();
     }, [refresh, filters]);
 
     const handleFilterChange = (newFilters) => {
+        console.log("New Filters:", newFilters);
         setFilters(newFilters);
     };
 
