@@ -28,7 +28,6 @@ const EditExamModal = ({
 
     useEffect(() => {
         if (exam) {
-            // console.log("Exam data received:", exam);
             setFormData({
                 name: exam.name || "",
                 course_id: exam.course_id ? String(exam.course_id) : "",
@@ -49,6 +48,8 @@ const EditExamModal = ({
                 start_time: formatDateTime(exam.startTime),
                 end_time: formatDateTime(exam.endTime),
                 result_publish_time: formatDateTime(exam.result_publish_time),
+                for_all_student: exam.forAllStudent == 1 ? true : false,
+                by_link: exam.byLink == 1 ? true : false,
             });
             setErrors({});
         }
@@ -56,6 +57,7 @@ const EditExamModal = ({
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+
         setFormData((prev) => ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,
@@ -83,6 +85,8 @@ const EditExamModal = ({
             negative_marks_value: data.negative_marks_value
                 ? parseFloat(data.negative_marks_value)
                 : 0,
+            for_all_student: data.for_all_student,
+            by_link: data.by_link,
         };
 
         // Handle datetime fields
@@ -659,6 +663,46 @@ const EditExamModal = ({
                                                 {errors.result_publish_time[0]}
                                             </div>
                                         )}
+                                    </div>
+                                </div>
+                                <div className={"col-md-12"}>
+                                    <div className="form-check form-switch">
+                                        <input
+                                            className="form-check-input mb-2 checkbox-large"
+                                            type="checkbox"
+                                            id="for_all_student"
+                                            checked={
+                                                formData.for_all_student
+                                            }
+                                            onChange={(e) => handleChange(e)}
+                                            name="for_all_student"
+                                        />
+                                        <label
+                                            className="form-check-label ml-2"
+                                            htmlFor="for_all_student"
+                                        >
+                                            {"For all students (Listed)"}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className={"col-md-12"}>
+                                    <div className="form-check form-switch">
+                                        <input
+                                            className="form-check-input mb-2 checkbox-large"
+                                            type="checkbox"
+                                            id="by_link"
+                                            checked={
+                                                formData.by_link
+                                            }
+                                            onChange={(e) => handleChange(e)}
+                                            name="by_link"
+                                        />
+                                        <label
+                                            className="form-check-label ml-2"
+                                            htmlFor="by_link"
+                                        >
+                                            {"By link only (unlisted)"}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
