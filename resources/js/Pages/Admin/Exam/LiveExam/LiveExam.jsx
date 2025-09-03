@@ -8,21 +8,39 @@ import AddLiveExamModal from "./AddLiveExam";
 import ExamCard from "../../../../components/Exam/ExamCard";
 import Layout from "../../../../layouts/Layout";
 import EditExamModal from "../../../../Pages/Admin/Exam/EditExam.jsx";
+import ExamSearch from "../../../../components/Exam/ExamSearch.jsx";
 
 const LiveExam = ({ courses, subjects }) => {
+    console.log({ courses, subjects });
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [exams, setExams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(false);
-
     const [editExamSlug, setEditExamSlug] = useState(null);
     const [editExamData, setEditExamData] = useState(null);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editLoading, setEditLoading] = useState(false);
+    // Add filters state
+    const [filters, setFilters] = useState({
+        course: "",
+        subject: "",
+        search: "",
+    });
 
     const fetchExams = (url = null) => {
         setLoading(true);
-        const requestUrl = url ?? route("show.exam.list");
+        let requestUrl = url ?? route("show.exam.list");
+
+        // Add query parameters if filters are applied
+        if (!url && (filters.course || filters.subject || filters.search)) {
+            const params = new URLSearchParams();
+            if (filters.course) params.append("course", filters.course);
+            if (filters.subject) params.append("subject", filters.subject);
+            if (filters.search) params.append("search", filters.search);
+
+            requestUrl = `${requestUrl}?${params.toString()}`;
+        }
 
         axios
             .get(requestUrl)
@@ -36,9 +54,15 @@ const LiveExam = ({ courses, subjects }) => {
             .finally(() => setLoading(false));
     };
 
+    console.log("live exams:", exams);
+
     useEffect(() => {
         fetchExams();
-    }, [refresh]);
+    }, [refresh, filters]);
+
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+    };
 
     const handlePageChange = (url) => {
         if (!url) return;
@@ -102,6 +126,13 @@ const LiveExam = ({ courses, subjects }) => {
                     <i className="ti ti-plus me-1"></i>Add Exam
                 </button>
             </div>
+
+            {/*  ExamSearch component */}
+            <ExamSearch
+                courses={courses}
+                subjects={subjects}
+                onFilterChange={handleFilterChange}
+            />
 
             {loading ? (
                 <div className="d-flex justify-content-center align-items-center vh-25">
