@@ -247,6 +247,8 @@ class LiveExamController extends Controller
                 'status' => $exam->status,
                 'exam_type' => $exam->exam_type,
                 'result_publish_time' => $exam->result_publish_time,
+                'forAllStudent' => $exam->for_all_student,
+                'byLink' => $exam->by_link,
             ]
         ]);
     }
@@ -260,8 +262,6 @@ class LiveExamController extends Controller
         if (!$examId) {
             return back()->with('error', 'Exam not found.');
         }
-
-
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -298,11 +298,10 @@ class LiveExamController extends Controller
             ]);
         }
 
-
         DB::beginTransaction();
 
         try {
-            $examId = DB::table('live_exams')
+            DB::table('live_exams')
                 ->where('id', $examId)
                 ->update([
                 'exam_type'           => 0,
@@ -322,7 +321,8 @@ class LiveExamController extends Controller
                 'result_publish_time' => $request->result_publish_time ? $request->result_publish_time : $request->end_time,
                 'exam_url'            => $examUrl,
                 'created_by'          => Auth::id(),
-                'created_at'          => now(),
+                'for_all_student'  => $request->for_all_student ?? false,
+                'by_link'  => $request->by_link ?? false,
                 'updated_at'          => now(),
             ]);
 
