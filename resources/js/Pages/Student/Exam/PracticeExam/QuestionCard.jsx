@@ -6,7 +6,7 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
       ? JSON.parse(question.options || "[]")
       : question.options;
   } catch (error) {
-    console.error("Invalid options format", error);
+    // console.error("Invalid options format", error);
     options = [];
   }
 

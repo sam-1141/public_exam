@@ -22,7 +22,6 @@ const ExamSummary = ({ examData, attendanceData }) => {
       
       return { minutes, seconds };
     } catch (error) {
-      console.error("Error calculating spend time:", error);
       return { minutes: 0, seconds: 0 };
     }
   }

@@ -26,11 +26,9 @@ const QuestionList = ({
         setShowReorderModal(false);
         try {
             const orderedIds = reorderedQuestions.map((q) => q.id);
-            // console.log("Order saved successfully!", orderedIds);
             alert("Order saved successfully!");
         } catch (error) {
             alert("Failed to save order");
-            console.error("Error saving order:", error);
         }
     };
 
@@ -100,7 +98,6 @@ const QuestionList = ({
         try {
             return JSON.parse(optionsString);
         } catch (e) {
-            console.error("Error parsing options:", e);
             return [];
         }
     };

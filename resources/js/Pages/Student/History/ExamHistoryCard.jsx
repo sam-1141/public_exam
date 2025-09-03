@@ -24,7 +24,7 @@ const ExamHistoryCard = ({ exam, date }) => {
       
       return `${minutes} মিনিট ${seconds} সেকেন্ড`;
     } catch (error) {
-      console.error("Error calculating time spent:", error);
+      // console.error("Error calculating time spent:", error);
       return "N/A";
     }
   }

@@ -8,7 +8,6 @@ const AnswerSheet = ({ examType, exam, questions }) => {
         try {
             return JSON.parse(optionsString);
         } catch (e) {
-            console.error("Error parsing options:", e);
             return [];
         }
     };

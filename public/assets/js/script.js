@@ -384,7 +384,7 @@ for (var t = 0; t < tc.length; t++) {
         try {
           currentCheckbox.parentNode.querySelector('.pc-like').remove();
         } catch (error) {
-          console.error("Error removing like animation:", error);
+          // console.error("Error removing like animation:", error);
         }
       }, 3000);
 
@@ -395,7 +395,7 @@ for (var t = 0; t < tc.length; t++) {
       try {
         currentCheckbox.parentNode.querySelector('.pc-like').remove();
       } catch (error) {
-        console.error("Error removing like animation:", error);
+        // console.error("Error removing like animation:", error);
       }
     }
   });

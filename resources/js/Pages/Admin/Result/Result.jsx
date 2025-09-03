@@ -50,7 +50,6 @@ const ExamResult = ({ coursesInfo }) => {
             );
             setResults(response.data.examResults.data || []);
         } catch (error) {
-            console.error("Failed to load results", error);
             setResults([]);
         } finally {
             setLoading(false);
@@ -88,7 +87,6 @@ const ExamResult = ({ coursesInfo }) => {
             });
             setShowAnswerSheet(true);
         } catch (error) {
-            console.error("Failed to load answer sheet", error);
             setSelectedStudent(student);
             setShowAnswerSheet(true);
         } finally {
