@@ -5,10 +5,6 @@ import { route } from "ziggy-js";
 const ExamCard = ({ exam, examType = "live", setEditExamSlug }) => {
     const isPracticeExam = examType === "practice";
 
-    useEffect(() => {
-        console.log('exams', exam.byLink);
-    }, [exam]);
-
     const negativeMarksDisplay = exam.hasNegativeMarks
         ? exam.negativeMarksValue !== null &&
           exam.negativeMarksValue !== undefined
