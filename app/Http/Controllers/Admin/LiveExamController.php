@@ -159,60 +159,139 @@ class LiveExamController extends Controller
         }
     }
 
-    public function showAllExam()
+//    public function showAllExam()
+//    {
+//        $exams = LiveExam::where('exam_type', 0)
+//            ->orderByDesc('created_at')
+//            ->paginate(10)
+//            ->through(function ($exam) {
+//                $courseExam = DB::table('course_exam')
+//                    ->where('exam_id', $exam->id)
+//                    ->pluck('course_id')
+//                    ->toArray();
+//
+//                $courseInfo = DB::connection('Webapp')
+//                    ->table('courses')
+//                    ->whereIn('id', $courseExam)
+//                    ->get(['id','course_name']);
+//
+//                $examSubject = DB::table('exam_subject')
+//                    ->where('exam_id', $exam->id)
+//                    ->pluck('subject_id')
+//                    ->toArray();
+//
+//                $subjectInfo = DB::connection('CoreDB')
+//                    ->table('subjects')
+//                    ->whereIn('id', $examSubject)
+//                    ->get(['id', 'name']);
+//
+//                return [
+//                    'id' => $exam->id,
+//                    'name' => $exam->name,
+//                    'courseInfo' => $courseInfo,
+//                    'subjectInfo' => $subjectInfo,
+//                    'slug' => $exam->slug,
+//                    'description' => $exam->description,
+//                    'totalQuestions' => $exam->total_questions,
+//                    'hasNegativeMarks' => $exam->has_negative_marks,
+//                    'negativeMarksValue' => $exam->negative_marks_value,
+//                    'totalMarks' => $exam->total_marks,
+//                    'duration' => $exam->duration,
+//                    'questionType' => $exam->question_type,
+//                    'privacy' => $exam->privacy,
+//                    'publishInstant' => $exam->publish,
+//                    'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
+//                    'endTime'   => optional($exam->end_time)->format('Y-m-d H:i'),
+//                    'resultPublishTime'   => optional($exam->result_publish_time)->format('Y-m-d H:i'),
+//                    'examUrl' => $exam->exam_url,
+//                    'status'  => $exam->status,
+//                    'exam_type' => $exam->exam_type,
+//                    'forAllStudent' => $exam->for_all_student,
+//                    'byLink' => $exam->by_link,
+//                ];
+//            });
+//
+//        return response()->json(['exams' => $exams], 200);
+//    }
+
+    public function showAllExam(Request $request)
     {
-        $exams = LiveExam::where('exam_type', 0)
-            ->orderByDesc('created_at')
-            ->paginate(10)
-            ->through(function ($exam) {
-                $courseExam = DB::table('course_exam')
-                    ->where('exam_id', $exam->id)
-                    ->pluck('course_id')
-                    ->toArray();
+        $courseId = $request->input('course');
+        $subjectId = $request->input('subject');
+        $search = $request->input('search');
 
-                $courseInfo = DB::connection('Webapp')
-                    ->table('courses')
-                    ->whereIn('id', $courseExam)
-                    ->get(['id','course_name']);
+        $query = LiveExam::where('exam_type', 0);
 
-                $examSubject = DB::table('exam_subject')
-                    ->where('exam_id', $exam->id)
-                    ->pluck('subject_id')
-                    ->toArray();
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
 
-                $subjectInfo = DB::connection('CoreDB')
-                    ->table('subjects')
-                    ->whereIn('id', $examSubject)
-                    ->get(['id', 'name']);
-
-                return [
-                    'id' => $exam->id,
-                    'name' => $exam->name,
-                    'courseInfo' => $courseInfo,
-                    'subjectInfo' => $subjectInfo,
-                    'slug' => $exam->slug,
-                    'description' => $exam->description,
-                    'totalQuestions' => $exam->total_questions,
-                    'hasNegativeMarks' => $exam->has_negative_marks,
-                    'negativeMarksValue' => $exam->negative_marks_value,
-                    'totalMarks' => $exam->total_marks,
-                    'duration' => $exam->duration,
-                    'questionType' => $exam->question_type,
-                    'privacy' => $exam->privacy,
-                    'publishInstant' => $exam->publish,
-                    'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
-                    'endTime'   => optional($exam->end_time)->format('Y-m-d H:i'),
-                    'resultPublishTime'   => optional($exam->result_publish_time)->format('Y-m-d H:i'),
-                    'examUrl' => $exam->exam_url,
-                    'status'  => $exam->status,
-                    'exam_type' => $exam->exam_type,
-                    'forAllStudent' => $exam->for_all_student,
-                    'byLink' => $exam->by_link,
-                ];
+        if ($courseId) {
+            $query->whereIn('id', function($sub) use ($courseId) {
+                $sub->select('exam_id')
+                    ->from('course_exam')
+                    ->where('course_id', $courseId);
             });
+        }
+
+        if ($subjectId) {
+            $query->whereIn('id', function($sub) use ($subjectId) {
+                $sub->select('exam_id')
+                    ->from('exam_subject')
+                    ->where('subject_id', $subjectId);
+            });
+        }
+
+        $exams = $query->orderByDesc('created_at')->paginate(10)->through(function ($exam) {
+            $courseIds = DB::table('course_exam')
+                ->where('exam_id', $exam->id)
+                ->pluck('course_id')
+                ->toArray();
+
+            $courseInfo = DB::connection('Webapp')
+                ->table('courses')
+                ->whereIn('id', $courseIds)
+                ->get(['id','course_name']);
+
+            $subjectIds = DB::table('exam_subject')
+                ->where('exam_id', $exam->id)
+                ->pluck('subject_id')
+                ->toArray();
+
+            $subjectInfo = DB::connection('CoreDB')
+                ->table('subjects')
+                ->whereIn('id', $subjectIds)
+                ->get(['id', 'name']);
+
+            return [
+                'id'               => $exam->id,
+                'name'             => $exam->name,
+                'courseInfo'       => $courseInfo,
+                'subjectInfo'      => $subjectInfo,
+                'slug'             => $exam->slug,
+                'description'      => $exam->description,
+                'totalQuestions'   => $exam->total_questions,
+                'hasNegativeMarks' => $exam->has_negative_marks,
+                'negativeMarksValue' => $exam->negative_marks_value,
+                'totalMarks'       => $exam->total_marks,
+                'duration'         => $exam->duration,
+                'questionType'     => $exam->question_type,
+                'privacy'          => $exam->privacy,
+                'publishInstant'   => $exam->publish,
+                'startTime'        => optional($exam->start_time)->format('Y-m-d H:i'),
+                'endTime'          => optional($exam->end_time)->format('Y-m-d H:i'),
+                'resultPublishTime'=> optional($exam->result_publish_time)->format('Y-m-d H:i'),
+                'examUrl'          => $exam->exam_url,
+                'status'           => $exam->status,
+                'exam_type'        => $exam->exam_type,
+                'forAllStudent'    => $exam->for_all_student,
+                'byLink'           => $exam->by_link,
+            ];
+        });
 
         return response()->json(['exams' => $exams], 200);
     }
+
 
     public function getSingleExam($slug)
     {
