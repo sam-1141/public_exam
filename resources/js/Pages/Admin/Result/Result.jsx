@@ -6,6 +6,8 @@ import axios from "axios";
 
 const ExamResult = ({ coursesInfo }) => {
     const [selectedCourse, setSelectedCourse] = useState("");
+    const [selectedExam, setSelectedExam] = useState("");
+    const [searchStudentId, setSearchStudentId] = useState("");
     const [showAnswerSheet, setShowAnswerSheet] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -13,6 +15,11 @@ const ExamResult = ({ coursesInfo }) => {
     const [answerSheetLoading, setAnswerSheetLoading] = useState(false);
     const [results, setResults] = useState([]);
     const [courses, setCourses] = useState([]);
+    const [exams, setExams] = useState([
+        { slug: "exam-1", exam_name: "Midterm Exam" },
+        { slug: "exam-2", exam_name: "Final Exam" },
+        { slug: "exam-3", exam_name: "Quiz 1" },
+    ]);
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -30,6 +37,8 @@ const ExamResult = ({ coursesInfo }) => {
             fetchResults();
         } else {
             setResults([]);
+            setSelectedExam("");
+            setSearchStudentId("");
         }
     }, [selectedCourse]);
 
@@ -53,7 +62,18 @@ const ExamResult = ({ coursesInfo }) => {
         setCurrentPage(1);
     };
 
+    const handleExamChange = (e) => {
+        setSelectedExam(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchStudentId(e.target.value);
+        setCurrentPage(1);
+    };
+
     const handleViewAnswerSheet = async (student) => {
+        setAnswerSheetLoading(true);
         try {
             const response = await axios.get(
                 route("admin.student.answer.sheet", {
@@ -94,7 +114,7 @@ const ExamResult = ({ coursesInfo }) => {
                 <h3 className="h3 font-semibold mb-2">Exam Results</h3>
 
                 <div className="row mb-4">
-                    <div className="col-md-6">
+                    <div className="col-md-4">
                         <select
                             id="courseSelect"
                             className="form-select"
@@ -109,6 +129,43 @@ const ExamResult = ({ coursesInfo }) => {
                             ))}
                         </select>
                     </div>
+
+                    {selectedCourse && (
+                        <>
+                            {/* Exam filter */}
+                            <div className="col-md-4">
+                                <select
+                                    id="examSelect"
+                                    className="form-select"
+                                    value={selectedExam}
+                                    onChange={handleExamChange}
+                                >
+                                    <option value="">All Exams</option>
+                                    {exams.map((exam) => (
+                                        <option
+                                            key={exam.slug}
+                                            value={exam.slug}
+                                        >
+                                            {exam.exam_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Search by student id */}
+                            <div className="col-md-4">
+                                <div className="input-group">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Search by Student ID"
+                                        value={searchStudentId}
+                                        onChange={handleSearchChange}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
 
                 {!selectedCourse ? (
@@ -158,7 +215,6 @@ const ExamResult = ({ coursesInfo }) => {
                                                     <th scope="col">
                                                         Student ID
                                                     </th>
-
                                                     <th scope="col">
                                                         Exam Name
                                                     </th>
@@ -183,7 +239,6 @@ const ExamResult = ({ coursesInfo }) => {
                                                                         student.studentId
                                                                     }
                                                                 </td>
-
                                                                 <td>
                                                                     {
                                                                         student.liveExamName
@@ -221,17 +276,8 @@ const ExamResult = ({ coursesInfo }) => {
                                                                             answerSheetLoading
                                                                         }
                                                                     >
-                                                                        {answerSheetLoading ? (
-                                                                            <>
-                                                                                <span
-                                                                                    className="spinner-border spinner-border-sm me-1"
-                                                                                    role="status"
-                                                                                ></span>
-                                                                                Loading...
-                                                                            </>
-                                                                        ) : (
-                                                                            "View Answers"
-                                                                        )}
+                                                                        View
+                                                                        Answers
                                                                     </button>
                                                                 </td>
                                                             </tr>
@@ -256,7 +302,7 @@ const ExamResult = ({ coursesInfo }) => {
                         </div>
 
                         {/* Pagination Component */}
-                        {itemsPerPage && (
+                        {results.length > itemsPerPage && (
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}

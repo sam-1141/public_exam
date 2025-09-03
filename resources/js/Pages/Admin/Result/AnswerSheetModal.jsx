@@ -5,16 +5,27 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
 
     const answerSheet = student.answerSheet;
 
+    const handleResetClick = () => {
+        if (
+            window.confirm(
+                "Are you sure you want to reset this student's answers? This action cannot be undone."
+            )
+        ) {
+            alert("Reset functionality would be implemented here");
+        }
+    };
+
     return (
         <div
             className="modal fade show d-block bg-dark bg-opacity-50 "
             tabIndex="-1"
+            style={{ overflowY: "auto" }}
         >
-            <div className="modal-dialog modal-lg modal-dialog-scrollable">
+            <div className="modal-dialog modal-xl modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">
-                            Student ID: {student.studentId} - {courseName}
+                            Answer Sheet - {courseName}
                         </h5>
                         <button
                             type="button"
@@ -38,6 +49,65 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
                             </div>
                         ) : answerSheet ? (
                             <>
+                                {/* Student Details Section */}
+                                <div className="row mb-4">
+                                    <div className="col-md-12">
+                                        <div className="card">
+                                            <div className="card-header bg-light">
+                                                <h6 className="mb-0">
+                                                    Student Details
+                                                </h6>
+                                            </div>
+                                            <div className="card-body">
+                                                <div className="row">
+                                                    <div className="col-md-6">
+                                                        <p className="mb-1">
+                                                            <strong>
+                                                                Student ID:
+                                                            </strong>{" "}
+                                                            {student.studentId}
+                                                        </p>
+                                                        <p className="mb-1">
+                                                            <strong>
+                                                                Exam:
+                                                            </strong>{" "}
+                                                            {
+                                                                student.liveExamName
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <p className="mb-1">
+                                                            <strong>
+                                                                Score:
+                                                            </strong>{" "}
+                                                            {
+                                                                student.studentTotalMarks
+                                                            }
+                                                            /
+                                                            {
+                                                                student.examTotalMarks
+                                                            }
+                                                        </p>
+                                                        <p className="mb-0">
+                                                            <strong>
+                                                                Submitted:
+                                                            </strong>{" "}
+                                                            {student.examSubmitTime
+                                                                ? new Date(
+                                                                      student.examSubmitTime
+                                                                  ).toLocaleString()
+                                                                : new Date(
+                                                                      student.studentExamAttendTime
+                                                                  ).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {/* Summary Section */}
                                 <div className="row mb-4">
                                     <div className="col-md-3">
@@ -156,6 +226,14 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
                         >
                             Close
                         </button>
+
+                        <button
+                            className="btn btn-outline-danger "
+                            onClick={handleResetClick}
+                            disabled={loading}
+                        >
+                            Reset Answers
+                        </button>
                     </div>
                 </div>
             </div>
@@ -169,13 +247,22 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
     const correctOptionIndex = options.findIndex((opt) => opt.ans === true);
     const correctOptionKey = correctOptionIndex.toString();
 
+    // Handle skipped answers (null or empty)
+    const isSkipped =
+        !studentAnswer ||
+        studentAnswer.ans_given === null ||
+        studentAnswer.ans_given === "";
     const isCorrect =
-        studentAnswer && studentAnswer.ans_given === correctOptionKey;
+        !isSkipped && studentAnswer.ans_given === correctOptionKey;
 
     return (
         <div
             className={`card mb-3 ${
-                isCorrect ? "border-success" : "border-danger"
+                isCorrect
+                    ? "border-success"
+                    : isSkipped
+                    ? "border-warning"
+                    : "border-danger"
             }`}
         >
             <div className="card-header d-flex justify-content-between align-items-center">
@@ -188,14 +275,22 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                 </h6>
                 <span
                     className={`badge ${
-                        isCorrect ? "bg-success" : "bg-danger"
+                        isCorrect
+                            ? "bg-success"
+                            : isSkipped
+                            ? "bg-warning"
+                            : "bg-danger"
                     }`}
                 >
-                    {isCorrect ? "Correct" : "Incorrect"}
+                    {isCorrect
+                        ? "Correct"
+                        : isSkipped
+                        ? "Skipped"
+                        : "Incorrect"}
                 </span>
             </div>
             <div className="card-body">
-                <div className="row g-3 ">
+                <div className="row g-3">
                     {options.map((option, idx) => {
                         const optionKey = idx.toString();
                         return (
@@ -205,7 +300,7 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                                 optionKey={optionKey}
                                 isCorrect={option.ans}
                                 isStudentAnswer={
-                                    studentAnswer &&
+                                    !isSkipped &&
                                     studentAnswer.ans_given === optionKey
                                 }
                             />
@@ -213,7 +308,7 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                     })}
                 </div>
 
-                {!isCorrect && studentAnswer && (
+                {!isCorrect && !isSkipped && studentAnswer && (
                     <div className="mt-2 p-2 bg-light rounded">
                         <p className="mb-1">
                             <strong>Student's Answer:</strong>{" "}
@@ -245,6 +340,16 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                         </p>
                     </div>
                 )}
+
+                {isSkipped && (
+                    <div className="mt-2 p-2 bg-light rounded">
+                        <p className="mb-0 text-warning">
+                            <strong>
+                                This question was skipped by the student.
+                            </strong>
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -255,24 +360,27 @@ const OptionItem = ({ option, optionKey, isCorrect, isStudentAnswer }) => {
     if (!option) return null;
 
     let optionClass =
-        "col-md-6 p-2 rounded d-flex align-items-center justify-content-between ";
+        "col-md-6 p-2 rounded d-flex align-items-center justify-content-between";
     if (isCorrect) {
-        optionClass += "bg-light border border-success ";
+        optionClass += " bg-success bg-opacity-10 border border-success";
     } else if (isStudentAnswer) {
-        optionClass += "bg-light border border-danger ";
+        optionClass += " bg-danger bg-opacity-10 border border-danger";
     } else {
-        optionClass += "bg-light ";
+        optionClass += " bg-light";
     }
 
     return (
         <div className={optionClass}>
-            <div className="d-flex align-items-center ">
+            <div className="d-flex align-items-center flex-grow-1">
                 <span className="fw-bold me-2">
                     {String.fromCharCode(65 + parseInt(optionKey))}.
                 </span>
-                <span dangerouslySetInnerHTML={{ __html: option }} />
+                <span
+                    className="flex-grow-1"
+                    dangerouslySetInnerHTML={{ __html: option }}
+                />
             </div>
-            <div>
+            <div className="ms-2">
                 {isCorrect && (
                     <span className="badge bg-success ms-2">Correct</span>
                 )}
