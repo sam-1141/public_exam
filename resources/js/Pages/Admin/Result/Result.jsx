@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout";
 import Pagination from "../../../components/Pagination/Pagination";
 import AnswerSheetModal from "./AnswerSheetModal";
 import axios from "axios";
+import {route} from "ziggy-js";
 
 const ExamResult = ({ coursesInfo }) => {
     const [selectedCourse, setSelectedCourse] = useState("");
@@ -317,10 +318,11 @@ const ExamResult = ({ coursesInfo }) => {
                     show={showAnswerSheet}
                     onClose={handleCloseAnswerSheet}
                     student={selectedStudent}
-                    courseName={
-                        courses.find((c) => c.id === selectedCourse)?.name
+                    course={
+                        courses.find((c) => c.id === selectedCourse)
                     }
                     loading={answerSheetLoading}
+                    fetchResults={fetchResults}
                 />
             </div>
         </>

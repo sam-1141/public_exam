@@ -43,6 +43,7 @@ class ResultController extends Controller
                 'student_exam_attendance.student_exam_end_time as studentExamEndTime',
                 'student_exam_attendance.submit_time as examSubmitTime',
 
+                'live_exams.id as examId',
                 'live_exams.name as liveExamName',
                 'live_exams.slug as liveExamSlug',
                 'live_exams.duration as liveExamDuration',
@@ -102,5 +103,39 @@ class ResultController extends Controller
         return response()->json([
             'info' => $info,
         ], 200);
+    }
+
+    public function answerSheetReset($studentId, $examId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $attendanceDeleted = DB::table('student_exam_attendance')
+                ->where('student_id', $studentId)
+                ->where('exam_id', $examId)
+                ->delete();
+
+            $answersDeleted = DB::table('sea_answer')
+                ->where('student_id', $studentId)
+                ->where('exam_id', $examId)
+                ->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Answer sheet reset successfully.',
+                'attendanceDeleted' => $attendanceDeleted,
+                'answersDeleted' => $answersDeleted
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Could not reset answer sheet.'
+            ], 500);
+        }
     }
 }
