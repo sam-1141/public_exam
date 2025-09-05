@@ -1,19 +1,39 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {toast} from "react-toastify";
+import {route} from "ziggy-js";
 
-const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
+const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResults }) => {
     if (!show || !student) return null;
 
     const answerSheet = student.answerSheet;
 
-    const handleResetClick = () => {
+    const handleResetClick = async () => {
         if (
             window.confirm(
                 "Are you sure you want to reset this student's answers? This action cannot be undone."
             )
         ) {
-            alert("Reset functionality would be implemented here");
+            try {
+                const response = await axios.delete(
+                    route('answer.sheet.reset', {
+                        studentId: student?.studentId,
+                        examId: student?.examId,
+                    })
+                );
+
+                if (response.data?.success) {
+                    onClose();
+                    fetchResults();
+                    alert("Answer sheet has been reset successfully.");
+                } else {
+                    alert("Reset failed. Server did not confirm success.");
+                }
+            } catch (error) {
+                alert("Failed to reset answer sheet. Please try again.");
+            }
         }
     };
+
 
     return (
         <div
@@ -25,7 +45,7 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">
-                            Answer Sheet - {courseName}
+                            Answer Sheet - {course?.name}
                         </h5>
                         <button
                             type="button"
@@ -82,7 +102,7 @@ const AnswerSheetModal = ({ show, onClose, student, courseName, loading }) => {
                                                                 Score:
                                                             </strong>{" "}
                                                             {
-                                                                student.studentTotalMarks
+                                                                student.studentTotalMarks ?? 0
                                                             }
                                                             /
                                                             {
