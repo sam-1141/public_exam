@@ -14,12 +14,53 @@ class ResultController extends Controller
             ->table('courses')
             ->get(['id','course_name', 'slug']);
 
+        $exams = DB::table('live_exams')->get();
+
         return Inertia::render('Admin/Result/Result', [
             'coursesInfo' => $allCourseInfo,
+            'exams' => $exams,
         ]);
     }
 
-    public function loadExamResultsListByCourse($courseSlug) {
+//    public function loadExamResultsListByCourse($courseSlug) {
+//        $course = DB::connection('Webapp')
+//            ->table('courses')
+//            ->where('slug', $courseSlug)
+//            ->first(['id']);
+//
+//        if (!$course) {
+//            return response()->json(['error' => 'Course not found'], 404);
+//        }
+//
+//        $examResults = DB::table('student_exam_attendance')
+//            ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
+//            ->join('course_exam', 'course_exam.exam_id', '=', 'live_exams.id')
+//            ->where('course_exam.course_id', $course->id)
+//            ->select(
+//                'student_exam_attendance.student_id as studentId',
+//                'student_exam_attendance.exam_type as studentExamType',
+//                'student_exam_attendance.exam_total_questions as examTotalQuestions',
+//                'student_exam_attendance.exam_total_mark as examTotalMarks',
+//                'student_exam_attendance.student_total_mark as studentTotalMarks',
+//                'student_exam_attendance.student_exam_start_time as studentExamAttendTime',
+//                'student_exam_attendance.student_exam_end_time as studentExamEndTime',
+//                'student_exam_attendance.submit_time as examSubmitTime',
+//
+//                'live_exams.id as examId',
+//                'live_exams.name as liveExamName',
+//                'live_exams.slug as liveExamSlug',
+//                'live_exams.duration as liveExamDuration',
+//            )
+//            ->paginate(10);
+//
+//        return response()->json([
+//            'course' => $course,
+//            'examResults' => $examResults,
+//        ], 200);
+//    }
+
+    public function loadExamResultsListByCourse($courseSlug)
+    {
         $course = DB::connection('Webapp')
             ->table('courses')
             ->where('slug', $courseSlug)
@@ -29,32 +70,44 @@ class ResultController extends Controller
             return response()->json(['error' => 'Course not found'], 404);
         }
 
-        $examResults = DB::table('student_exam_attendance')
+        $examId = request()->query('exam_id');
+        $studentId = request()->query('student_id');
+
+        $query = DB::table('student_exam_attendance')
             ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
             ->join('course_exam', 'course_exam.exam_id', '=', 'live_exams.id')
-            ->where('course_exam.course_id', $course->id)
-            ->select(
-                'student_exam_attendance.student_id as studentId',
-                'student_exam_attendance.exam_type as studentExamType',
-                'student_exam_attendance.exam_total_questions as examTotalQuestions',
-                'student_exam_attendance.exam_total_mark as examTotalMarks',
-                'student_exam_attendance.student_total_mark as studentTotalMarks',
-                'student_exam_attendance.student_exam_start_time as studentExamAttendTime',
-                'student_exam_attendance.student_exam_end_time as studentExamEndTime',
-                'student_exam_attendance.submit_time as examSubmitTime',
+            ->where('course_exam.course_id', $course->id);
 
-                'live_exams.id as examId',
-                'live_exams.name as liveExamName',
-                'live_exams.slug as liveExamSlug',
-                'live_exams.duration as liveExamDuration',
-            )
-            ->paginate(10);
+        if (!empty($examId)) {
+            $query->where('student_exam_attendance.exam_id', $examId);
+        }
+
+        if (!empty($studentId)) {
+            $query->where('student_exam_attendance.student_id', 'like', '%' . $studentId . '%');
+        }
+
+        $examResults = $query->select(
+            'student_exam_attendance.student_id as studentId',
+            'student_exam_attendance.exam_type as studentExamType',
+            'student_exam_attendance.exam_total_questions as examTotalQuestions',
+            'student_exam_attendance.exam_total_mark as examTotalMarks',
+            'student_exam_attendance.student_total_mark as studentTotalMarks',
+            'student_exam_attendance.student_exam_start_time as studentExamAttendTime',
+            'student_exam_attendance.student_exam_end_time as studentExamEndTime',
+            'student_exam_attendance.submit_time as examSubmitTime',
+
+            'live_exams.id as examId',
+            'live_exams.name as liveExamName',
+            'live_exams.slug as liveExamSlug',
+            'live_exams.duration as liveExamDuration',
+        )->paginate(100);
 
         return response()->json([
             'course' => $course,
             'examResults' => $examResults,
-        ], 200);
+        ]);
     }
+
 
     public function loadStudentAnswerSheetPage($studentId, $examSlug)
     {
