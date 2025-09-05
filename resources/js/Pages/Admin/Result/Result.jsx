@@ -5,7 +5,7 @@ import AnswerSheetModal from "./AnswerSheetModal";
 import axios from "axios";
 import {route} from "ziggy-js";
 
-const ExamResult = ({ coursesInfo }) => {
+const ExamResult = ({ coursesInfo, exams }) => {
     const [selectedCourse, setSelectedCourse] = useState("");
     const [selectedExam, setSelectedExam] = useState("");
     const [searchStudentId, setSearchStudentId] = useState("");
@@ -16,11 +16,6 @@ const ExamResult = ({ coursesInfo }) => {
     const [answerSheetLoading, setAnswerSheetLoading] = useState(false);
     const [results, setResults] = useState([]);
     const [courses, setCourses] = useState([]);
-    const [exams, setExams] = useState([
-        { slug: "exam-1", exam_name: "Midterm Exam" },
-        { slug: "exam-2", exam_name: "Final Exam" },
-        { slug: "exam-3", exam_name: "Quiz 1" },
-    ]);
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -41,21 +36,43 @@ const ExamResult = ({ coursesInfo }) => {
             setSelectedExam("");
             setSearchStudentId("");
         }
-    }, [selectedCourse]);
+    }, [selectedCourse, searchStudentId, selectedExam]);
+
+    // const fetchResults = async () => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await axios.get(
+    //             route("admin.exam.results.list", { courseSlug: selectedCourse })
+    //         );
+    //         setResults(response.data.examResults.data || []);
+    //     } catch (error) {
+    //         setResults([]);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const fetchResults = async () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                route("admin.exam.results.list", { courseSlug: selectedCourse })
+                route("admin.exam.results.list", { courseSlug: selectedCourse }),
+                {
+                    params: {
+                        exam_id: selectedExam || undefined,
+                        student_id: searchStudentId || undefined,
+                    },
+                }
             );
             setResults(response.data.examResults.data || []);
         } catch (error) {
+            console.error("Failed to fetch exam results", error);
             setResults([]);
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleCourseChange = (e) => {
         setSelectedCourse(e.target.value);
@@ -143,9 +160,9 @@ const ExamResult = ({ coursesInfo }) => {
                                     {exams.map((exam) => (
                                         <option
                                             key={exam.slug}
-                                            value={exam.slug}
+                                            value={exam.id}
                                         >
-                                            {exam.exam_name}
+                                            {exam.name}
                                         </option>
                                     ))}
                                 </select>
