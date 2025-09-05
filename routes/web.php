@@ -20,6 +20,10 @@ use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TopicController;
 
+Route::get('/forbidden', function () {
+    abort(403);
+})->name('error.forbidden');
+
 Route::controller(LiveExamController::class)->group(function () {
     Route::get('/exam/{type}/{examSlug}/answer-sheet', 'loadAdminAnswerSheet')->name('admin.answer.sheet');
 });
