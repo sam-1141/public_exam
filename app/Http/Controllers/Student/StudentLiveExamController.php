@@ -59,8 +59,6 @@ class StudentLiveExamController extends Controller
             return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Exam not found.']);
         }
 
-//        dd($exam);
-
         if($exam->by_link == 0 && $exam->for_all_student == 0){
             $courseIds = DB::table('course_exam')
                 ->where('exam_id', $exam->id)
@@ -80,8 +78,6 @@ class StudentLiveExamController extends Controller
             }
         }
 
-
-
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
             ->where('exam_question.exam_id', $exam->id)
@@ -91,10 +87,20 @@ class StudentLiveExamController extends Controller
         $exists = DB::table('student_exam_attendance')
             ->where('student_id', $studentId)
             ->where('exam_id', $exam->id)
-            ->exists();
+            ->first();
 
-        if($exists) {
-            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Already give this exam.']);
+
+        if ($exists) {
+            if ($exists->student_exam_end_time < now() || $exists->submit_status !== null) {
+                return redirect()
+                    ->route('student.live.exam.list')
+                    ->withErrors(['errors' => 'You have already taken this exam.']);
+            }
+
+            return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
+                'exam' => $exam,
+                'questions' => $questions,
+            ]);
         }
 
         $inserted = DB::table('student_exam_attendance')->insert([
