@@ -38,20 +38,6 @@ const ExamResult = ({ coursesInfo, exams }) => {
         }
     }, [selectedCourse, searchStudentId, selectedExam]);
 
-    // const fetchResults = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get(
-    //             route("admin.exam.results.list", { courseSlug: selectedCourse })
-    //         );
-    //         setResults(response.data.examResults.data || []);
-    //     } catch (error) {
-    //         setResults([]);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const fetchResults = async () => {
         setLoading(true);
         try {
@@ -117,7 +103,6 @@ const ExamResult = ({ coursesInfo, exams }) => {
         setSelectedStudent(null);
     };
 
-    // Pagination logic
     const totalPages = Math.ceil(results.length / itemsPerPage);
     const currentItems = results.slice(
         (currentPage - 1) * itemsPerPage,
