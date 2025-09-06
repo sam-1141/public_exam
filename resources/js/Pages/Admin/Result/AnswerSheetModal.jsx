@@ -1,8 +1,15 @@
-import React, {useEffect} from "react";
-import {toast} from "react-toastify";
-import {route} from "ziggy-js";
+import React, { useEffect } from "react";
+import { toast } from "react-toastify";
+import { route } from "ziggy-js";
 
-const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResults }) => {
+const AnswerSheetModal = ({
+    show,
+    onClose,
+    student,
+    course,
+    loading,
+    fetchResults,
+}) => {
     if (!show || !student) return null;
 
     const answerSheet = student.answerSheet;
@@ -15,7 +22,7 @@ const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResult
         ) {
             try {
                 const response = await axios.delete(
-                    route('answer.sheet.reset', {
+                    route("answer.sheet.reset", {
                         studentId: student?.studentId,
                         examId: student?.examId,
                     })
@@ -33,7 +40,6 @@ const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResult
             }
         }
     };
-
 
     return (
         <div
@@ -101,9 +107,8 @@ const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResult
                                                             <strong>
                                                                 Score:
                                                             </strong>{" "}
-                                                            {
-                                                                student.studentTotalMarks ?? 0
-                                                            }
+                                                            {student.studentTotalMarks ??
+                                                                0}
                                                             /
                                                             {
                                                                 student.examTotalMarks
@@ -118,7 +123,7 @@ const AnswerSheetModal = ({ show, onClose, student, course, loading, fetchResult
                                                                       student.examSubmitTime
                                                                   ).toLocaleString()
                                                                 : new Date(
-                                                                      student.studentExamAttendTime
+                                                                      student.studentExamEndTime
                                                                   ).toLocaleString()}
                                                         </p>
                                                     </div>
