@@ -3,7 +3,7 @@ import Layout from "../../../layouts/Layout";
 import Pagination from "../../../components/Pagination/Pagination";
 import AnswerSheetModal from "./AnswerSheetModal";
 import axios from "axios";
-import {route} from "ziggy-js";
+import { route } from "ziggy-js";
 
 const ExamResult = ({ coursesInfo, exams }) => {
     const [selectedCourse, setSelectedCourse] = useState("");
@@ -29,20 +29,29 @@ const ExamResult = ({ coursesInfo, exams }) => {
     }, [coursesInfo]);
 
     useEffect(() => {
-        if (selectedCourse) {
-            fetchResults();
-        } else {
-            setResults([]);
-            setSelectedExam("");
-            setSearchStudentId("");
-        }
+        // if (selectedCourse) {
+        //     fetchResults();
+        // } else {
+        //     setResults([]);
+        //     setSelectedExam("");
+        //     setSearchStudentId("");
+        // }
+
+        fetchResults();
     }, [selectedCourse, searchStudentId, selectedExam]);
 
     const fetchResults = async () => {
+        if (!selectedCourse) {
+            setResults([]);
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await axios.get(
-                route("admin.exam.results.list", { courseSlug: selectedCourse }),
+                route("admin.exam.results.list", {
+                    courseSlug: selectedCourse,
+                }),
                 {
                     params: {
                         exam_id: selectedExam || undefined,
@@ -58,7 +67,6 @@ const ExamResult = ({ coursesInfo, exams }) => {
             setLoading(false);
         }
     };
-
 
     const handleCourseChange = (e) => {
         setSelectedCourse(e.target.value);
@@ -103,6 +111,15 @@ const ExamResult = ({ coursesInfo, exams }) => {
         setSelectedStudent(null);
     };
 
+    const handleReset = () => {
+        setSelectedCourse("");
+        setSelectedExam("");
+        setSearchStudentId("");
+        setCurrentPage(1);
+        setResults([]);
+    };
+
+    // Pagination logic
     const totalPages = Math.ceil(results.length / itemsPerPage);
     const currentItems = results.slice(
         (currentPage - 1) * itemsPerPage,
@@ -123,6 +140,7 @@ const ExamResult = ({ coursesInfo, exams }) => {
                             onChange={handleCourseChange}
                         >
                             <option value="">Select a course</option>
+                            {/* <option value="all">All Courses</option> */}
                             {courses.map((course) => (
                                 <option key={course.id} value={course.id}>
                                     {course.name}
@@ -130,23 +148,28 @@ const ExamResult = ({ coursesInfo, exams }) => {
                             ))}
                         </select>
                     </div>
+                </div>
 
-                    {selectedCourse && (
-                        <>
+                {/* Exam filter */}
+                <div className="card mb-4">
+                    <div className="card-body">
+                        <div className="row g-3">
                             {/* Exam filter */}
-                            <div className="col-md-4">
+                            <div className="col-md-6">
                                 <select
                                     id="examSelect"
                                     className="form-select"
                                     value={selectedExam}
                                     onChange={handleExamChange}
+                                    disabled={!selectedCourse}
                                 >
-                                    <option value="">All Exams</option>
+                                    <option value="">
+                                        {selectedCourse
+                                            ? "All Exams"
+                                            : "Select a course first to filter exams"}{" "}
+                                    </option>
                                     {exams.map((exam) => (
-                                        <option
-                                            key={exam.slug}
-                                            value={exam.id}
-                                        >
+                                        <option key={exam.slug} value={exam.id}>
                                             {exam.name}
                                         </option>
                                     ))}
@@ -165,8 +188,18 @@ const ExamResult = ({ coursesInfo, exams }) => {
                                     />
                                 </div>
                             </div>
-                        </>
-                    )}
+
+                            {/* Add Reset Button */}
+                            <div className="col-md-2">
+                                <button
+                                    className="btn btn-outline-secondary w-100"
+                                    onClick={handleReset}
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {!selectedCourse ? (
@@ -262,7 +295,7 @@ const ExamResult = ({ coursesInfo, exams }) => {
                                                                               student.examSubmitTime
                                                                           ).toLocaleString()
                                                                         : new Date(
-                                                                              student.studentExamAttendTime
+                                                                              student.studentExamEndTime
                                                                           ).toLocaleString()}
                                                                 </td>
                                                                 <td>
@@ -320,9 +353,7 @@ const ExamResult = ({ coursesInfo, exams }) => {
                     show={showAnswerSheet}
                     onClose={handleCloseAnswerSheet}
                     student={selectedStudent}
-                    course={
-                        courses.find((c) => c.id === selectedCourse)
-                    }
+                    course={courses.find((c) => c.id === selectedCourse)}
                     loading={answerSheetLoading}
                     fetchResults={fetchResults}
                 />
