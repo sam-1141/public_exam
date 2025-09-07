@@ -290,16 +290,20 @@ const QuestionItem = ({ question, index, studentAnswer }) => {
                     : "border-danger"
             }`}
         >
-            <div className="card-header d-flex justify-content-between align-items-center">
-                <h6 className="mb-0 d-flex align-items-center">
-                    <span className="me-2">Q{index + 1}:</span>
-                    <span
-                        className="text-truncate"
+            <div className="card-header d-flex justify-content-between align-items-start">
+                <h6 className="d-flex align-items-start flex-grow-1 me-3">
+                    <span className="me-2 flex-shrink-0">Q{index + 1}:</span>
+                    <div
+                        className="flex-grow-1"
+                        style={{
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                        }}
                         dangerouslySetInnerHTML={{ __html: question.question }}
                     />
                 </h6>
                 <span
-                    className={`badge ${
+                    className={`badge flex-shrink-0 ${
                         isCorrect
                             ? "bg-success"
                             : isSkipped
