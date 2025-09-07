@@ -132,7 +132,7 @@ const ExamResult = ({ coursesInfo, exams }) => {
                 <h3 className="h3 font-semibold mb-2">Exam Results</h3>
 
                 <div className="row mb-4">
-                    <div className="col-md-4">
+                    <div className="col-md-6">
                         <select
                             id="courseSelect"
                             className="form-select"
