@@ -10,7 +10,6 @@ const HistoryPage = ({ courses, examsInfo }) => {
     const itemsPerPage = 10;
 
     useEffect(() => {
-        // Set initial selected course to the first available course from exams
         if (examsInfo.length > 0 && courses.length > 0) {
             const firstCourseId = getAvailableCourses()[0]?.id;
             if (firstCourseId) {
@@ -19,14 +18,12 @@ const HistoryPage = ({ courses, examsInfo }) => {
         }
     }, [examsInfo, courses]);
 
-    // Get available courses that have exams
     const getAvailableCourses = () => {
         const courseIdsWithExams = new Set();
 
         examsInfo.forEach((exam) => {
-            if (exam.relatedCourseIds && exam.relatedCourseIds !== null) {
-                // if null, skip
-                exam.relatedCourseIds?.split(",").forEach((courseId) => {
+            if (typeof exam.relatedCourseIds === "string" && exam.relatedCourseIds.trim() !== "") {
+                exam.relatedCourseIds.split(",").forEach((courseId) => {
                     courseIdsWithExams.add(courseId.trim());
                 });
             }
@@ -37,7 +34,6 @@ const HistoryPage = ({ courses, examsInfo }) => {
         );
     };
 
-    // Transform examsInfo to match the expected format
     const transformExamData = useMemo(() => {
         const availableCourses = getAvailableCourses();
         const result = {};
@@ -46,22 +42,29 @@ const HistoryPage = ({ courses, examsInfo }) => {
             const courseId = course.id.toString();
             result[courseId] = { live: [] };
 
-            // Group exams by date for this course
             const examsByDate = {};
 
             examsInfo.forEach((exam) => {
                 if (
-                    exam.relatedCourseIds &&
-                    exam.relatedCourseIds !== null && // if null, skip
+                    typeof exam.relatedCourseIds === "string" &&
                     exam.relatedCourseIds.includes(courseId)
                 ) {
-                    const examDate = exam.examSubmitTime.split(" ")[0]; // Get date part
-
-                    if (!examsByDate[examDate]) {
-                        examsByDate[examDate] = [];
+                    if (
+                        typeof exam.examSubmitTime !== "string" ||
+                        !exam.examSubmitTime.includes(" ")
+                    ) {
+                        return;
                     }
 
-                    examsByDate[examDate].push({
+                    const [datePart, timePart] = exam.examSubmitTime.split(" ");
+
+                    if (!datePart || !timePart) return;
+
+                    if (!examsByDate[datePart]) {
+                        examsByDate[datePart] = [];
+                    }
+
+                    examsByDate[datePart].push({
                         id: exam.id || Math.random(),
                         name: exam.liveExamName,
                         duration: exam.liveExamDuration,
@@ -69,13 +72,12 @@ const HistoryPage = ({ courses, examsInfo }) => {
                         submitTime: exam.examSubmitTime,
                         score: exam.studentTotalMarks,
                         totalMarks: exam.examTotalMarks,
-                        time: exam.examSubmitTime.split(" ")[1],
+                        time: timePart,
                         liveExamSlug: exam.liveExamSlug,
                     });
                 }
             });
 
-            // Convert to the expected format
             Object.keys(examsByDate).forEach((date) => {
                 result[courseId].live.push({
                     date: date,
@@ -89,7 +91,6 @@ const HistoryPage = ({ courses, examsInfo }) => {
 
     const currentExamData = transformExamData[selectedCourse]?.live || [];
 
-    // Group & sort exams (newest date first, then time descending)
     const groupedExams = useMemo(() => {
         const grouped = currentExamData.reduce((acc, dateGroup) => {
             acc[dateGroup.date] = dateGroup.exams.sort(
@@ -101,7 +102,7 @@ const HistoryPage = ({ courses, examsInfo }) => {
         }, {});
 
         return Object.keys(grouped)
-            .sort((a, b) => new Date(b) - new Date(a)) // sort newest date first
+            .sort((a, b) => new Date(b) - new Date(a))
             .map((date) => ({ date, exams: grouped[date] }));
     }, [currentExamData]);
 
@@ -118,22 +119,12 @@ const HistoryPage = ({ courses, examsInfo }) => {
     };
 
     const selectedCourseName =
-        courses.find((c) => c.id.toString() === selectedCourse)?.course_name ||
-        "";
+        courses.find((c) => c.id.toString() === selectedCourse)?.course_name || "";
 
-    // Bangla date formatter
     const getBanglaDate = (dateStr) => {
         const englishToBangla = {
-            0: "০",
-            1: "১",
-            2: "২",
-            3: "৩",
-            4: "৪",
-            5: "৫",
-            6: "৬",
-            7: "৭",
-            8: "৮",
-            9: "৯",
+            0: "০", 1: "১", 2: "২", 3: "৩", 4: "৪",
+            5: "৫", 6: "৬", 7: "৭", 8: "৮", 9: "৯",
         };
         const monthNames = {
             January: "জানুয়ারি",
@@ -151,16 +142,9 @@ const HistoryPage = ({ courses, examsInfo }) => {
         };
 
         const d = new Date(dateStr);
-        const day = d
-            .getDate()
-            .toString()
-            .replace(/\d/g, (num) => englishToBangla[num]);
-        const month =
-            monthNames[d.toLocaleDateString("en-US", { month: "long" })];
-        const year = d
-            .getFullYear()
-            .toString()
-            .replace(/\d/g, (num) => englishToBangla[num]);
+        const day = d.getDate().toString().replace(/\d/g, (num) => englishToBangla[num]);
+        const month = monthNames[d.toLocaleDateString("en-US", { month: "long" })];
+        const year = d.getFullYear().toString().replace(/\d/g, (num) => englishToBangla[num]);
 
         return `${day} ${month}, ${year}`;
     };
@@ -170,10 +154,8 @@ const HistoryPage = ({ courses, examsInfo }) => {
     return (
         <div className="d-flex flex-column font-baloo">
             <PageHeader title="ইতিহাস" />
-
             <main className="flex-grow-1 mt-2 bg-light">
                 <div className="col-12">
-                    {/* Course Selector */}
                     {availableCourses.length > 0 && (
                         <div className="card border-0 shadow-sm mb-4">
                             <div className="card-body p-3">
@@ -183,9 +165,7 @@ const HistoryPage = ({ courses, examsInfo }) => {
                                 <select
                                     className="form-select"
                                     value={selectedCourse}
-                                    onChange={(e) =>
-                                        handleCourseChange(e.target.value)
-                                    }
+                                    onChange={(e) => handleCourseChange(e.target.value)}
                                 >
                                     {availableCourses.map((course) => (
                                         <option
@@ -200,14 +180,12 @@ const HistoryPage = ({ courses, examsInfo }) => {
                         </div>
                     )}
 
-                    {/* Summary */}
                     {selectedCourse && (
                         <h4 className="fw-bold text-dark mb-4">
                             {selectedCourseName}
                         </h4>
                     )}
 
-                    {/* Exam History */}
                     {currentPageData.length > 0 ? (
                         <>
                             {currentPageData.map((dateGroup, index) => (
