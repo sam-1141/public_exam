@@ -162,7 +162,7 @@ class AuthController extends Controller
 
             // Prepare message
             $expiryTime = $otp_expires_at->format('l, F j, Y g:i A');
-            $message = "Your OTP for account verification is {$otp}. This code will expire in {$expiryTime}. Please enter it to verify your mobile number. Do not share this OTP with anyone.";
+            $message = "Your OTP for account verification is {$otp}. This code will expire in {$expiryTime}.";
 
             $validated['otp'] = $otp;
             $validated['otp_expires_at'] = $otp_expires_at;
@@ -405,7 +405,7 @@ class AuthController extends Controller
 
             // Prepare message
             $expiryTime = $otp_expires_at->format('l, F j, Y g:i A');
-            $message = "Your OTP for reset password is {$otp}. This code will expire in {$expiryTime}. Please enter it to verify your mobile number. Do not share this OTP with anyone.";
+            $message = "Your OTP for reset password is {$otp}. This code will expire in {$expiryTime}.";
 
             if ($req->email) {
                 // find user using email

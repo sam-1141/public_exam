@@ -40,20 +40,6 @@ const ExamResult = ({ coursesInfo, exams }) => {
         fetchResults();
     }, [selectedCourse, searchStudentId, selectedExam]);
 
-    // const fetchResults = async () => {
-    //     setLoading(true);
-    //     try {
-    //         const response = await axios.get(
-    //             route("admin.exam.results.list", { courseSlug: selectedCourse })
-    //         );
-    //         setResults(response.data.examResults.data || []);
-    //     } catch (error) {
-    //         setResults([]);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const fetchResults = async () => {
         if (!selectedCourse) {
             setResults([]);
