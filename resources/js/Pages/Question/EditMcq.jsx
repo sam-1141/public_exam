@@ -6,6 +6,8 @@ import { toast, ToastContainer } from "react-toastify";
 import Select from "react-select";
 import Layout from "../../layouts/Layout";
 
+import { TINYMCE_API_KEY } from "../../helper/constants";
+
 function EditMcq({
     classes,
     subjects,
@@ -300,7 +302,7 @@ function EditMcq({
 
                     <p>Question</p>
                     <Editor
-                        apiKey="your-tinymce-api-key"
+                        apiKey={TINYMCE_API_KEY}
                         value={data.question}
                         onEditorChange={(newValue) =>
                             setData("question", newValue)
@@ -337,7 +339,7 @@ function EditMcq({
                                     </label>
                                     <div style={{ flex: 1 }}>
                                         <Editor
-                                            apiKey="your-tinymce-api-key"
+                                            apiKey={TINYMCE_API_KEY}
                                             value={opt.option}
                                             onEditorChange={(newValue) =>
                                                 handleOptionTextChange(
@@ -380,7 +382,7 @@ function EditMcq({
                     <div className="container mt-4">
                         <h4 className="mb-4 mt-4">Explanation</h4>
                         <Editor
-                            apiKey="your-tinymce-api-key"
+                            apiKey={TINYMCE_API_KEY}
                             value={data.explanation}
                             onEditorChange={(newValue) =>
                                 setData("explanation", newValue)

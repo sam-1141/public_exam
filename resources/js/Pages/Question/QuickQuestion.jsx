@@ -3,6 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
 import Layout from "../../layouts/Layout";
 import { toast, ToastContainer } from "react-toastify";
+import { TINYMCE_API_KEY } from "../../helper/constants";
 
 function QuickQuestion({ flash, errors, classData, subjectData }) {
     const { data, setData, post, processing } = useForm({
@@ -71,7 +72,7 @@ function QuickQuestion({ flash, errors, classData, subjectData }) {
                         <div className="mb-3">
                             <h4 className="mb-2 mt-4">Question:</h4>
                             <Editor
-                                apiKey="your-tinymce-api-key"
+                                apiKey={TINYMCE_API_KEY}
                                 value={data.question}
                                 onEditorChange={(newValue) =>
                                     setData("question", newValue)
@@ -107,7 +108,7 @@ function QuickQuestion({ flash, errors, classData, subjectData }) {
                                             </label>
                                             <div style={{ flex: 1 }}>
                                                 <Editor
-                                                    apiKey="your-tinymce-api-key"
+                                                    apiKey={TINYMCE_API_KEY}
                                                     value={opt.option}
                                                     onEditorChange={(newValue) =>
                                                         handleOptionChange(

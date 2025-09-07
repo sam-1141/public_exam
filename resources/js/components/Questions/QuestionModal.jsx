@@ -3,6 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import LoadingSpinner from "../LoadingSpinner";
+import { TINYMCE_API_KEY } from "../../helper/constants";
 
 const QuestionModal = ({
     show,
@@ -242,7 +243,7 @@ const QuestionModal = ({
                                     }
                                 >
                                     <Editor
-                                        apiKey="your-tinymce-api-key"
+                                        apiKey={TINYMCE_API_KEY}
                                         value={data.question}
                                         onEditorChange={(newValue) =>
                                             setData("question", newValue)
@@ -334,7 +335,7 @@ const QuestionModal = ({
                                                     {/* Option Editor */}
                                                     <div className="flex-1 min-w-0 position-relative">
                                                         <Editor
-                                                            apiKey="your-tinymce-api-key"
+                                                            apiKey={TINYMCE_API_KEY}
                                                             value={
                                                                 opt.option || ""
                                                             }
@@ -409,7 +410,7 @@ const QuestionModal = ({
                                     </h5>
                                 </label>
                                 <Editor
-                                    apiKey="your-tinymce-api-key"
+                                    apiKey={TINYMCE_API_KEY}
                                     value={data.explanation}
                                     onEditorChange={(newValue) =>
                                         setData("explanation", newValue)

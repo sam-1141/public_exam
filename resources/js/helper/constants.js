@@ -1,0 +1,1 @@
+export const TINYMCE_API_KEY = "zixrz7u6veeuwuyyj5jcryow2yfwy1vpf3wzqek9oqha4zu6";
