@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+
+
+
+
     /**
      * Global send_sms function for this controller
      */
@@ -220,7 +224,7 @@ class AuthController extends Controller
                 $cookie = cookie(
                     'ft_roar',
                     $token,
-                    60 * 24,
+                    60 * 24 * 7,
                     '/',
                     $domain,
                     true,
@@ -242,9 +246,13 @@ class AuthController extends Controller
                         return redirect()->route('dashboard')->withCookie($cookie);
                     }
                 }
-
-                $intended_redirect_url = session()->get('url.intended', route('dashboard'));
-                session(['url.intended' => route('dashboard')]);
+                if (auth()->user()->role == 'student') {
+                    $intended_redirect_url = session()->get('url.intended', route('student.courses'));
+                    session(['url.intended' => route('student.courses')]);
+                } else {
+                    $intended_redirect_url = session()->get('url.intended', route('dashboard'));
+                    session(['url.intended' => route('dashboard')]);
+                }
                 return redirect($intended_redirect_url)->withCookie($cookie);
             } else {
                 $forgetCookie = Cookie::forget('ft_roar');
@@ -336,8 +344,23 @@ class AuthController extends Controller
             // delete temporary user
             $temp_user->delete();
 
+            $token = $user->id;
+            $domain = '.' . implode('.', array_slice(explode('.', request()->getHost()), -2));
+
+            $cookie = cookie(
+                'ft_roar',
+                $token,
+                60 * 24 * 7,
+                '/',
+                $domain,
+                true,
+                false,
+                false,
+                'lax'
+            );
+
             // Redirect to dashboard
-            return to_route("dashboard");
+            return to_route("dashboard")->withCookie($cookie);
         } catch (\Exception $e) {
             return $e;
             return to_route("load.set.password.form")->with('error', 'An error occurred while signup.');
