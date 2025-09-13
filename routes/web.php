@@ -99,7 +99,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/exams/{id}/toggle-exam-type', 'toggleExamType')->name('exams.type.toggle');
             Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
             Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
-            Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
+//            Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
             Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
         });
 
@@ -124,9 +124,10 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::controller(StudentLiveExamController::class)->group(function () {
-            Route::get('/student/live-exam/list', 'loadExamNoticePage')->name('student.live.exam.list');
-            Route::get('/student/live-exam/exam', 'loadExamMainPage')->name('student.live.exam.main');
-            Route::post('/student/live-exam/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
+            Route::get('/student/live-exam/list', 'loadExamListPage')->name('student.live.exam.list');
+            Route::get('/student/exam/notice', 'loadExamNoticePage')->name('student.exam.notice');
+            Route::get('/student/exam', 'loadExamMainPage')->name('student.live.exam.main');
+            Route::post('/student/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
             Route::post('/student/{exam}/violation/rules', 'submitTabSwitchCount')->name('student.live.exam.tab.switch.count');
             Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
             Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
@@ -134,7 +135,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::controller(PracticeExamController::class)->group(function () {
             Route::get('/student/practice-exam/practice', 'loadPracticeExamListPage')->name('student.practice.exam.list');
-            Route::get('/student/practice-exam/{exam}', 'loadPracticeExamPage')->name('student.practice.exam');
+//            Route::get('/student/practice-exam/', 'loadPracticeExamPage')->name('student.practice.exam');
             Route::post('/student/practice-exam/{exam}/result', 'loadPracticeExamResult')->name('student.practice.exam.result');
         });
 

@@ -1,24 +1,14 @@
 import Layout from "../../../../layouts/Layout";
-import ParticipationModal from "./ParticipationModal";
-import { useState } from "react";
 import { router } from "@inertiajs/react";
-import LiveExamSection from "./LiveExamSection"; 
+import LiveExamSection from "./LiveExamSection";
 import UpcomingExamSection from "./UpcomingExamSection";
+import {route} from "ziggy-js";
 
 const ExamListPage = ({ allExam, errors }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedExam, setSelectedExam] = useState(null);
-  const [currentExam, setCurrentExam] = useState(null);
-  const [examState, setExamState] = useState("notice");
-  const [error, setError] = useState(null);
-
   const handleExamClick = (exam) => {
-    setSelectedExam(exam);
-    setShowModal(true);
-    setError(null);
+      router.get(route("student.exam.notice"), { examSlug: exam.slug});
   };
 
-  // Categorize exams into live and upcoming
   const now = new Date();
 
   const liveExams = allExam
@@ -36,47 +26,11 @@ const ExamListPage = ({ allExam, errors }) => {
     })
     .sort((a, b) => new Date(a.start_time) - new Date(b.start_time)); // Soonest first
 
-  const handleConfirmParticipation = (exam) => {
-    router.get(
-      route("student.live.exam.main"),
-      { examSlug: exam.slug },
-      {
-        preserveState: true,
-        onSuccess: () => {
-          setCurrentExam(exam);
-          setExamState("exam");
-          setShowModal(false);
-        },
-        onError: (errors) => {
-          setError(errors.error || "Failed to join exam");
-          setShowModal(false);
-        },
-      }
-    );
-  };
-
   return (
     <div className="flex-grow-1 d-flex flex-column font-baloo">
-      {error && (
-        <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
-          আপনি ইতিমধ্যে এই পরীক্ষাটি দিয়েছেন
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setError(null)}
-            aria-label="Close"
-          ></button>
-        </div>
-      )}
       {errors.errors && (
         <div className="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
             {errors.errors}
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setError(null)}
-            aria-label="Close"
-          ></button>
         </div>
       )}
       <main className="flex-grow-1 p-1 bg-light mt-2">
@@ -86,15 +40,6 @@ const ExamListPage = ({ allExam, errors }) => {
         {/* Upcoming Exams Section */}
         <UpcomingExamSection exams={upcomingExams} onExamClick={handleExamClick} />
       </main>
-
-      {selectedExam && (
-        <ParticipationModal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          exam={selectedExam}
-          onConfirm={handleConfirmParticipation}
-        />
-      )}
     </div>
   );
 };

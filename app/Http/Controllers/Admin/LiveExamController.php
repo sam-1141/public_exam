@@ -111,7 +111,7 @@ class LiveExamController extends Controller
 
         $slug = Str::slug($validated['name']);
         $baseUrl = rtrim(env('APP_URL'), '/');
-        $examUrl = "{$baseUrl}/student/live-exam/exam?examSlug={$slug}";
+        $examUrl = "{$baseUrl}/student/exam/notice?examSlug={$slug}";
 
         DB::beginTransaction();
 
@@ -158,61 +158,6 @@ class LiveExamController extends Controller
             return back()->with('error', 'Failed to create exam.');
         }
     }
-
-//    public function showAllExam()
-//    {
-//        $exams = LiveExam::where('exam_type', 0)
-//            ->orderByDesc('created_at')
-//            ->paginate(10)
-//            ->through(function ($exam) {
-//                $courseExam = DB::table('course_exam')
-//                    ->where('exam_id', $exam->id)
-//                    ->pluck('course_id')
-//                    ->toArray();
-//
-//                $courseInfo = DB::connection('Webapp')
-//                    ->table('courses')
-//                    ->whereIn('id', $courseExam)
-//                    ->get(['id','course_name']);
-//
-//                $examSubject = DB::table('exam_subject')
-//                    ->where('exam_id', $exam->id)
-//                    ->pluck('subject_id')
-//                    ->toArray();
-//
-//                $subjectInfo = DB::connection('CoreDB')
-//                    ->table('subjects')
-//                    ->whereIn('id', $examSubject)
-//                    ->get(['id', 'name']);
-//
-//                return [
-//                    'id' => $exam->id,
-//                    'name' => $exam->name,
-//                    'courseInfo' => $courseInfo,
-//                    'subjectInfo' => $subjectInfo,
-//                    'slug' => $exam->slug,
-//                    'description' => $exam->description,
-//                    'totalQuestions' => $exam->total_questions,
-//                    'hasNegativeMarks' => $exam->has_negative_marks,
-//                    'negativeMarksValue' => $exam->negative_marks_value,
-//                    'totalMarks' => $exam->total_marks,
-//                    'duration' => $exam->duration,
-//                    'questionType' => $exam->question_type,
-//                    'privacy' => $exam->privacy,
-//                    'publishInstant' => $exam->publish,
-//                    'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
-//                    'endTime'   => optional($exam->end_time)->format('Y-m-d H:i'),
-//                    'resultPublishTime'   => optional($exam->result_publish_time)->format('Y-m-d H:i'),
-//                    'examUrl' => $exam->exam_url,
-//                    'status'  => $exam->status,
-//                    'exam_type' => $exam->exam_type,
-//                    'forAllStudent' => $exam->for_all_student,
-//                    'byLink' => $exam->by_link,
-//                ];
-//            });
-//
-//        return response()->json(['exams' => $exams], 200);
-//    }
 
     public function showAllExam(Request $request)
     {
@@ -362,7 +307,7 @@ class LiveExamController extends Controller
 
         $updateSlug = Str::slug($validated['name']);
         $baseUrl = rtrim(env('APP_URL'), '/');
-        $examUrl = "{$baseUrl}/student/live-exam/exam?examSlug={$slug}";
+        $examUrl = "{$baseUrl}/student/exam/notice?examSlug={$slug}";
 
         $existingSlug = DB::table('live_exams')
             ->where('slug', $updateSlug)
