@@ -75,6 +75,8 @@ function ForgotPassword({ flash, errors }) {
                 ? { mobile: data.mobile }
                 : { email: data.email };
 
+            console.log('payload', payload);
+
             post(route("execute.forgot.password"), {
                 data: payload,
             });
