@@ -12,7 +12,6 @@ class PracticeExamController extends Controller
 {
     public function loadPracticeExamListPage()
     {
-
         $allCourseInfo = DB::connection('Webapp')
             ->table('courses')
             ->get(['id','course_name']);
@@ -69,9 +68,9 @@ class PracticeExamController extends Controller
         ]);
     }
 
-    public function loadPracticeExamPage($examSlug)
+    public function loadPracticeExamPage(Request $request)
     {
-
+        $examSlug = $request->query('examSlug');
         $exam = DB::table('live_exams')
             ->where('slug', $examSlug)
             ->firstOrFail();
@@ -97,8 +96,8 @@ class PracticeExamController extends Controller
         return Inertia::render('Student/Exam/PracticeExam/PracticeExamResult', [
             'submission' => [
                 'examId' => $exam,
-                'exam' => $request->input('examData'), // Pass the full exam data
-                'questions' => $request->input('questions'), // Pass the questions
+                'exam' => $request->input('examData'),
+                'questions' => $request->input('questions'),
                 'examName' => $request->input('examName'),
                 'subject' => $request->input('subject'),
                 'totalMarks' => $request->input('totalMarks'),

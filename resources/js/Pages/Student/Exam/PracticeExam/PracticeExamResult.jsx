@@ -2,9 +2,9 @@ import Layout from "../../../../layouts/Layout"
 import { usePage } from '@inertiajs/react'
 import { useEffect, useState } from "react"
 import { router } from "@inertiajs/react"
+import {route} from "ziggy-js";
 
-const PracticeExamResult = () => {
-    const { submission } = usePage().props
+const PracticeExamResult = ({ submission }) => {
     const [examData, setExamData] = useState(null)
     const [questions, setQuestions] = useState([])
 

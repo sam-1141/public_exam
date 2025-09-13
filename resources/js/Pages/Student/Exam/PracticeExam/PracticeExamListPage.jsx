@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
+import {route} from "ziggy-js";
 
 const PracticeExamListPage = ({allExam}) => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -15,14 +16,14 @@ const PracticeExamListPage = ({allExam}) => {
         if (exam.courseInfo && exam.courseInfo.length > 0) {
             const courseId = exam.courseInfo[0].id;
             const courseName = exam.courseInfo[0].course_name;
-            
+
             if (!examsByCourse[courseId]) {
                 examsByCourse[courseId] = {
                     name: courseName,
                     exams: []
                 };
             }
-            
+
             examsByCourse[courseId].exams.push(exam);
         }
     });
@@ -35,7 +36,7 @@ const PracticeExamListPage = ({allExam}) => {
     const totalPages = Math.ceil(courseIds.length / examsPerPage);
 
     const handleExamClick = (exam) => {
-        router.get(route('student.practice.exam', { exam: exam.slug}))
+        router.get(route('student.exam.notice', { examSlug: exam.slug}))
     }
 
     const toggleCourse = (courseId) => {
@@ -64,11 +65,11 @@ const PracticeExamListPage = ({allExam}) => {
                                         {currentCourseIds.map(courseId => {
                                             const course = examsByCourse[courseId];
                                             const isExpanded = expandedCourses[courseId];
-                                            
+
                                             return (
                                                 <div key={courseId} className="col-12 mb-3">
                                                     {/* Course Header */}
-                                                    <div 
+                                                    <div
                                                         className="card border-0 shadow-sm mb-2 cursor-pointer"
                                                         onClick={() => toggleCourse(courseId)}
                                                     >

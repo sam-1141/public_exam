@@ -3,6 +3,7 @@ import Layout from "../../../../layouts/Layout"
 import { router } from "@inertiajs/react"
 import QuestionCard from "./QuestionCard"
 import ExamTimer from "./ExamTimer"
+import {route} from "ziggy-js";
 
 const PracticeExamPage = ({ exam, questions }) => {
   const [loading, setLoading] = useState(false)
@@ -10,7 +11,6 @@ const PracticeExamPage = ({ exam, questions }) => {
   const [showSubmitModal, setShowSubmitModal] = useState(false)
   const [spentTime, setSpentTime] = useState(0)
 
-  // Parse questions and prepare data for QuestionCard
   const parsedQuestions = questions.map(question => {
     const options = JSON.parse(question.options || "[]")
     return {
@@ -18,15 +18,14 @@ const PracticeExamPage = ({ exam, questions }) => {
       text: question.question,
       options: options,
       correctAnswer: options.findIndex(option => option.ans === true),
-      marks: question.marks || 1 // Default to 1 mark if not specified
+      marks: question.marks || 1
     }
   })
 
-  // Format exam data with parsed questions
   const formattedExam = {
     ...exam,
     questions: parsedQuestions,
-    totalMarks: exam.total_marks || parsedQuestions.length, // Use exam's total_marks or default to number of questions
+    totalMarks: exam.total_marks || parsedQuestions.length,
     totalQuestions: exam.total_questions || parsedQuestions.length,
     hasNegativeMarks: exam.has_negative_marks || false,
     negativeMarksValue: exam.negative_marks_value || 0

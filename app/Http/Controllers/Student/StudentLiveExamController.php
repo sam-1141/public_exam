@@ -9,7 +9,7 @@ use Inertia\Inertia;
 
 class StudentLiveExamController extends Controller
 {
-    public function loadExamNoticePage()
+    public function loadExamListPage()
     {
         $userId = auth()->id();
 
@@ -18,14 +18,6 @@ class StudentLiveExamController extends Controller
             ->where('student_id', $userId)
             ->pluck('course_id')
             ->toArray();
-
-
-//        $exam = DB::table('live_exams')
-//            ->where('exam_type', 0)
-//            ->where('publish', 1)
-//            ->whereIn('course_exam.course_id', $permittedCourses)
-//            ->join('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
-//            ->get();
 
         $exam = DB::table('live_exams')
             ->leftJoin('course_exam', 'live_exams.id', '=', 'course_exam.exam_id')
@@ -46,6 +38,19 @@ class StudentLiveExamController extends Controller
         ]);
     }
 
+    public function loadExamNoticePage(Request $request)
+    {
+        $examSlug = $request->query('examSlug');
+
+        $exam = DB::table('live_exams')
+            ->where('slug', $examSlug)
+            ->first();
+
+        return Inertia::render('Student/Exam/ExamNotice', [
+            'exam' => $exam,
+        ]);
+    }
+
     public function loadExamMainPage(Request $request)
     {
         $studentId = auth()->id();
@@ -59,79 +64,92 @@ class StudentLiveExamController extends Controller
             return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Exam not found.']);
         }
 
-        if($exam->by_link == 0 && $exam->for_all_student == 0){
-            $courseIds = DB::table('course_exam')
-                ->where('exam_id', $exam->id)
-                ->pluck('course_id')
-                ->unique()
-                ->values()
-                ->all();
+        if($exam->practise_trans_status === null && $exam->end_time > now()){
+            if($exam->by_link == 0 && $exam->for_all_student == 0){
+                $courseIds = DB::table('course_exam')
+                    ->where('exam_id', $exam->id)
+                    ->pluck('course_id')
+                    ->unique()
+                    ->values()
+                    ->all();
 
-            $permittedCourse = DB::connection('Webapp')
-                ->table('course_student')
+                $permittedCourse = DB::connection('Webapp')
+                    ->table('course_student')
+                    ->where('student_id', $studentId)
+                    ->whereIn('course_id', $courseIds)
+                    ->exists();
+
+                if (!$permittedCourse) {
+                    return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'You are not permitted to take this exam.']);
+                }
+            }
+
+            $questions = DB::table('questions')
+                ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+                ->where('exam_question.exam_id', $exam->id)
+                ->select('questions.*')
+                ->get();
+
+            $exists = DB::table('student_exam_attendance')
                 ->where('student_id', $studentId)
-                ->whereIn('course_id', $courseIds)
-                ->exists();
+                ->where('exam_id', $exam->id)
+                ->first();
 
-            if (!$permittedCourse) {
-                return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'You are not permitted to take this exam.']);
-            }
-        }
+            if ($exists) {
+                if ($exists->student_exam_end_time < now() || $exists->submit_status !== null) {
+                    return redirect()
+                        ->route('student.live.exam.list')
+                        ->withErrors(['errors' => 'You have already taken this exam.']);
+                }
 
-        $questions = DB::table('questions')
-            ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
-            ->where('exam_question.exam_id', $exam->id)
-            ->select('questions.*')
-            ->get();
-
-        $exists = DB::table('student_exam_attendance')
-            ->where('student_id', $studentId)
-            ->where('exam_id', $exam->id)
-            ->first();
-
-
-        if ($exists) {
-            if ($exists->student_exam_end_time < now() || $exists->submit_status !== null) {
-                return redirect()
-                    ->route('student.live.exam.list')
-                    ->withErrors(['errors' => 'You have already taken this exam.']);
+                return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
+                    'exam' => $exam,
+                    'questions' => $questions,
+                ]);
             }
 
-            return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
+            $inserted = DB::table('student_exam_attendance')->insert([
+                'student_id' => $studentId,
+                'exam_id' => $exam->id,
+                'exam_type' => false,
+                'exam_start_time' => $exam->start_time,
+                'exam_end_time' => $exam->end_time,
+                'result_publish_time' => $exam->result_publish_time,
+                'student_exam_start_time' => now(),
+                'student_exam_end_time' => now()->addMinutes($exam->duration),
+                'submit_time' => null,
+                'submit_status' => null,
+                'exam_total_questions' => $exam->total_questions,
+                'exam_total_mark' => $exam->total_marks,
+                'negative_marks_value' => $exam->negative_marks_value,
+                'student_total_mark' => null,
+                'total_correct_answers' => null,
+                'total_skipped_answers' => $exam->total_questions,
+                'tab_switch_count' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            if($inserted){
+                return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
+                    'exam' => $exam,
+                    'questions' => $questions,
+                ]);
+            } else {
+                return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Failed to start the exam.']);
+            }
+        }else{
+//            dd('not ok');
+            $questions = DB::table('questions')
+                ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+                ->where('exam_question.exam_id', $exam->id)
+                ->select('questions.*')
+                ->get();
+
+            return Inertia::render('Student/Exam/PracticeExam/PracticeExamPage', [
                 'exam' => $exam,
                 'questions' => $questions,
             ]);
-        }
-
-        $inserted = DB::table('student_exam_attendance')->insert([
-            'student_id' => $studentId,
-            'exam_id' => $exam->id,
-            'exam_type' => false,
-            'exam_start_time' => $exam->start_time,
-            'exam_end_time' => $exam->end_time,
-            'result_publish_time' => $exam->result_publish_time,
-            'student_exam_start_time' => now(),
-            'student_exam_end_time' => now()->addMinutes($exam->duration),
-            'submit_time' => null,
-            'submit_status' => null,
-            'exam_total_questions' => $exam->total_questions,
-            'exam_total_mark' => $exam->total_marks,
-            'negative_marks_value' => $exam->negative_marks_value,
-            'student_total_mark' => null,
-            'total_correct_answers' => null,
-            'total_skipped_answers' => $exam->total_questions,
-            'tab_switch_count' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        if($inserted){
-            return Inertia::render('Student/Exam/LiveExam/ExamMainPage', [
-                'exam' => $exam,
-                'questions' => $questions,
-            ]);
-        } else {
-            return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Failed to start the exam.']);
         }
     }
 
