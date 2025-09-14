@@ -101,6 +101,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
 //            Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
             Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+            Route::post('/live-exam/reorder-questions', 'reorderQuestions')->name('live.exam.reorder.questions');
         });
 
         Route::controller(PractiseExamController::class)->group(function () {

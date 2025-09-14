@@ -246,13 +246,10 @@ class AuthController extends Controller
                         return redirect()->route('dashboard')->withCookie($cookie);
                     }
                 }
-                if (auth()->user()->role == 'student') {
-                    $intended_redirect_url = session()->get('url.intended', route('student.courses'));
-                    session(['url.intended' => route('student.courses')]);
-                } else {
-                    $intended_redirect_url = session()->get('url.intended', route('dashboard'));
-                    session(['url.intended' => route('dashboard')]);
-                }
+
+                $intended_redirect_url = session()->get('url.intended', route('dashboard'));
+                session(['url.intended' => route('dashboard')]);
+
                 return redirect($intended_redirect_url)->withCookie($cookie);
             } else {
                 $forgetCookie = Cookie::forget('ft_roar');

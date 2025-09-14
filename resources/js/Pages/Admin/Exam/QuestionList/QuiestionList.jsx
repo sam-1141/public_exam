@@ -25,7 +25,11 @@ const QuestionList = ({
         setQuestions(reorderedQuestions);
         setShowReorderModal(false);
         try {
-            const orderedIds = reorderedQuestions.map((q) => q.id);
+            const response = await axios.post(route('live.exam.reorder.questions'), {
+                questions: reorderedQuestions
+            });
+
+            // console.log('response', response);
             alert("Order saved successfully!");
         } catch (error) {
             alert("Failed to save order");
@@ -108,16 +112,16 @@ const QuestionList = ({
                 <h3 className="text-xl font-semibold text-center">
                     Questions ({questions.length})
                 </h3>
-                {/*<div className="flex gap-2">*/}
-                {/*    {questions.length > 1 && (*/}
-                {/*        <button*/}
-                {/*            onClick={() => setShowReorderModal(true)}*/}
-                {/*            className="btn btn-sm btn-outline-primary"*/}
-                {/*        >*/}
-                {/*            Reorder Questions*/}
-                {/*        </button>*/}
-                {/*    )}*/}
-                {/*</div>*/}
+                <div className="flex gap-2">
+                    {questions.length > 1 && (
+                        <button
+                            onClick={() => setShowReorderModal(true)}
+                            className="btn btn-sm btn-outline-primary"
+                        >
+                            Reorder Questions
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="accordion" id="questionsAccordion">
