@@ -3,6 +3,7 @@ import "./../LeaderBoardPage/LeaderBoardPage.css"
 import PageHeader from "../../../components/Student/PageHeader/PageHeader"
 import { useEffect, useState } from "react"
 import axios from "axios"
+import {route} from "ziggy-js";
 
 const SingleExamLeaderboard = ({ examSlug }) => {
     const [leaderboardData, setLeaderboardData] = useState({ data: [], links: [] })
@@ -201,7 +202,7 @@ const SingleExamLeaderboard = ({ examSlug }) => {
                                                                 src={user.image || "/assets/images/user/avatar-1.png"}
                                                                 alt={user.student_name}
                                                                 className={`rounded-circle ${isTopThree ? 'border border-white shadow-sm' : ''} object-fit-cover image-size`}
-                                                                
+
                                                             />
                                                         </div>
                                                         <div className="flex-grow-1">

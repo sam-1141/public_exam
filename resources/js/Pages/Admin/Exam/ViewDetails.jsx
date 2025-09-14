@@ -4,7 +4,6 @@ import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import QuestionList from "./QuestionList/QuiestionList";
 import QuestionModal from "../../../components/Questions/QuestionModal";
-import { formatDateTime } from "./EditExam";
 
 const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);

@@ -64,7 +64,9 @@ class StudentLiveExamController extends Controller
             return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Exam not found.']);
         }
 
-        if($exam->practise_trans_status === null && $exam->end_time > now()){
+//        dd($exam);
+
+        if($exam->exam_type === 0 && $exam->practise_trans_status === null && $exam->end_time > now()){
             if($exam->by_link == 0 && $exam->for_all_student == 0){
                 $courseIds = DB::table('course_exam')
                     ->where('exam_id', $exam->id)
@@ -87,6 +89,7 @@ class StudentLiveExamController extends Controller
             $questions = DB::table('questions')
                 ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
                 ->where('exam_question.exam_id', $exam->id)
+                ->orderBy('questions.serial', 'asc')
                 ->select('questions.*')
                 ->get();
 
@@ -139,7 +142,6 @@ class StudentLiveExamController extends Controller
                 return redirect()->route('student.live.exam.list')->withErrors(['errors' => 'Failed to start the exam.']);
             }
         }else{
-//            dd('not ok');
             $questions = DB::table('questions')
                 ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
                 ->where('exam_question.exam_id', $exam->id)

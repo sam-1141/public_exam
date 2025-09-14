@@ -54,6 +54,7 @@ class LiveExamController extends Controller
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
             ->where('exam_question.exam_id', $exam->id)
+            ->orderBy('questions.serial', 'asc')
             ->select('questions.*')
             ->get();
 
@@ -576,5 +577,24 @@ class LiveExamController extends Controller
             'examType' => $type,
             'questions' => $questions,
         ]);
+    }
+
+    public function reorderQuestions(Request $request)
+    {
+        $questions = $request->questions;
+
+        if (!is_array($questions)) {
+            return response()->json(['message' => 'Invalid payload format.'], 400);
+        }
+
+        foreach ($questions as $index => $question) {
+            if (!isset($question['id'])) continue;
+
+            DB::table('questions')
+                ->where('id', $question['id'])
+                ->update(['serial' => $index + 1]);
+        }
+
+        return response()->json(['message' => 'Serials updated successfully.']);
     }
 }
