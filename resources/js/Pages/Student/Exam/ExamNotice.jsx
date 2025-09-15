@@ -10,10 +10,6 @@ const ExamNotice = ({ exam }) => {
         setShowConfirmationModal(true);
     };
 
-    useEffect(() => {
-        console.log('exam', exam);
-    }, [exam]);
-
     const confirmStartExam = () => {
         setShowConfirmationModal(false);
         router.get(route('student.live.exam.main', { examSlug: exam.slug}))
