@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Layout from "./../../../layouts/Layout"
 import { router } from "@inertiajs/react";
 import {route} from "ziggy-js";
@@ -9,6 +9,10 @@ const ExamNotice = ({ exam }) => {
     const handleStartNow = () => {
         setShowConfirmationModal(true);
     };
+
+    useEffect(() => {
+        console.log('exam', exam);
+    }, [exam]);
 
     const confirmStartExam = () => {
         setShowConfirmationModal(false);
@@ -33,7 +37,7 @@ const ExamNotice = ({ exam }) => {
                         {/* Exam Info Section */}
                         <div className="card-header bg-primary bg-opacity-10 border-bottom">
                             <h5 className="card-title mb-0 text-primary">
-                                Mode Test 5 | College Admission 2025
+                                {exam.name}
                             </h5>
                         </div>
 
@@ -41,21 +45,21 @@ const ExamNotice = ({ exam }) => {
                             <div className="mb-4 p-3 bg-light rounded">
                                 <p className="mb-1">
                                     <span className="fw-semibold">
-                                        পরীক্ষার তারিখ:
+                                        পরীক্ষা শুরু:
                                     </span>{" "}
-                                    ৬ আগস্ট, ২০২৫
+                                    {new Date(exam.start_time).toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                                 </p>
                                 <p className="mb-1">
                                     <span className="fw-semibold">
-                                        পরীক্ষার সময়সীমা:
+                                        পরীক্ষা শেষ:
                                     </span>{" "}
-                                    সন্ধ্যা ৭ টা থেকে রাত ১২ টা
+                                    {new Date(exam.end_time).toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                                 </p>
                                 <p className="mb-0">
                                     <span className="fw-semibold">
                                         পরীক্ষার সময়কাল:
                                     </span>{" "}
-                                    ৪০ মিনিট (একবার শুরু করলে)
+                                    {exam.duration.toLocaleString('bn-BD')} মিনিট (একবার শুরু করলে)
                                 </p>
                             </div>
 
@@ -69,21 +73,21 @@ const ExamNotice = ({ exam }) => {
                                         <span className="badge bg-primary me-2">
                                             ১
                                         </span>
-                                        পরীক্ষা দেওয়ার সময়সীমা: সন্ধ্যা ৭ টা
-                                        থেকে রাত ১২ টা
+                                        পরীক্ষা দেওয়ার সময়সীমা: {new Date(exam.start_time).toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
+                                        থেকে {new Date(exam.end_time).toLocaleString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}
                                     </li>
                                     <li className="list-group-item d-flex align-items-start border-0 px-0 py-2">
                                         <span className="badge bg-primary me-2">
                                             ২
                                         </span>
-                                        এই ৫ ঘণ্টার মধ্যে যে কোনো সময় পরীক্ষা
+                                        এই {Math.floor((new Date(exam.end_time) - new Date(exam.start_time)) / (1000 * 60 * 60)).toLocaleString('bn-BD')} ঘণ্টার মধ্যে যে কোনো সময় পরীক্ষা
                                         শুরু করতে পারবে
                                     </li>
                                     <li className="list-group-item d-flex align-items-start border-0 px-0 py-2">
                                         <span className="badge bg-primary me-2">
                                             ৩
                                         </span>
-                                        একবার শুরু করলে অবশ্যই ৪০ মিনিটের মধ্যে
+                                        একবার শুরু করলে অবশ্যই {exam.duration.toLocaleString('bn-BD')} মিনিটের মধ্যে
                                         শেষ করতে হবে
                                     </li>
                                     <li className="list-group-item d-flex align-items-start border-0 px-0 py-2">
@@ -99,13 +103,6 @@ const ExamNotice = ({ exam }) => {
                                         </span>
                                         সময় শেষ হওয়ার আগেই উত্তর জমা দেয়ার
                                         চেষ্টা করবে
-                                    </li>
-                                    <li className="list-group-item d-flex align-items-start border-0 px-0 py-2">
-                                        <span className="badge bg-primary me-2">
-                                            ৬
-                                        </span>
-                                        একবার কোন প্রশ্নের উত্তর সাবমিট দিলে সেই
-                                        প্রশ্নে ফেরত যেতে পারবে না
                                     </li>
                                 </ul>
 
