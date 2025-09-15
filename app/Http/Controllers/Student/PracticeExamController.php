@@ -16,7 +16,11 @@ class PracticeExamController extends Controller
             ->table('courses')
             ->get(['id','course_name']);
 
-        $exams = DB::table('live_exams')->where('exam_type', 1)
+        $exams = DB::table('live_exams')
+            ->where(function ($query){
+                $query->where('exam_type', 1)
+                    ->orWhere('end_time', '<', now());
+            })
             ->orderByDesc('created_at')
             ->get()
             ->map(function ($exam) {

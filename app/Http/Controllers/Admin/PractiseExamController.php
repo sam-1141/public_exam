@@ -18,7 +18,10 @@ class PractiseExamController extends Controller
 
     public function showAllExam()
     {
-        $exams = LiveExam::where('exam_type', 1)
+        $exams = LiveExam::where(function ($query){
+            $query->where('exam_type', 1)
+                ->orWhere('end_time', '<', now());
+            })
             ->orderByDesc('created_at')
             ->paginate(10)
             ->through(function ($exam) {
