@@ -166,7 +166,7 @@ class LiveExamController extends Controller
         $subjectId = $request->input('subject');
         $search = $request->input('search');
 
-        $query = LiveExam::where('exam_type', 0);
+        $query = LiveExam::where('exam_type', 0)->where('end_time', '>', now());
 
         if ($search) {
             $query->where('name', 'like', '%' . $search . '%');
