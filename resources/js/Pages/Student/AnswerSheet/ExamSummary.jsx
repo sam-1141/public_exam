@@ -9,17 +9,16 @@ const ExamSummary = ({ examData, attendanceData }) => {
     obtainedScore,
   } = examData
 
-  // Calculate spend time from attendance data (can be in seconds)
   const calculateSpendTime = () => {
     try {
       const attendTime = new Date(attendanceData.studentExamAttendTime);
       const submitTime = new Date(attendanceData.examSubmitTime);
       const timeSpentMs = submitTime - attendTime;
-      
+
       const totalSeconds = Math.floor(timeSpentMs / 1000);
       const minutes = Math.floor(totalSeconds / 60);
       const seconds = totalSeconds % 60;
-      
+
       return { minutes, seconds };
     } catch (error) {
       return { minutes: 0, seconds: 0 };
@@ -31,7 +30,7 @@ const ExamSummary = ({ examData, attendanceData }) => {
   const formatTime = (minutes, seconds = 0) => {
     const hours = Math.floor(minutes / 60)
     const mins = minutes % 60
-    
+
     if (hours > 0) {
       return `${hours} ঘন্টা ${mins} মিনিট ${seconds} সেকেন্ড`
     }
