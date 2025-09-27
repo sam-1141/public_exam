@@ -5,6 +5,11 @@ import PageHeader from "../../../components/Student/PageHeader/PageHeader";
 import ExamHistoryCard from "./ExamHistoryCard";
 
 const HistoryPage = ({ courses, examsInfo }) => {
+
+    useEffect(() => {
+        console.log('examsInfo:', examsInfo);
+    }, [examsInfo]);
+
     const [selectedCourse, setSelectedCourse] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -47,18 +52,24 @@ const HistoryPage = ({ courses, examsInfo }) => {
             examsInfo.forEach((exam) => {
                 if (
                     typeof exam.relatedCourseIds === "string" &&
-                    exam.relatedCourseIds.includes(courseId)
+                    exam.relatedCourseIds.split(",").map(id => id.trim()).includes(courseId)
                 ) {
+                    // ✅ Handle null or invalid examSubmitTime
+                    let datePart = "Not Submitted";
+                    let timePart = "00:00:00";
+
                     if (
-                        typeof exam.examSubmitTime !== "string" ||
-                        !exam.examSubmitTime.includes(" ")
+                        typeof exam.examSubmitTime === "string" &&
+                        exam.examSubmitTime.includes(" ")
                     ) {
-                        return;
+                        [datePart, timePart] = exam.examSubmitTime.split(" ");
+                    } else if (
+                        typeof exam.studentExamAttendTime === "string" &&
+                        exam.studentExamAttendTime.includes(" ")
+                    ) {
+                        // Fallback to attend time if submit time is null
+                        [datePart, timePart] = exam.studentExamAttendTime.split(" ");
                     }
-
-                    const [datePart, timePart] = exam.examSubmitTime.split(" ");
-
-                    if (!datePart || !timePart) return;
 
                     if (!examsByDate[datePart]) {
                         examsByDate[datePart] = [];
@@ -88,6 +99,7 @@ const HistoryPage = ({ courses, examsInfo }) => {
 
         return result;
     }, [examsInfo, courses]);
+
 
     const currentExamData = transformExamData[selectedCourse]?.live || [];
 

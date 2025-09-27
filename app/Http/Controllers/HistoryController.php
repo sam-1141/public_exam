@@ -16,8 +16,8 @@ class HistoryController extends Controller
         $studentExams = DB::table('student_exam_attendance')
             ->where('student_exam_attendance.student_id', auth()->id())
             ->where('student_exam_attendance.result_publish_time', '<', now())
-            ->join('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
-            ->join('course_exam', 'student_exam_attendance.exam_id', '=', 'course_exam.exam_id')
+            ->leftJoin('live_exams', 'student_exam_attendance.exam_id', '=', 'live_exams.id')
+            ->leftJoin('course_exam', 'student_exam_attendance.exam_id', '=', 'course_exam.exam_id')
             ->groupBy(
                 'student_exam_attendance.exam_type',
                 'student_exam_attendance.exam_total_questions',
