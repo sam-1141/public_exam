@@ -5,11 +5,6 @@ import PageHeader from "../../../components/Student/PageHeader/PageHeader";
 import ExamHistoryCard from "./ExamHistoryCard";
 
 const HistoryPage = ({ courses, examsInfo }) => {
-
-    useEffect(() => {
-        console.log('examsInfo:', examsInfo);
-    }, [examsInfo]);
-
     const [selectedCourse, setSelectedCourse] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
