@@ -13,11 +13,8 @@ const AnswerSheetPage = ({ info }) => {
     useEffect(() => {
         if (!info || !info.studentExamsAttendance || !info.questions || !info.studentsExamAnswers) return;
 
-        // Step 1: Transform Exam Summary
         const attendance = info.studentExamsAttendance;
         const answers = info.studentsExamAnswers;
-
-
         const attendTime = new Date(attendance.studentExamAttendTime);
         const submitTime = new Date(attendance.examSubmitTime);
         const timeSpentMs = submitTime - attendTime;
@@ -39,12 +36,9 @@ const AnswerSheetPage = ({ info }) => {
             obtainedScore: attendance.studentTotalMarks,
         });
 
-        // Step 2: Transform Questions
         const transformedQuestions = info.questions.map((q, index) => {
             const studentAnswer = info.studentsExamAnswers.find((ans) => ans.question_id === q.id);
 
-            console.log('q', JSON.parse(q.options));
-            // Parse options
             let options = [];
             try {
                 const parsed = JSON.parse(q.options);
@@ -55,7 +49,6 @@ const AnswerSheetPage = ({ info }) => {
                 options = ["Option 1", "Option 2", "Option 3", "Option 4"];
             }
 
-            // Correct answer index
             let correctAnswerIndex = -1;
             try {
                 const parsed = JSON.parse(q.options);
@@ -74,13 +67,6 @@ const AnswerSheetPage = ({ info }) => {
                 teacherNote: q.explanation,
             };
         });
-
-
-
-        // console.log('attendance', attendance);
-        // console.log('answers', answers);
-        // console.log('info.questions', info.questions);
-        // console.log('transformedQuestions', transformedQuestions);
 
         setQuestions(transformedQuestions);
         setLoading(false);
