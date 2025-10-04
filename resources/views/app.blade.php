@@ -45,7 +45,7 @@
     <script src="{{ asset('assets/js/tech-stack.js') }}"></script>
 
     <!-- TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/zixrz7u6veeuwuyyj5jcryow2yfwy1vpf3wzqek9oqha4zu6/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script src="https://cdn.tiny.cloud/1/0lm5ak7jgzvwhvsawm2jrv3zut8r01qf8aypuy6cku4ozpzd/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
     <script>
         tinymce.init({
