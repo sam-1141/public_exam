@@ -44,8 +44,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" id="main-style-link" />
     <script src="{{ asset('assets/js/tech-stack.js') }}"></script>
 
-    <!-- TinyMCE -->
-    <script src="https://cdn.tiny.cloud/1/zixrz7u6veeuwuyyj5jcryow2yfwy1vpf3wzqek9oqha4zu6/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <!-- Place the first <script> tag in your HTML's <head> -->
+    <script src="https://cdn.tiny.cloud/1/vr0rtuvhk1i0pjs78qsg5qyjfr6ois1s09zeeywa6vj44sqy/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
     <script>
         tinymce.init({
