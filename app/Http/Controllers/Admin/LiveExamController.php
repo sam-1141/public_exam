@@ -54,7 +54,7 @@ class LiveExamController extends Controller
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
             ->where('exam_question.exam_id', $exam->id)
-            ->orderBy('questions.serial', 'asc')
+            ->orderBy('questions.serial', 'desc')
             ->select('questions.*')
             ->get();
 
