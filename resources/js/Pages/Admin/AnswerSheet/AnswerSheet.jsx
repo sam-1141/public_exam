@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 const AnswerSheet = ({ examType, exam, questions }) => {
-    const isPracticeExam = examType === "practice";
+    // const isPracticeExam = examType === "practice";
 
     // Helper function to parse options
     const parseOptions = (optionsString) => {
@@ -37,7 +37,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                     {/* Course and Subject display */}
                     <div className="row mt-2 mb-3">
                         <div className="col-6">
-                            <div className="d-flex align-items-center">
+                            {/* <div className="d-flex align-items-center">
                                 <div className="me-3">
                                     <i className="fas fa-book fa-lg text-primary"></i>
                                 </div>
@@ -51,10 +51,10 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                             : "No Course"}
                                     </small>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-6">
-                            <div className="d-flex align-items-center">
+                            {/* <div className="d-flex align-items-center">
                                 <div className="me-3">
                                     <i className="fas fa-book-open fa-lg text-secondary"></i>
                                 </div>
@@ -70,7 +70,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                             : "No Subject"}
                                     </small>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -108,7 +108,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                     </div>
                                 </div>
 
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-calendar-alt fa-lg text-warning"></i>
@@ -125,7 +125,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                         </div>
                                     </div>
                                 )}
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-hourglass-half fa-lg text-gray-600"></i>
@@ -178,7 +178,7 @@ const AnswerSheet = ({ examType, exam, questions }) => {
                                     </div>
                                 </div>
 
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-calendar-times fa-lg text-danger"></i>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, router, usePage } from "@inertiajs/react";
-import Layout from "../../../layouts/Layout";
+// import { Link, router, usePage } from "@inertiajs/react";
+// import Layout from "../../../layouts/Layout";
 import { route } from "ziggy-js";
 import QuestionList from "./QuestionList/QuiestionList";
 import QuestionModal from "../../../components/Questions/QuestionModal";
@@ -8,28 +8,28 @@ import QuestionModal from "../../../components/Questions/QuestionModal";
 const ExamDetails = ({ examType, exam, questions }) => {
     const [showAddQuestionModal, setShowAddQuestionModal] = useState(false);
 
-    const isPracticeExam = examType === "practice";
+    // const isPracticeExam = examType === "practice";
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-        alert("Exam link copied to clipboard!");
-    };
+    // const copyToClipboard = (text) => {
+    //     navigator.clipboard.writeText(text);
+    //     alert("Exam link copied to clipboard!");
+    // };
 
-    const toggleStatus = (id, currentStatus) => {
-        router.put(route("exams.status.toggle", id), {
-            publish: currentStatus ? 0 : 1,
-        });
-    };
+    // const toggleStatus = (id, currentStatus) => {
+    //     router.put(route("exams.status.toggle", id), {
+    //         publish: currentStatus ? 0 : 1,
+    //     });
+    // };
 
-    const toggleExamType = (id, currentExamType) => {
-        router.put(route("exams.type.toggle", id), {
-            examType: currentExamType ? 0 : 1,
-        });
-    };
+    // const toggleExamType = (id, currentExamType) => {
+    //     router.put(route("exams.type.toggle", id), {
+    //         examType: currentExamType ? 0 : 1,
+    //     });
+    // };
 
     return (
         <div className="container py-4">
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            {/* <div className="d-flex justify-content-between align-items-center mb-4">
                 <Link
                     href={route(
                         isPracticeExam
@@ -43,10 +43,10 @@ const ExamDetails = ({ examType, exam, questions }) => {
                 <h2 className="mb-0 h4 font-semibold">Exam Details</h2>
                 {exam.exam_type === 1 && (
                     <span className="badge bg-info text-dark">
-                        Practice Exam
+                        Practice Examb
                     </span>
                 )}
-            </div>
+            </div> */}
 
             {/* Exam Card  */}
             <div className="card shadow-sm mb-4">
@@ -62,7 +62,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                 </p>
                             </div>
 
-                            {exam.publishInstant === 1 ? (
+                            {/* {exam.publishInstant === 1 ? (
                                 <>
                                     <span className="badge bg-success">
                                         Published
@@ -74,13 +74,13 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                         Unpublished
                                     </span>
                                 </>
-                            )}
+                            )} */}
                         </div>
                     </div>
                     {/* Course and Subject display */}
                     <div className="row mt-2 mb-3">
                         <div className="col-6">
-                            <div className="d-flex align-items-center">
+                            {/* <div className="d-flex align-items-center">
                                 <div className="me-3">
                                     <i className="fas fa-book fa-lg text-primary"></i>
                                 </div>
@@ -97,14 +97,14 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                             : "No Course"}
                                     </small>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-6">
                             <div className="d-flex align-items-center">
-                                <div className="me-3">
+                                {/* <div className="me-3">
                                     <i className="fas fa-book-open fa-lg text-secondary"></i>
-                                </div>
-                                <div>
+                                </div> */}
+                                {/* <div>
                                     <div className="fw-bold">Subjects</div>
                                     <small
                                         className="text-truncate d-block"
@@ -118,7 +118,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                                   .join(", ")
                                             : "No Subject"}
                                     </small>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     </div>
                                 </div>
 
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-calendar-alt fa-lg text-warning"></i>
@@ -174,7 +174,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                         </div>
                                     </div>
                                 )}
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-hourglass-half  fa-lg text-gray-600"></i>
@@ -227,7 +227,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                                     </div>
                                 </div>
 
-                                {!isPracticeExam && (
+                                {(
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <i className="fas fa-calendar-times fa-lg text-danger"></i>
@@ -252,7 +252,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
 
             {/* Action Buttons */}
             <div className="d-flex flex-wrap gap-2 mb-4">
-                <button
+                {/* <button
                     className={`btn btn-${
                         exam.publishInstant ? "warning" : "success"
                     } btn-sm`}
@@ -267,8 +267,8 @@ const ExamDetails = ({ examType, exam, questions }) => {
                             <i className="fas fa-eye me-1"></i>Publish
                         </>
                     )}
-                </button>
-                <button
+                </button> */}
+                {/* <button
                     className={`btn btn-success btn-sm`}
                     onClick={() => toggleExamType(exam.id, exam.exam_type)}
                 >
@@ -283,20 +283,20 @@ const ExamDetails = ({ examType, exam, questions }) => {
                             Exam
                         </>
                     )}
-                </button>
-                {!isPracticeExam && (
+                </button> */}
+                { (
                     <>
                         {/*<button className="btn btn-info btn-sm">*/}
                         {/*    <i className="fas fa-sync-alt me-1"></i>Update*/}
                         {/*    Results*/}
                         {/*</button>*/}
 
-                        <button
+                        {/* <button
                             className="btn btn-outline-primary btn-sm"
                             onClick={() => copyToClipboard(exam.examUrl ?? ``)}
                         >
                             <i className="fas fa-link me-1"></i>Copy Link
-                        </button>
+                        </button> */}
                         {/*<button className="btn btn-outline-warning btn-sm">*/}
                         {/*    <i className="fas fa-trophy me-1"></i>Leaderboard*/}
                         {/*</button>*/}
@@ -324,7 +324,8 @@ const ExamDetails = ({ examType, exam, questions }) => {
                 )}
             </div>
 
-            <QuestionList questions={questions} examType={examType} />
+            <QuestionList questions={questions}  /> 
+             {/* examType={examType} */}
 
             <QuestionModal
                 show={showAddQuestionModal}
@@ -337,5 +338,5 @@ const ExamDetails = ({ examType, exam, questions }) => {
     );
 };
 
-ExamDetails.layout = (page) => <Layout children={page} />;
+// ExamDetails.layout = (page) => <Layout children={page} />;
 export default ExamDetails;

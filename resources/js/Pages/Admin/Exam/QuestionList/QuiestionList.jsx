@@ -242,15 +242,7 @@ const QuestionList = ({
                                                         <span className="font-medium me-2">
                                                             Option {index + 1}:
                                                         </span>
-                                                        {/*{option.option.startsWith(*/}
-                                                        {/*    "<img"*/}
-                                                        {/*) ? (*/}
-                                                        {/*    <div*/}
-                                                        {/*        dangerouslySetInnerHTML={{*/}
-                                                        {/*            __html: option.option,*/}
-                                                        {/*        }}*/}
-                                                        {/*    />*/}
-                                                        {/*) : (*/}
+                                                      
                                                             <div
                                                                 dangerouslySetInnerHTML={{
                                                                     __html: option.option,

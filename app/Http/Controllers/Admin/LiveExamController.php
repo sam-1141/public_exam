@@ -31,25 +31,25 @@ class LiveExamController extends Controller
     {
         $exam = LiveExam::where('slug', $examSlug)->firstOrFail();
 
-        $courseExam = DB::table('course_exam')
-            ->where('exam_id', $exam->id)
-            ->pluck('course_id')
-            ->toArray();
+        // $courseExam = DB::table('course_exam')
+        //     ->where('exam_id', $exam->id)
+        //     ->pluck('course_id')
+        //     ->toArray();
 
-        $courseInfo = DB::connection('Webapp')
-            ->table('courses')
-            ->whereIn('id', $courseExam)
-            ->get(['id','course_name']);
+        // $courseInfo = DB::connection('Webapp')
+        //     ->table('courses')
+        //     ->whereIn('id', $courseExam)
+        //     ->get(['id','course_name']);
 
-        $examSubject = DB::table('exam_subject')
-            ->where('exam_id', $exam->id)
-            ->pluck('subject_id')
-            ->toArray();
+        // $examSubject = DB::table('exam_subject')
+        //     ->where('exam_id', $exam->id)
+        //     ->pluck('subject_id')
+        //     ->toArray();
 
-        $subjectInfo = DB::connection('CoreDB')
-            ->table('subjects')
-            ->whereIn('id', $examSubject)
-            ->get(['id', 'name']);
+        // $subjectInfo = DB::connection('CoreDB')
+        //     ->table('subjects')
+        //     ->whereIn('id', $examSubject)
+        //     ->get(['id', 'name']);
 
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
@@ -63,23 +63,23 @@ class LiveExamController extends Controller
             'exam' => [
                 'id' => $exam->id,
                 'name' => $exam->name,
-                'courseInfo' => $courseInfo,
-                'subjectInfo' => $subjectInfo,
-                'slug' => $exam->slug,
+                // 'courseInfo' => $courseInfo,//
+                // 'subjectInfo' => $subjectInfo,//
+                'slug' => $exam->slug,//
                 'description' => $exam->description,
                 'totalQuestions' => $exam->total_questions,
                 'hasNegativeMarks' => $exam->has_negative_marks,
                 'negativeMarksValue' => $exam->negative_marks_value,
                 'totalMarks' => $exam->total_marks,
                 'duration' => $exam->duration,
-                'questionType' => $exam->question_type,
-                'privacy' => $exam->privacy,
-                'publishInstant' => $exam->publish,
+                // 'questionType' => $exam->question_type,//
+                // 'privacy' => $exam->privacy,//
+                // 'publishInstant' => $exam->publish,//
                 'startTime' => optional($exam->start_time)->format('Y-m-d H:i'),
                 'endTime' => optional($exam->end_time)->format('Y-m-d H:i'),
                 'resultPublishTime' => optional($exam->result_publish_time)->format('Y-m-d H:i'),
-                'examUrl' => $exam->exam_url,
-                'exam_type' => $exam->exam_type,
+                'examUrl' => $exam->exam_url,//
+                'exam_type' => $exam->exam_type,//
             ],
             'examType' => $type,
             'questions' => $questions,
