@@ -54,10 +54,9 @@ class StudentLiveExamController extends Controller
     public function loadExamMainPage(Request $request)
     {
         $studentId = auth()->id();
-        $examSlug = $request->query('examSlug');
+        // $examSlug = $request->query('examSlug');
 
         $exam = DB::table('live_exams')
-            ->where('slug', $examSlug)
             ->first();
 
         if (!$exam) {

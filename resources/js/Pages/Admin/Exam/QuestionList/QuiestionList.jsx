@@ -99,12 +99,18 @@ const QuestionList = ({
     };
 
     const parseOptions = (optionsString) => {
-        try {
-            return JSON.parse(optionsString);
-        } catch (e) {
-            return [];
-        }
-    };
+    console.log("Raw input string:", optionsString);
+
+    try {
+        const parsed = JSON.parse(optionsString);
+        console.log("Parsed object:", parsed);
+        return parsed;
+    } catch (e) {
+        console.error("JSON parse error:", e);
+        return [];
+    }
+};
+
 
     return (
         <div className="mt-2">

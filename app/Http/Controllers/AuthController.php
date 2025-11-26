@@ -71,7 +71,7 @@ class AuthController extends Controller
     public function loadLoginForm(Request $req)
     {
         if (Auth::check()) {
-            return to_route("dashboard");
+            return to_route("auth.registration.form");
         }
 
         $redirect_url = $req->query('redirect');

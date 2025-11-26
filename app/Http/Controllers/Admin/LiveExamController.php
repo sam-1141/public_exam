@@ -51,6 +51,14 @@ class LiveExamController extends Controller
         //     ->whereIn('id', $examSubject)
         //     ->get(['id', 'name']);
 
+        // $questions = DB::table('questions')
+        //     ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+        //     ->where('exam_question.exam_id', $exam->id)
+        //     ->orderBy('questions.serial', 'desc')
+        //     ->select('questions.*')
+        //     ->get(); // returns single object
+
+        // dump($questions); // dump & die
         $questions = DB::table('questions')
             ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
             ->where('exam_question.exam_id', $exam->id)
@@ -487,12 +495,22 @@ class LiveExamController extends Controller
                 ->whereIn('id', $examSubject)
                 ->get(['id', 'name']);
 
-            $questions = DB::table('questions')
-                ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
-                ->where('exam_question.exam_id', $exam->id)
-                ->select('questions.*')
-                ->get();
+            // $questions = DB::table('questions')
+            //     ->join('exam_question', 'questions.id', '=', 'exam_question.question_id')
+            //     ->where('exam_question.exam_id', $exam->id)
+            //     ->select('questions.*')
+            //     ->get();
+            // $questions = DB::table('questions')
+            // ->select('questions.*')
+            // ->get();
+            $question = DB::table('questions')
+    ->select('questions.*')
+    ->where('id', 6)
+    ->first();  // returns single object
 
+            dd($question); // dump & die
+
+             
             return Inertia::render('Admin/AnswerSheet/AnswerSheet', [
                 'exam' => [
                     'id' => $exam->id,
