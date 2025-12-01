@@ -11,6 +11,7 @@ const QuestionList = ({
     onQuestionAdded,
     onQuestionUpdated,
 }) => {
+    console.log("here from questionlist"+ examId);
     const [expandedQuestion, setExpandedQuestion] = useState(null);
     const [questions, setQuestions] = useState(initialQuestions);
     const [showReorderModal, setShowReorderModal] = useState(false);
@@ -30,6 +31,7 @@ const QuestionList = ({
             });
 
             // console.log('response', response);
+            console.log(examId+"from qustionlist");
             alert("Order saved successfully!");
         } catch (error) {
             alert("Failed to save order");
@@ -99,18 +101,14 @@ const QuestionList = ({
     };
 
     const parseOptions = (optionsString) => {
-    console.log("Raw input string:", optionsString);
+        
 
-    try {
-        const parsed = JSON.parse(optionsString);
-        console.log("Parsed object:", parsed);
-        return parsed;
-    } catch (e) {
-        console.error("JSON parse error:", e);
-        return [];
-    }
-};
-
+        try {
+            return JSON.parse(optionsString);
+        } catch (e) {
+            return [];
+        }
+    };
 
     return (
         <div className="mt-2">
@@ -131,160 +129,179 @@ const QuestionList = ({
             </div>
 
             <div className="accordion" id="questionsAccordion">
-                {questions.map((question, index) => {
-                    const options = parseOptions(question.options);
 
-                    return (
+    {/* Group questions by subject_name */}
+    {Object.entries(
+        questions.reduce((acc, q) => {
+            if (!acc[q.subject_name]) acc[q.subject_name] = [];
+            acc[q.subject_name].push(q);
+            return acc;
+        }, {})
+    ).map(([subjectName, subjectQuestions]) => (
+        <div key={subjectName} className="mb-4">
+
+            {/* Subject Title + Count */}
+            <h2 className="text-lg font-semibold mb-2">
+                {subjectName} ({subjectQuestions.length})
+            </h2>
+
+            {/* Render all questions under this subject */}
+            {subjectQuestions.map((question, index) => {
+                const options = parseOptions(question.options);
+
+                return (
+                    <div
+                        key={question.id}
+                        className="accordion-item mb-2 border rounded"
+                    >
+                        <h2 className="accordion-header">
+                            <button
+                                className={`accordion-button ${
+                                    expandedQuestion === question.id
+                                        ? ""
+                                        : "collapsed"
+                                }`}
+                                type="button"
+                                onClick={() => toggleQuestion(question.id)}
+                                aria-expanded={
+                                    expandedQuestion === question.id
+                                }
+                            >
+                                <span className="me-2 font-medium">
+                                    Q{index + 1}: 
+                                </span>
+
+                                <div
+                                    className="font-sans"
+                                    dangerouslySetInnerHTML={{
+                                        __html: `
+                                            <div className="truncate">
+                                                ${question.question.substring(
+                                                    0,
+                                                    80
+                                                )}
+                                                ${
+                                                    question.question.length > 80
+                                                        ? "..."
+                                                        : ""
+                                                }
+                                            </div>
+                                        `,
+                                    }}
+                                />
+                            </button>
+                        </h2>
+
                         <div
-                            key={question.id}
-                            className="accordion-item mb-2 border rounded"
+                            className={`accordion-collapse collapse ${
+                                expandedQuestion === question.id ? "show" : ""
+                            }`}
                         >
-                            <h2 className="accordion-header">
-                                <button
-                                    className={`accordion-button ${
-                                        expandedQuestion === question.id
-                                            ? ""
-                                            : "collapsed"
-                                    }`}
-                                    type="button"
-                                    onClick={() => toggleQuestion(question.id)}
-                                    aria-expanded={
-                                        expandedQuestion === question.id
-                                    }
-                                >
-                                    <span className="me-2 font-medium">
-                                        Q{index + 1}:
-                                    </span>
+                            <div className="accordion-body p-4">
+                                {/* ORIGINAL CONTENT UNTOUCHED */}
+
+                                <div className="mb-4">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h4 className="font-medium">
+                                            Question:
+                                        </h4>
+                                        <div className="flex space-x-2 gap-2">
+                                            <button
+                                                onClick={() =>
+                                                    handleEdit(question)
+                                                }
+                                                className="btn btn-sm btn-outline-warning"
+                                            >
+                                                <i className="fas fa-pen me-1"></i>{" "}
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(question.id)
+                                                }
+                                                className="btn btn-sm btn-outline-danger"
+                                            >
+                                                <i className="fas fa-trash me-1"></i>{" "}
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
 
                                     <div
                                         dangerouslySetInnerHTML={{
-                                            __html: `
-                                                <div className="truncate">
-                                                    ${question.question.substring(
-                                                        0,
-                                                        80
-                                                    )}
-                                                    ${
-                                                        question.question
-                                                            .length > 80
-                                                            ? "..."
-                                                            : ""
-                                                    }
-                                                </div>
-                                                    `,
+                                            __html: question.question,
                                         }}
                                     />
-                                </button>
-                            </h2>
-                            <div
-                                className={`accordion-collapse collapse ${
-                                    expandedQuestion === question.id
-                                        ? "show"
-                                        : ""
-                                }`}
-                            >
-                                <div className="accordion-body p-4">
-                                    {/* Question Content */}
-                                    <div className="mb-4">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h4 className="font-medium">
-                                                Question:
-                                            </h4>
-                                            <div className="flex space-x-2 gap-2">
-                                                <button
-                                                    onClick={() =>
-                                                        handleEdit(question)
-                                                    }
-                                                    className="btn btn-sm btn-outline-warning"
-                                                >
-                                                    <i className="fas fa-pen me-1"></i>{" "}
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleDelete(
-                                                            question.id
-                                                        )
-                                                    }
-                                                    className="btn btn-sm btn-outline-danger"
-                                                >
-                                                    <i className="fas fa-trash me-1"></i>{" "}
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div
-                                            dangerouslySetInnerHTML={{
-                                                __html: question.question,
-                                            }}
-                                        />
 
-                                        {question.question_image && (
-                                            <div className="mt-2">
-                                                <img
-                                                    src={`/storage/${question.question_image}`}
-                                                    alt="Question"
-                                                    className="max-w-full h-auto max-h-60 rounded"
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="mb-4">
-                                        <h4 className="font-medium mb-2">
-                                            Options:
-                                        </h4>
-                                        <ul className="list-group">
-                                            {options.map((option, index) => (
-                                                <li
-                                                    key={index}
-                                                    className={`list-group-item ${
-                                                        option.ans
-                                                            ? "border-2 border-success"
-                                                            : "border-1"
-                                                    }`}
-                                                >
-                                                    <div className="flex items-center">
-                                                        <span className="font-medium me-2">
-                                                            Option {index + 1}:
-                                                        </span>
-                                                      
-                                                            <div
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html: option.option,
-                                                                }}
-                                                            />
-                                                        {/*)}*/}
-                                                        {option.ans && (
-                                                            <span className="ms-auto badge bg-success text-white">
-                                                                Correct
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {/* Explanation */}
-                                    {question.explanation && (
-                                        <div className="mb-4">
-                                            <h4 className="font-medium">
-                                                Explanation:
-                                            </h4>
-                                            <div
-                                                dangerouslySetInnerHTML={{
-                                                    __html: question.explanation,
-                                                }}
+                                    {question.question_image && (
+                                        <div className="mt-2">
+                                            <img
+                                                src={`/storage/${question.question_image}`}
+                                                alt="Question"
+                                                className="max-w-full h-auto max-h-60 rounded"
                                             />
                                         </div>
                                     )}
                                 </div>
+
+                                <div className="mb-4">
+                                    <h4 className="font-medium mb-2">
+                                        Options:
+                                    </h4>
+                                    alert(options)
+                                    <ul className="list-group">
+                                        {options.map((option, index) => (
+                                            <li
+                                                key={index}
+                                                className={`list-group-item ${
+                                                    option.ans
+                                                        ? "border-2 border-success"
+                                                        : "border-1"
+                                                }`}
+                                            >
+                                                <div className="flex items-center">
+                                                    <span className="font-medium me-2">
+                                                        Option {index + 1}:
+                                                    </span>
+
+                                                    <div
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: option.option,
+                                                        }}
+                                                    />
+
+                                                    {option.ans && (
+                                                        <span className="ms-auto badge bg-success text-white">
+                                                            Correct
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {question.explanation && (
+                                    <div className="mb-4">
+                                        <h4 className="font-medium">
+                                            Explanation:
+                                        </h4>
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: question.explanation,
+                                            }}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    );
-                })}
-            </div>
+                    </div>
+                );
+            })}
+        </div>
+    ))}
+</div>
+
 
             {showReorderModal && (
                 <QuestionReorderModal

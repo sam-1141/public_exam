@@ -1,95 +1,31 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminLeaderboardController;
-use App\Http\Controllers\Admin\LiveExamController;
-use App\Http\Controllers\Admin\ResultController;
-use App\Http\Controllers\Admin\PractiseExamController;
-use App\Http\Controllers\ArchiveController;
-use App\Http\Controllers\ProgressReportController;
-use App\Http\Controllers\Student\PracticeExamController;
-use App\Http\Controllers\Student\StudentLeaderboardController;
-use App\Http\Controllers\Student\StudentLiveExamController;
-use App\Http\Controllers\TrialExamController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\CalculatorController;
+use App\Http\Controllers\AdminLectureController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\HardnessController;
-use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\QuestionController;
-use App\Http\Controllers\MaterialsController;
-use App\Http\Controllers\TagController;
-use App\Http\Controllers\TopicController;
+use App\Http\Controllers\Student\Hsc26MapRegistrationController;
+use App\Http\Controllers\Student\VideoController;
+use App\Http\Controllers\Admin\ExamInfoController;
+use App\Http\Controllers\Admin\LiveExamController;
+use \App\Http\Controllers\Admin\VideoSettingController;
+use App\Http\Controllers\Student\StudentLiveExamController;
 
-Route::get('/forbidden', function () {
-    abort(403);
-})->name('error.forbidden');
 
-Route::controller(LiveExamController::class)->group(function () {
-    Route::get('/exam/{type}/{examSlug}/answer-sheet', 'loadAdminAnswerSheet')->name('admin.answer.sheet');
-});
 
-Route::middleware(['auth'])->group(function () {
-    Route::controller(DashboardController::class)->group(function () {
-        Route::get('/', 'index')->name('dashboard');
-        Route::get('/about', 'about')->name('about');
-        Route::get('/student/dashboard', 'studentDashboard')->name('student.dashboard');
-    });
+##############################################################################################################################################################
 
-    Route::middleware(['admin'])->group(function () {
-        Route::controller(MaterialsController::class)->group(function () {
-            Route::get("/manage/material", "index")->name("manage.material");
-        });
 
-        Route::controller(TagController::class)->group(function () {
-            Route::post('/add-tags', "store")->name('add.tags');
-            Route::put('/update-tag/{id}', [TagController::class, 'update'])->name('update.tag');
-            Route::delete('/delete-tag/{id}', [TagController::class, 'destroy'])->name('delete.tag');
-        });
-
-        Route::controller(HardnessController::class)->group(function () {
-            Route::post('/add-hardness', "store")->name('add.hardness');
-            Route::put('/update-hardness/{id}', [HardnessController::class, 'update'])->name('update.hardness');
-            Route::delete('/delete-hardness/{id}', [HardnessController::class, 'destroy'])->name('delete.hardness');
-        });
-
-        Route::controller(TopicController::class)->group(function () {
-            Route::post('/add-topics', "store")->name('add.topics');
-            Route::put('/update-topic/{id}', [TopicController::class, 'update'])->name('update.topic');
-            Route::delete('/delete-topic/{id}', [TopicController::class, 'destroy'])->name('delete.topic');
-        });
-
-        Route::controller(QuestionController::class)->group(function () {
-            Route::get('/add-questions', 'addQuestions')->name('add.questions');
-            Route::get('/add-mcq/{class?}/{subject?}/{chapter?}', 'create')->name('page.add.mcq');
-            Route::post('/add-mcq', 'store')->name('execute.submit.add.mcq.form');
-            Route::get('/mcq-bank', 'mcqBank')->name('mcq.bank');
-            Route::delete("/delete-mcq/{id}", 'deleteMcq')->name('delete.mcq');
-            Route::get("/edit-mcq/{id}", "editMcq")->name("edit.mcq");
-            Route::put("/update-mcq/{id}", "updateMcq")->name("update.mcq");
-            Route::get('/quick-question/{class?}/{subject?}/{chapter?}', 'quickQuestion')->name('page.quick.question');
-            Route::post('/quick-question', 'storeQuickQuestion')->name('execute.submit.quick.question');
-        });
-
-        Route::controller(AdminLeaderboardController::class)->group(function () {
-            Route::get('/admin/leaderboard', 'loadAdminLeaderBoardPage')->name('admin.leaderboard');
-            Route::get('/admin/exam/{examSlug}/leaderboard/list', 'loadAdminLeaderBoardList')->name('admin.leaderboard.list');
-            Route::get('/admin/exam/{examSlug}/leaderboard/export/list', 'loadAdminLeaderBoardListForExcel')->name('admin.leaderboard.list.export');
-        });
-
-        Route::controller(ResultController::class)->group(function () {
-            Route::get('/admin/exam/results', 'loadExamResults')->name('admin.exam.results');
-            Route::get('/admin/course/{courseSlug}/exam/results', 'loadExamResultsListByCourse')->name('admin.exam.results.list');
-            Route::get('/admin/student/{studentId}/exam/{examSlug}/answer-sheet', 'loadStudentAnswerSheetPage')->name('admin.student.answer.sheet');
-            Route::delete('/admin/student/{studentId}/exam/{examId}/answer-sheet/reset', 'answerSheetReset')->name('answer.sheet.reset');
-        });
-
-        Route::controller(ResultController::class)->group(function () {
-            Route::get('/admin/student/{studentId}/exam/{examSlug}/answer-sheet', 'loadStudentAnswerSheetPage')->name('admin.student.answer.sheet');
-        });
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->controller(VideoSettingController::class)
+    ->group(function () {
 
         Route::controller(LiveExamController::class)->group(function () {
-            Route::post('/admin/live-exam/store', 'store')->name('execute.store.exam');
-            Route::get('/admin/live-exam/list', 'showAllExam')->name('show.exam.list');
+            Route::post('/live-exam/store', 'store')->name('live-exams.store');
+            Route::get('/live-exams/create', 'create')->name('admin.live-exams.create');
             Route::get('/admin/live-exams/{slug}', 'getSingleExam')->name('get.single.exam');
             Route::put('/admin/live-exams/{slug}', 'updateExam')->name('update.single.exam');
             Route::post('/admin/live-exams/questions', 'storeExamQuestion')->name('admin.exam.questions.store');
@@ -100,95 +36,126 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/add-exam', 'loadAddExamPage')->name('admin.add.exam');
             Route::get('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
 //            Route::post('/add-exam/live-exam', 'loadAddLiveExamPage')->name('admin.add.live.exam');
-            Route::get('/exams/{type}/{exam}', 'loadViewExamDetails')->name('admin.exam.details');
+            Route::get('/exams', 'loadViewExamDetails')->name('admin.exam.details');
             Route::post('/live-exam/reorder-questions', 'reorderQuestions')->name('live.exam.reorder.questions');
         });
+        
 
-        Route::controller(PractiseExamController::class)->group(function () {
-            Route::get('/add-exam/practice-exam', 'loadAddPracticeExamPage')->name('admin.add.practice.exam');
-            Route::get('/admin/practise-exam/list', 'showAllExam')->name('show.practise.exam.list');
-        });
     });
+use App\Http\Controllers\Admin\InvigilatorController;
 
-    Route::middleware(['student'])->group(function () {
-        Route::controller(ProgressReportController::class)->group(function () {
-            Route::get('/student/progress-report', 'loadProgressReport')->name('student.progress.report');
-        });
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/invigilator', [InvigilatorController::class, 'index']);
+    Route::post('/admin/toggle-login/{id}', [InvigilatorController::class, 'toggleLogin']);
+    Route::post('/admin/toggle-submit/{studentId}', [InvigilatorController::class, 'toggleSubmitStatus']);
+});
 
-        Route::controller(StudentLeaderboardController::class)->group(function () {
-            Route::get('/student/leaderboard', 'loadLeaderBoardPage')->name('student.leaderboard');
-            Route::get('/student/exam/{examSlug}/leaderboard/list', 'loadStudentLeaderBoardList')->name('student.leaderboard.list');
-        });
+Route::middleware(['auth', 'student'])
+    ->prefix('student')
+    ->controller(VideoSettingController::class)
+    ->group(function () {
 
-        Route::controller(TrialExamController::class)->group(function () {
-            Route::get('/student/trial-exam', 'loadTrialExamPage')->name('student.trial.exam');
-        });
 
-        Route::controller(StudentLiveExamController::class)->group(function () {
-            Route::get('/student/live-exam/list', 'loadExamListPage')->name('student.live.exam.list');
-            Route::get('/student/exam/notice', 'loadExamNoticePage')->name('student.exam.notice');
-            Route::get('/student/exam', 'loadExamMainPage')->name('student.live.exam.main');
+            Route::controller(StudentLiveExamController::class)->group(function () {
+            Route::get('/live-exam/list', 'loadExamListPage')->name('student.live.exam.list');
+            Route::get('/exam/notice', 'loadExamNoticePage')->name('student.exam.notice');
+            Route::get('/exam', 'loadExamMainPage')->name('student.live.exam.main');
             Route::post('/student/exam', 'submitExamMainPage')->name('student.live.exam.main.submit');
             Route::post('/student/{exam}/violation/rules', 'submitTabSwitchCount')->name('student.live.exam.tab.switch.count');
             Route::get('/student/live-exam/success', 'loadExamSuccessPage')->name('student.live.exam.success');
             Route::post('/student/exams/answers','answerStore')->name('student.exam.answer.store');
+            Route::get('/delete','deleteAllExamData')->name('student.delete.exam');
         });
 
-        Route::controller(PracticeExamController::class)->group(function () {
-            Route::get('/student/practice-exam/practice', 'loadPracticeExamListPage')->name('student.practice.exam.list');
-//            Route::get('/student/practice-exam/', 'loadPracticeExamPage')->name('student.practice.exam');
-            Route::post('/student/practice-exam/{exam}/result', 'loadPracticeExamResult')->name('student.practice.exam.result');
-        });
 
-        Route::controller(ArchiveController::class)->group(function () {
-            // remove this route with all functionality
-            Route::get('/student/archive', 'loadArchivePage')->name('student.archive.exam');
-        });
 
-        Route::controller(HistoryController::class)->group(function () {
-            Route::get('/student/history', 'loadHistoryPage')->name('student.history');
-            Route::get('/student/answer-sheet/{examSlug}', 'loadAnswerSheetPage')->name('student.answer.sheet');
-            Route::get('/student/leaderboard/exam/{examSlug}', 'loadSingleExamLeaderBoardPage')->name('student.leaderboard.single.exam');
-        });
+        
 
     });
-});
+Route::get('/force-logout', function () {
+
+    // Create a fake POST request to the logout route
+    request()->setMethod('POST');
+
+    return app()->call('App\Http\Controllers\AuthController@logout');
+})->name('force.logout');
+
+
+
+
+
+
+##############################################################################################################################################################
+
+
+
+
+
+
+
+
+// Admin panel
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->controller(VideoSettingController::class)
+    ->group(function () {
+
+        Route::get('/video-settings', 'edit')->name('show.video.settings');
+        Route::post('/video-settings', 'update')->name('store.video.settings');
+        Route::get('/dashboard', 'showStudentDashboard')->name('student.dashboard');
+
+    });
+
+
+
+
+
+Route::get('/', function () {
+    return redirect()->route('auth.registration.form');
+})->name('root');
+
+
 
 Route::controller(AuthController::class)->group(function () {
-    // route for load login form
-    Route::get("/auth/login", "loadLoginForm")->name("auth.login");
-    Route::get('/logout', 'logout')->name('auth.logout');
-    // route for load forgot passwordForm
-    Route::get("/auth/forgot-password", "loadForgotPasswordForm")->name('auth.forgot.password');
-    // route for load registration form
-    Route::get("/auth/registration", "loadRegistrationForm")->name("auth.registration.form");
-    // route for load verify otp form
-    Route::get("/verify/otp", "loadVerifyOtpForm")->name("load.otp.form");
-    // route for load forgot password otp form
-    Route::get("/forgot-password/verify/otp", "loadForgotPasswordOtpForm")->name("load.forgot.verify.otp");
-    // route for load set password form
-    Route::get("/auth/set/password", "loadSetPasswordForm")->name("load.set.password.form");
-    // route for load set new password form
-    Route::get("/forgot/set/new/password", "loadSetNewPassword")->name("load.new.password.form");
+    Route::get("/HscMisssionA+/registration", "loadRegistrationForm")
+        ->name("auth.registration.form");
 
-    #=== Post Routes ===#
-    // route for login
-    Route::post("/auth/login", "login")->name("execute.auth.login");
-    // route for registration
-    Route::post("/auth/registration", "registration")->name("execute.auth.registration");
-    // route for check otp
-    Route::post("/verify/otp", "verifyOtp")->name("verify.otp");
-    // route for set password
-    Route::post("/auth/set/password", "setNewPassword")->name("auth.set.password");
-    // route for execute final registration for student
-    Route::post("/execute/signup", "signUp")->name("execute.final.signup");
+    Route::get('/login', 'loadLoginForm')
+        ->name('auth.login');
 
-    // route for user password
-    Route::post("/execute/change/password", "changePassword")->name("execute.change.password");
-    // route for execute forgot password logic
-    Route::post("/execute/forgot/password", "executeForgotPassword")->name("execute.forgot.password");
-    // route for execute set new password
-    Route::post("/execute/forgot/set/new/password", "setNewPassword")->name("execute.set.new.password");
-    // route for check forgot password otp
-    Route::post("/forgot/password/otp/verify", "verifyForgotPasswordOtp")->name("forgot.password.otp.verify");
+    Route::post('/login', 'login')
+        ->name('auth.login.post');
+
+    Route::post('/logout', 'logout')
+        ->name('auth.logout');
 });
+
+
+Route::controller(Hsc26MapRegistrationController::class)->group(function () {
+
+    Route::post('/register', 'store')
+        ->name('execute.auth.hsc26mapregistration');
+
+    Route::get('/registration-success', 'showSuccess')
+        ->name('registration.success');
+
+    Route::get('/admit-card', 'admitCard')
+        ->name('admit.card');
+});
+
+Route::get('/student/video', [VideoController::class, 'show'])->name('student.video');
+
+
+Route::get('/exam-info', [ExamInfoController::class, 'show'])->name('exam.info');
+   
+
+
+
+
+
+// 🚫 Error pages
+
+Route::get('/forbidden', function () {
+    abort(403);
+})->name('error.forbidden');
+

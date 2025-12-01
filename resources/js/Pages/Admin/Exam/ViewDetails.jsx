@@ -308,7 +308,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                             Question
                         </button>
 
-                        <a
+                        {/* <a
                             href={route("admin.answer.sheet", {
                                 type: examType,
                                 examSlug: exam.slug,
@@ -319,7 +319,7 @@ const ExamDetails = ({ examType, exam, questions }) => {
                         >
                             <i className="fas fa-file-alt me-1"></i>View
                             AnswerSheet
-                        </a>
+                        </a> */}
                     </>
                 )}
             </div>

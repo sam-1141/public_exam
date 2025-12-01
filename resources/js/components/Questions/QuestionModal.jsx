@@ -13,6 +13,7 @@ const QuestionModal = ({
     mode = "add",
     onSuccess,
 }) => {
+    // console.log(examId+" this  is exam id");
     const [noCorrectAnswerError, setNoCorrectAnswerError] = useState(false);
 
     // Define default options structure
@@ -21,10 +22,12 @@ const QuestionModal = ({
         { option: "", ans: false },
         { option: "", ans: false },
         { option: "", ans: false },
+        { option: "", ans: false },
     ];
 
     const { data, setData, post, put, processing, errors, reset } = useForm({
         examId,
+        subject_name: "", // <<---- SUBJECT ADDED
         question: "",
         options: defaultOptions,
         explanation: "",
@@ -58,6 +61,7 @@ const QuestionModal = ({
                 // For edit mode, set the question data
                 setData({
                     examId,
+                    subject_name: questionData.subject_name || "", // <<---- added
                     question: questionData.question || "",
                     options: parseOptions(questionData.options),
                     explanation: questionData.explanation || "",
@@ -66,6 +70,7 @@ const QuestionModal = ({
                 // For add mode, reset to default
                 setData({
                     examId,
+                    subject_name: "", // <<---- added
                     question: "",
                     options: [...defaultOptions],
                     explanation: "",
@@ -88,6 +93,7 @@ const QuestionModal = ({
             // Reset form
             reset({
                 examId,
+                subject_name: "", // <<---- added
                 question: "",
                 options: [...defaultOptions],
                 explanation: "",
@@ -97,6 +103,7 @@ const QuestionModal = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
         // Check if at least one option is marked as correct
         const hasCorrectAnswer = data.options.some((option) => option.ans);
 
@@ -125,16 +132,15 @@ const QuestionModal = ({
                 data: submitData,
                 onSuccess: () => {
                     if (onSuccess) {
-                        // Pass the new question data to the callback
                         onSuccess({
                             id: Math.random(), // Temporary ID
                             ...submitData,
                             options: JSON.stringify(submitData.options),
                         });
                     }
-                    // Reset form after successful submission
                     reset({
                         examId,
+                        subject_name: "", // <<---- added
                         question: "",
                         options: [...defaultOptions],
                         explanation: "",
@@ -154,9 +160,9 @@ const QuestionModal = ({
                                 options: JSON.stringify(submitData.options),
                             });
                         }
-                        // Reset form after successful submission
                         reset({
                             examId,
+                            subject_name: "", // <<---- added
                             question: "",
                             options: [...defaultOptions],
                             explanation: "",
@@ -230,6 +236,37 @@ const QuestionModal = ({
                             className="modal-body overflow-auto"
                             style={{ maxHeight: "70vh" }}
                         >
+
+                            {/* ====================== SUBJECT DROPDOWN ADDED HERE ====================== */}
+                            <div className="mb-4">
+                                <label className="form-label fw-semibold">
+                                    Subject
+                                </label>
+                                <select
+                                    className="form-select"
+                                    value={data.subject_name}
+                                    onChange={(e) =>
+                                        setData("subject_name", e.target.value)
+                                    }
+                                >
+                                    <option value="">Select Subject</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Higher Math">Higher Math</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="Biology">Biology</option>
+                                    <option value="Bangla">Bangla</option>
+                                    <option value="English">English</option>
+                                    <option value="ICT">ICT</option>
+                                </select>
+                                {errors.subject_name && (
+                                    <div className="text-danger small mt-1">
+                                        {errors.subject_name}
+                                    </div>
+                                )}
+                            </div>
+                            {/* ====================== END SUBJECT DROPDOWN ====================== */}
+
+
                             {/* Question Section */}
                             <div className="mb-4">
                                 <label className="form-label fw-semibold mb-3">

@@ -1,7 +1,8 @@
+// ExamMainPage.jsx
 import {useState, useEffect, useRef} from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
-import Layout from "../../../../layouts/Layout"
+// import Layout from "../../../../layouts/Layout"
 import FocusWarning from "../../../../components/FocusWarning"
 import { route } from "ziggy-js";
 
@@ -49,34 +50,63 @@ const ExamMainPage = ({ exam, questions }) => {
       .map((opt, idx) => (opt.ans ? idx : -1))
       .filter(idx => idx !== -1);
 
-    // Check if user's answer is correct
-    const isCorrect = correctAnswers.includes(answerIndex);
-
     // Calculate per question mark
       const singleQuestionMark = exam.total_marks / exam.total_questions;
 
-      setAnswers((prev) => ({
-      ...prev,
-      [questionId]: {
-        answerIndex,
-        correct_ans: correctAnswers,
-        is_correct: isCorrect,
-        single_question_mark: singleQuestionMark
-      },
-    }));
+    // ---- NEW: support multi-select and toggle behavior ----
+    // currentSelections is normalized array of selected indices for this question
+    setAnswers((prev) => {
+      const prevForQ = prev[questionId] || {};
+      const prevSelected = Array.isArray(prevForQ.answerIndex) ? [...prevForQ.answerIndex] : (prevForQ.answerIndex !== undefined ? [prevForQ.answerIndex] : []);
+      const idxPos = prevSelected.indexOf(answerIndex);
 
-    try {
-      await axios.post(route('student.exam.answer.store'), {
-        exam_id: exam.id,
-        question_id: questionId,
-        ans_given: String(answerIndex),
-        correct_ans: correctAnswers.join(','),
-        is_correct: isCorrect,
-        single_question_mark: singleQuestionMark
-      })
-    } catch (err) {
-      // console.error('Answer save failed:', err)
-    }
+      let newSelected;
+      if (idxPos === -1) {
+        // not selected yet -> add (multi-select)
+        newSelected = [...prevSelected, answerIndex];
+      } else {
+        // already selected -> toggle off (unselect)
+        newSelected = prevSelected.filter(i => i !== answerIndex);
+      }
+
+      // sort for consistent ordering (helps equality checks)
+      newSelected = newSelected.sort((a,b) => a - b);
+
+      // Determine correctness: true if selected set equals correctAnswers set
+      const isCorrect = (newSelected.length === correctAnswers.length)
+        && newSelected.every(v => correctAnswers.includes(v));
+
+      const updated = {
+        ...prev,
+        [questionId]: {
+          answerIndex: newSelected, // store as array (multiselect)
+          correct_ans: correctAnswers,
+          is_correct: isCorrect,
+          single_question_mark: singleQuestionMark
+        },
+      };
+
+      // fire backend call after state update (but we keep the same route & payload shape)
+      // We will still send ans_given as a string (e.g. "1,2"). This matches your requirement.
+      (async () => {
+        try {
+          await axios.post(route('student.exam.answer.store'), {
+            exam_id: exam.id,
+            question_id: questionId,
+            ans_given: newSelected.length > 0 ? newSelected.join(',') : "-1", // <-- FIXED
+
+            correct_ans: correctAnswers.join(','),
+            is_correct: isCorrect,
+            single_question_mark: singleQuestionMark
+          })
+        } catch (err) {
+          // console.error('Answer save failed:', err)
+        }
+      })();
+
+      return updated;
+    });
+    // ---- END NEW ----
   };
 
   const handleSubmitByStudent = async (submitStatus) => {
@@ -138,10 +168,11 @@ const ExamMainPage = ({ exam, questions }) => {
           <div className="row align-items-center">
             <div className="col-md-4">
               <h4 className="mb-0 fw-bold">{exam.name}</h4>
-              <small className="text-muted">মোট নম্বর: {exam.totalMarks}</small>
+              <small className="text-muted">মোট নম্বর: {exam.total_marks}</small>
+               <ExamTimer duration={exam.duration} onTimeUp={handleSubmitByStudent} />
             </div>
             <div className="col-md-4 text-center">
-              <ExamTimer duration={exam.duration} onTimeUp={handleSubmitByStudent} />
+              {/* <ExamTimer duration={exam.duration} onTimeUp={handleSubmitByStudent} /> */}
             </div>
             <div className="col-md-4 text-end">
               <div className="d-flex align-items-center justify-content-end">
@@ -176,7 +207,7 @@ const ExamMainPage = ({ exam, questions }) => {
                 question={question}
                 questionNumber={index + 1}
                 onAnswerSelect={handleAnswerSelect}
-                selectedAnswer={answers[question.id]?.answerIndex}
+                selectedAnswer={answers[question.id]?.answerIndex} // now may be array
                 isAnswered={answers[question.id] !== undefined}
               />
             ))}
@@ -283,5 +314,5 @@ const ExamMainPage = ({ exam, questions }) => {
   )
 }
 
-ExamMainPage.layout = (page) => <Layout children={page} />
+// ExamMainPage.layout = (page) => <Layout children={page} />
 export default ExamMainPage

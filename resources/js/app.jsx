@@ -3,6 +3,7 @@ import "./bootstrap";
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import "../css/app.css";
+import ExamMainPage from './Pages/Student/Exam/LiveExam/ExamMainPage.jsx';
 
 createInertiaApp({
     resolve: (name) => {

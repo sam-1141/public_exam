@@ -42,7 +42,8 @@ const Login = ({ flash, errors, core_app_registration_url }) => {
         } else {
             // Phone validation
             const digits = formattedLogin.replace(/\D/g, "");
-            if (!/^01[3-9]\d{8}$/.test(digits)) {
+            if (!/^(?:\+?880|0)1[1-9]\d{8}$/.test(digits)) {
+
                 setError("সঠিক ফোন নাম্বার দিন (01XXXXXXXXX)");
                 return;
             }
@@ -54,7 +55,7 @@ const Login = ({ flash, errors, core_app_registration_url }) => {
             login: formattedLogin,
         };
 
-        router.post(route("execute.auth.login"), submitValues);
+        router.post(route("auth.login.post"), submitValues);
     };
 
     return (
@@ -135,17 +136,21 @@ const Login = ({ flash, errors, core_app_registration_url }) => {
                                 {flash?.error && <div>{flash.error}</div>}
                             </div>
 
-                            <div className="forgot-password text-start mt-3">
-                                <Link href={route("auth.forgot.password")}>
+                            {/* <div className="forgot-password text-start mt-3">
+                                <a
+                                    href="https://webapp.ft.education/auth/forgot-password"
+
+                                    rel="noopener noreferrer"
+                                >
                                     পাসওয়ার্ড ভুলে গিয়েছো?
-                                </Link>
-                            </div>
+                                </a>
+                            </div> */}
 
                             <button type="submit" className="login-btn fw-bold mt-3">
                                 লগ ইন
                             </button>
 
-                            <p className="error-message fst-italic mt-3">
+                            {/* <p className="error-message fst-italic mt-3">
                                 পূনঃস্মরণ: তুমি যদি কখনো পাসওয়ার্ড সেট না করে
                                 থাকো, তাহলে তোমার পাসওয়ার্ড সেট করতে{" "}
                                 <span className="forgot-password">
@@ -154,16 +159,23 @@ const Login = ({ flash, errors, core_app_registration_url }) => {
                                     </Link>
                                 </span>{" "}
                                 -তে ক্লিক করো
-                            </p>
+                            </p> */}
 
                             <hr />
 
-                            <div className="signup-link">
-                                <span>ফাহাদ'স টিউটোরিয়াল-এ নতুন?</span>
-                                <Link href={route("auth.registration.form")} className="fw-bold">
-                                    সাইন আপ করো
-                                </Link>
-                            </div>
+                            {/* <p className="error-message fst-italic mt-3">
+                                পুনঃস্মরণ: তুমি যদি কখনো পাসওয়ার্ড সেট না করে থাকো, তাহলে তোমার পাসওয়ার্ড সেট করতে{" "}
+                                <span className="forgot-password">
+                                    <a
+                                        href="https://webapp.ft.education/auth/registration"
+
+                                        rel="noopener noreferrer"
+                                    >
+                                        এখানে রেজিস্ট্রেশন করো
+                                    </a>
+                                </span>
+                            </p> */}
+
                         </form>
                     </div>
                 </div>

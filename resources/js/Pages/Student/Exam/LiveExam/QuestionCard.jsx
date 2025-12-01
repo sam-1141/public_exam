@@ -1,3 +1,4 @@
+// QuestionCard.jsx
 const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer, isAnswered }) => {
   // Parse the options JSON string into an array
   let parsedOptions = [];
@@ -6,6 +7,9 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
   } catch (error) {
     // console.error("Invalid options JSON", error);
   }
+
+  // NOTE: selectedAnswer may now be an array (for multi-select) or undefined.
+  const selectedIndices = Array.isArray(selectedAnswer) ? selectedAnswer : (selectedAnswer !== undefined ? [selectedAnswer] : []);
 
   return (
     <div className={`card mb-4 shadow-sm font-baloo ${isAnswered ? "border-2 border-success" : ""}`}>
@@ -25,8 +29,9 @@ const QuestionCard = ({ question, questionNumber, onAnswerSelect, selectedAnswer
             <div key={index} className="col-12 col-md-6">
               <button
                 className={`btn w-100 text-start p-3 border rounded-3 ${
-                  selectedAnswer === index ? "border-success" : "btn-outline-secondary"
+                  selectedIndices.includes(index) ? "border-success" : "btn-outline-secondary"
                 }`}
+                // when clicked call onAnswerSelect; parent will handle toggling
                 onClick={() => onAnswerSelect(question.id, index)}
               >
                 <span className="fw-semibold me-2">{String.fromCharCode(65 + index)}.</span>

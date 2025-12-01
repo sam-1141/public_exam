@@ -2,40 +2,59 @@
 
 namespace App\Models;
 
-use App\Models\Chapter;
-use App\Models\Subject;
-use App\Models\QuestionTag;
-use App\Models\StudentClass;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $table = 'questions';
 
-    public function tags(){
-        return $this->hasMany(QuestionTag::class, 'question_id','id');
+    /**
+     * Mass assignable attributes
+     */
+    protected $fillable = [
+        'serial',
+        'class_id',
+        'subject_name',   // <-- match your DB column
+        'chapter_id',
+        'topic_id',
+        'hardness_id',
+        'question',
+        'options',
+        'explanation',
+        'created_by',
+    ];
+
+    /**
+     * Cast 'options' JSON to array automatically
+     */
+    protected $casts = [
+        'options' => 'array',
+    ];
+
+    /**
+     * Optional relationships
+     */
+    public function chapter()
+    {
+        return $this->belongsTo(Chapter::class, 'chapter_id');
     }
 
-    public function class(){
-        return $this->belongsTo(StudentClass::class, 'class_id','id');
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class, 'topic_id');
     }
 
-    public function subject(){
-        return $this->belongsTo(Subject::class, 'subject_id','id');
+    public function hardness()
+    {
+        return $this->belongsTo(Hardness::class, 'hardness_id');
     }
 
-    public function chapter(){
-        return $this->belongsTo(Chapter::class, 'chapter_id','id');
-    }
-
-    public function topic(){
-        return $this->belongsTo(Topic::class, 'topic_id','id');
-    }
-
-    public function hardness(){
-        return $this->belongsTo(Hardness::class, 'hardness_id','id');
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

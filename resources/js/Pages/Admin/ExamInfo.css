@@ -1,0 +1,78 @@
+/* ExamInfo.css */
+
+/* Full screen container */
+.exam-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background: linear-gradient(to bottom right, #f9fafb, #e5e7eb);
+}
+
+/* Card */
+.exam-card {
+  width: 100%;
+  max-width: 768px;
+  background-color: #ffffff;
+  border-radius: 2rem;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+}
+
+/* Header */
+.exam-header {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+/* Description */
+.exam-description {
+  color: #374151;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  margin-bottom: 2rem;
+  max-width: 100%;
+}
+
+/* Fallback text */
+.exam-no-description {
+  color: #4b5563;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Exam Link */
+.exam-link {
+  display: inline-block;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.5);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.exam-link:hover {
+  background-color: #1d4ed8;
+  transform: scale(1.05);
+}
+
+/* Center text if no exam */
+.no-exam {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  font-size: 1.125rem;
+  text-align: center;
+}
