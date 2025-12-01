@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sea_answer', function (Blueprint $table) {
-            $table->bigInteger('sea_id');
+        Schema::create('see_answer', function (Blueprint $table) {
+            $table->bigInteger('see_id');
             $table->bigInteger('student_id');
             $table->bigInteger('exam_id');
             $table->bigInteger('question_id');
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sea_answer');
+        Schema::dropIfExists('see_answer');
     }
 };

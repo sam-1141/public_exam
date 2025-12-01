@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('student_id');
             $table->bigInteger('exam_id');
-            $table->boolean('exam_type')->nullable()->comment('0=live_exam, 1=practice_exam');
+            // $table->boolean('exam_type')->nullable()->comment('0=live_exam, 1=practice_exam');
             $table->timestamp('exam_start_time')->nullable();
             $table->timestamp('exam_end_time')->nullable();
-            $table->timestamp('result_publish_time')->nullable();
+            // $table->timestamp('result_publish_time')->nullable();
             $table->timestamp('student_exam_start_time')->nullable();
             $table->timestamp('student_exam_end_time')->nullable();
             $table->timestamp('submit_time')->nullable();
