@@ -3,7 +3,7 @@ import {useState, useEffect, useRef} from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
 // import Layout from "../../../../layouts/Layout"
-import FocusWarning from "../../../../../../resources/js/components/FocusWarning"
+// import FocusWarning from "../../../../../../resources/js/components/FocusWarning"
 
 import { route } from "ziggy-js";
 
@@ -305,12 +305,12 @@ const ExamMainPage = ({ exam, questions }) => {
         </>
       )}
 
-      <FocusWarning
+      {/* <FocusWarning
         maxWarnings={3}
         active={!!exam}
         onMaxWarnings={() => handleSubmit(true)}
         examId={exam.id}
-      />
+      /> */}
     </div>
   )
 }
