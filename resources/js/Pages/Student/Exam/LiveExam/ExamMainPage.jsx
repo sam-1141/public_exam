@@ -3,7 +3,8 @@ import {useState, useEffect, useRef} from "react"
 import ExamTimer from "./ExamTimer"
 import QuestionCard from "./QuestionCard"
 // import Layout from "../../../../layouts/Layout"
-import FocusWarning from "../../../../components/FocusWarning"
+import FocusWarning from "../../../../../../resources/js/components/FocusWarning"
+
 import { route } from "ziggy-js";
 
 const ExamMainPage = ({ exam, questions }) => {
